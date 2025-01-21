@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('share_link', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->integer('share_link_id')->primary();
+            $table->string('share_link_url');
+            $table->integer('book_list_id');
+            $table->timestamp('expiry_date');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

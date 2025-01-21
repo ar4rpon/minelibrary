@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('favorite_book', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->integer('favorite_id')->primary();
+            $table->string('isbn');
+            $table->string('user_id');
+            $table->enum('read_status', ['unread', 'reading', 'completed']);
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

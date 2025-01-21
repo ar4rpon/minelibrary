@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('book_list', function (Blueprint $table) {
-            $table->id();
+            $table->integer('book_list_id')->primary();
+            $table->string('book_list_name');
+            $table->string('description');
+            $table->string('create_by_user_id');
+            $table->boolean('is_public');
             $table->timestamps();
         });
     }

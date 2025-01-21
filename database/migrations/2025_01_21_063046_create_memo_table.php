@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('memo', function (Blueprint $table) {
-            $table->id();
+            $table->integer('memo_id')->primary();
+            $table->string('isbn');
+            $table->string('user_id');
+            $table->string('memo');
+            $table->integer('memo_chapter');
+            $table->integer('memo_page');
+            $table->boolean('is_public');
             $table->timestamps();
         });
     }
