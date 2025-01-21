@@ -12,10 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('category', function (Blueprint $table) {
-            $table->integer('category_id')->primary();
+            $table->id('category_id');
             $table->string('category_name');
-            $table->integer('parent_category_id')->nullable()->constrained('category', 'category_id');
+            $table->unsignedBigInteger('parent_category_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('parent_category_id')
+                ->references('category_id')
+                ->on('category')
+                ->onDelete('set null');
+
+            $table->unique('category_name');
         });
     }
 
@@ -24,6 +31,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('category', function (Blueprint $table) {
+            $table->dropForeign(['parent_category_id']);
+        });
         Schema::dropIfExists('category');
     }
 };

@@ -12,14 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('memo', function (Blueprint $table) {
-            $table->integer('memo_id')->primary();
-            $table->string('isbn')->constrained('book', 'isbn');
-            $table->string('user_id')->constrained('users', 'id');
-            $table->string('memo');
-            $table->integer('memo_chapter');
-            $table->integer('memo_page');
-            $table->boolean('is_public');
+            $table->id('memo_id');
+            $table->string('isbn');
+            $table->string('user_id');
+            $table->text('memo');
+            $table->unsignedInteger('memo_chapter');
+            $table->unsignedInteger('memo_page');
+            $table->boolean('is_public')->default(false);
             $table->timestamps();
+
+            $table->foreign('isbn')->references('isbn')->on('book')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->index(['user_id', 'isbn']);
         });
     }
 
@@ -28,6 +33,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('memo', function (Blueprint $table) {
+            $table->dropForeign(['isbn']);
+            $table->dropForeign(['user_id']);
+        });
         Schema::dropIfExists('memo');
     }
 };
