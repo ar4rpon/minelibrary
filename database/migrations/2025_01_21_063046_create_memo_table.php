@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('memo', function (Blueprint $table) {
             $table->integer('memo_id')->primary();
-            $table->string('isbn');
-            $table->string('user_id');
+            $table->string('isbn')->constrained('book', 'isbn');
+            $table->string('user_id')->constrained('users', 'id');
             $table->string('memo');
             $table->integer('memo_chapter');
             $table->integer('memo_page');

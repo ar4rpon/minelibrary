@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('book_list_item', function (Blueprint $table) {
             $table->integer('book_list_item_id')->primary();
-            $table->integer('book_list_id');
-            $table->string('isbn');
+            $table->integer('book_list_id')->constrained('book_list', 'book_list_id');
+            $table->string('isbn')->constrained('book', 'isbn');
             $table->timestamp('created_at')->useCurrent();
         });
     }

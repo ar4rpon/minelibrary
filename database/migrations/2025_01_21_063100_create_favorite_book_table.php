@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('favorite_book', function (Blueprint $table) {
             $table->integer('favorite_id')->primary();
-            $table->string('isbn');
-            $table->string('user_id');
+            $table->string('isbn')->constrained('book', 'isbn');
+            $table->string('user_id')->constrained('users', 'id');
             $table->enum('read_status', ['unread', 'reading', 'completed']);
             $table->timestamp('created_at')->useCurrent();
         });

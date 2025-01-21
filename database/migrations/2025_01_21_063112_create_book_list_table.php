@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('book_list_id')->primary();
             $table->string('book_list_name');
             $table->string('description');
-            $table->string('create_by_user_id');
+            $table->string('create_by_user_id')->constrained('users', 'id');
             $table->boolean('is_public');
             $table->timestamps();
         });
