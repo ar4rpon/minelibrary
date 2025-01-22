@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('memos', function (Blueprint $table) {
             $table->id('memo_id');
             $table->string('isbn');
-            $table->string('user_id');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->text('memo');
             $table->unsignedInteger('memo_chapter');
             $table->unsignedInteger('memo_page');
-            $table->boolean('is_public')->default(false);
+            $table->boolean('is_public')->default(true);
             $table->timestamps();
         });
     }
@@ -28,6 +28,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('memos', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+        });
         Schema::dropIfExists('memos');
     }
 };

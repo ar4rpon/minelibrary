@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('share_links', function (Blueprint $table) {
-            $table->integer('share_link_id')->primary();
-            $table->string('share_link_url');
+        Schema::create('book_book_list', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('book_id')->constrained()->onDelete('cascade');
             $table->foreignId('book_list_id')->constrained()->onDelete('cascade');
-            $table->timestamp('expiry_date');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
         });
     }
 
@@ -25,9 +24,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('share_links', function (Blueprint $table) {
+        Schema::table('book_book_list', function (Blueprint $table) {
+            $table->dropForeign(['book_id']);
             $table->dropForeign(['book_list_id']);
         });
-        Schema::dropIfExists('share_links');
+        Schema::dropIfExists('book_book_list');
     }
 };

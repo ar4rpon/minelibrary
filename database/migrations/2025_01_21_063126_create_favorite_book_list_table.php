@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('favorite_book_lists', function (Blueprint $table) {
-            $table->integer('favorite_id')->primary();
-            $table->integer('book_list_id');
-            $table->string('user_id');
+            $table->id('favorite_id')->primary();
+            $table->integer('book_list_id')->comment('アカウント消えても404に飛ばしたいのでいったんinteger');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamp('created_at')->useCurrent();
         });
     }
@@ -24,6 +24,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('favorite_book_lists', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+        });
         Schema::dropIfExists('favorite_book_lists');
     }
 };
