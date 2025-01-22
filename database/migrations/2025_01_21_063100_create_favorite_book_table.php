@@ -18,13 +18,6 @@ return new class extends Migration
             $table->enum('read_status', ['unread', 'reading', 'completed']);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
-
-            $table->foreign('isbn')->references('isbn')->on('books');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->unique(['user_id', 'isbn']);
-
-            $table->foreign('isbn')->references('isbn')->on('books')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -33,10 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('favorite_books', function (Blueprint $table) {
-            $table->dropForeign(['isbn']);
-            $table->dropForeign(['user_id']);
-        });
         Schema::dropIfExists('favorite_books');
     }
 };

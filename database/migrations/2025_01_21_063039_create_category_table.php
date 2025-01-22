@@ -16,13 +16,6 @@ return new class extends Migration
             $table->string('category_name');
             $table->unsignedBigInteger('parent_category_id')->nullable();
             $table->timestamps();
-
-            $table->foreign('parent_category_id')
-                ->references('category_id')
-                ->on('categories')
-                ->onDelete('set null');
-
-            $table->unique('category_name');
         });
     }
 
@@ -31,9 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('categories', function (Blueprint $table) {
-            $table->dropForeign(['parent_category_id']);
-        });
         Schema::dropIfExists('categories');
     }
 };

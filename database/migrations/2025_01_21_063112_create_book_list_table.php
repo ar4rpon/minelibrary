@@ -18,13 +18,6 @@ return new class extends Migration
             $table->string('create_by_user_id');
             $table->boolean('is_public')->default(false);
             $table->timestamps();
-
-            $table->foreign('create_by_user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
-
-            $table->unique(['book_list_name', 'create_by_user_id']);
         });
     }
 
@@ -33,9 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('book_lists', function (Blueprint $table) {
-            $table->dropForeign(['create_by_user_id']);
-        });
         Schema::dropIfExists('book_lists');
     }
 };

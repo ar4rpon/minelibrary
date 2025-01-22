@@ -20,11 +20,6 @@ return new class extends Migration
             $table->unsignedInteger('memo_page');
             $table->boolean('is_public')->default(false);
             $table->timestamps();
-
-            $table->foreign('isbn')->references('isbn')->on('books')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
-            $table->index(['user_id', 'isbn']);
         });
     }
 
@@ -33,10 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('memos', function (Blueprint $table) {
-            $table->dropForeign(['isbn']);
-            $table->dropForeign(['user_id']);
-        });
         Schema::dropIfExists('memos');
     }
 };
