@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('favorite_book_list', function (Blueprint $table) {
+        Schema::create('favorite_book_lists', function (Blueprint $table) {
             $table->integer('favorite_id')->primary();
             $table->integer('book_list_id');
             $table->string('user_id');
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('favorite_book_list');
+        Schema::dropIfExists('favorite_book_lists');
     }
 };

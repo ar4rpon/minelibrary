@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('favorite_book', function (Blueprint $table) {
+        Schema::create('favorite_books', function (Blueprint $table) {
             $table->id('favorite_id')->primary();
             $table->string('isbn');
             $table->string('user_id');
@@ -19,11 +19,11 @@ return new class extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
-            $table->foreign('isbn')->references('isbn')->on('book');
+            $table->foreign('isbn')->references('isbn')->on('books');
             $table->foreign('user_id')->references('id')->on('users');
             $table->unique(['user_id', 'isbn']);
 
-            $table->foreign('isbn')->references('isbn')->on('book')->onDelete('cascade');
+            $table->foreign('isbn')->references('isbn')->on('books')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
@@ -33,10 +33,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('favorite_book', function (Blueprint $table) {
+        Schema::table('favorite_books', function (Blueprint $table) {
             $table->dropForeign(['isbn']);
             $table->dropForeign(['user_id']);
         });
-        Schema::dropIfExists('favorite_book');
+        Schema::dropIfExists('favorite_books');
     }
 };

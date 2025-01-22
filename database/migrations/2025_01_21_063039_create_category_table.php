@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id('category_id');
             $table->string('category_name');
             $table->unsignedBigInteger('parent_category_id')->nullable();
@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table->foreign('parent_category_id')
                 ->references('category_id')
-                ->on('category')
+                ->on('categories')
                 ->onDelete('set null');
 
             $table->unique('category_name');
@@ -31,9 +31,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('category', function (Blueprint $table) {
+        Schema::table('categories', function (Blueprint $table) {
             $table->dropForeign(['parent_category_id']);
         });
-        Schema::dropIfExists('category');
+        Schema::dropIfExists('categories');
     }
 };

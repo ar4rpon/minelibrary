@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('book_list', function (Blueprint $table) {
+        Schema::create('book_lists', function (Blueprint $table) {
             $table->id('book_list_id');
             $table->string('book_list_name');
             $table->text('description');
@@ -33,9 +33,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('book_list', function (Blueprint $table) {
+        Schema::table('book_lists', function (Blueprint $table) {
             $table->dropForeign(['create_by_user_id']);
         });
-        Schema::dropIfExists('book_list');
+        Schema::dropIfExists('book_lists');
     }
 };

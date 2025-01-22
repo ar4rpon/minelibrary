@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('memo', function (Blueprint $table) {
+        Schema::create('memos', function (Blueprint $table) {
             $table->id('memo_id');
             $table->string('isbn');
             $table->string('user_id');
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('is_public')->default(false);
             $table->timestamps();
 
-            $table->foreign('isbn')->references('isbn')->on('book')->onDelete('cascade');
+            $table->foreign('isbn')->references('isbn')->on('books')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->index(['user_id', 'isbn']);
@@ -33,10 +33,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('memo', function (Blueprint $table) {
+        Schema::table('memos', function (Blueprint $table) {
             $table->dropForeign(['isbn']);
             $table->dropForeign(['user_id']);
         });
-        Schema::dropIfExists('memo');
+        Schema::dropIfExists('memos');
     }
 };

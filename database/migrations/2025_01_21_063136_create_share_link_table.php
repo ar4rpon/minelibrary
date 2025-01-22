@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('share_link', function (Blueprint $table) {
+        Schema::create('share_links', function (Blueprint $table) {
             $table->integer('share_link_id')->primary();
             $table->string('share_link_url');
             $table->integer('book_list_id');
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('share_link');
+        Schema::dropIfExists('share_links');
     }
 };
