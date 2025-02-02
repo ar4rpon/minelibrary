@@ -20,10 +20,9 @@ export default {
                 ]
             },
             borderRadius: {
-                lg: { 'max': 'var(--radius)' },
-                md: { 'max': 'calc(var(--radius) - 2px)' },
-                sm: { 'max': 'calc(var(--radius) - 4px)' },
-                xs: { 'max': '380px' },
+                lg: 'var(--radius)',
+                md: 'calc(var(--radius) - 2px)',
+                sm: 'calc(var(--radius) - 4px)'
             },
             colors: {
                 background: 'hsl(var(--background))',
@@ -66,7 +65,7 @@ export default {
                     '4': 'hsl(var(--chart-4))',
                     '5': 'hsl(var(--chart-5))'
                 }
-            }
+            },
         }
     },
 
