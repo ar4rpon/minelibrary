@@ -20,7 +20,7 @@ export default function Authenticated({
         )}
 
         {/* コンテンツ */}
-        <main>{children}</main>
+        <main className="px-4 sm:px-6 lg:px-8">{children}</main>
       </div>
       <Footer />
     </>
