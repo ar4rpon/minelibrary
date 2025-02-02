@@ -65,7 +65,7 @@ const MemoCard = memo(function MemoCard({
   return (
     <Card className="mx-auto w-full max-w-4xl overflow-hidden">
       <CardContent className="p-4 md:p-6">
-        <div className="flex flex-col gap-4 md:flex-row">
+        <div className="flex flex-col gap-4 md:flex-row lg:block">
           <div className="flex items-center">
             <img
               src={book.coverUrl}
