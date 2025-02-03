@@ -12,7 +12,7 @@ export default function Authenticated({
       <div className="min-h-screen">
         {/* ページの見出し */}
         {header && (
-          <div className=" mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 font-bold">
+          <div className="mx-auto max-w-7xl px-4 py-6 font-bold sm:px-6 lg:px-8">
             <h1 className="text-2xl font-semibold leading-tight text-gray-800">
               {header}
             </h1>
@@ -20,7 +20,9 @@ export default function Authenticated({
         )}
 
         {/* コンテンツ */}
-        <main className="px-4 sm:px-6 lg:px-8 bg-green-100">{children}</main>
+        <main className="min-h-dvh bg-green-100 px-4 sm:px-6 lg:px-8">
+          {children}
+        </main>
       </div>
       <Footer />
     </>
