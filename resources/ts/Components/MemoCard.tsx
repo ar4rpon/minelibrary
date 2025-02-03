@@ -15,7 +15,7 @@ import {
 } from '@/Components/ui/dropdown-menu';
 import { Separator } from '@/Components/ui/separator';
 import { MoreVertical, Pencil, Trash } from 'lucide-react';
-import { lazy, memo, Suspense, useState, useEffect } from 'react';
+import { lazy, memo, Suspense, useState } from 'react';
 
 interface MemoCardProps {
   id: string;
@@ -64,29 +64,21 @@ const MemoCard = memo(function MemoCard({
 
   return (
     <Card className="mx-auto w-full overflow-hidden">
-      <CardContent className="p-4 md:p-6" >
-        <div className="flex flex-col gap-4 md:flex-row lg:block">
+      <CardContent className="p-4 md:p-6">
+        <div className="flex flex-row gap-4">
           <div className="flex items-center">
             <img
               src={book.coverUrl}
               alt={book.title}
               loading="lazy"
-              className="h-24 w-20 object-cover lg:hidden rounded-md border-2"
+              className="h-24 w-20 rounded-md border-2 object-cover"
             />
           </div>
           <div className="flex flex-1 flex-col justify-between space-y-4">
             <div className="space-y-2">
               <div className="flex items-start justify-between">
-                <img
-                  src={book.coverUrl}
-                  alt={book.title}
-                  loading="lazy"
-                  className="mt-2 hidden h-24 w-20 object-cover lg:inline-block rounded-md border-2"
-                />
-                <div>
-                  <h2 className="text-xl font-bold sm:text-2xl">
-                    {book.title}
-                  </h2>
+                <div className="lg:pl-2">
+                  <h2 className="text-xl font-bold">{book.title}</h2>
                   <p className="text-sm text-muted-foreground">{book.author}</p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {new Date(createdAt).toLocaleDateString('ja-JP')}
