@@ -15,7 +15,7 @@ import {
 } from '@/Components/ui/dropdown-menu';
 import { Separator } from '@/Components/ui/separator';
 import { MoreVertical, Pencil, Trash } from 'lucide-react';
-import { lazy, memo, Suspense, useState } from 'react';
+import { lazy, memo, Suspense, useState, useEffect } from 'react';
 
 interface MemoCardProps {
   id: string;
@@ -64,7 +64,7 @@ const MemoCard = memo(function MemoCard({
 
   return (
     <Card className="mx-auto w-full max-w-4xl overflow-hidden">
-      <CardContent className="p-4 md:p-6">
+      <CardContent className="p-4 md:p-6" >
         <div className="flex flex-col gap-4 md:flex-row lg:block">
           <div className="flex items-center">
             <img
@@ -123,6 +123,10 @@ const MemoCard = memo(function MemoCard({
         <Suspense fallback={<div>Loading...</div>}>
           <DialogContent
             onClick={(e) => e.stopPropagation()}
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              document.body.style.pointerEvents = '';
+            }}
             className="focus:outline-none"
           >
             <DialogHeader>
