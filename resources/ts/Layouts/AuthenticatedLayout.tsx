@@ -9,18 +9,18 @@ export default function Authenticated({
   return (
     <>
       <Navigation />
-      <div className="min-h-screen bg-gray-200">
+      <div className="min-h-screen">
         {/* ページの見出し */}
         {header && (
-          <header className="bg-white shadow">
-            <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className=" mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 font-bold">
+            <h1 className="text-2xl font-semibold leading-tight text-gray-800">
               {header}
-            </div>
-          </header>
+            </h1>
+          </div>
         )}
 
         {/* コンテンツ */}
-        <main className="px-4 sm:px-6 lg:px-8">{children}</main>
+        <main className="px-4 sm:px-6 lg:px-8 bg-green-100">{children}</main>
       </div>
       <Footer />
     </>

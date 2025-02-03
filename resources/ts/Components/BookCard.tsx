@@ -32,7 +32,7 @@ export default function BookCard({
   return (
     <Card className="mx-auto w-full max-w-4xl overflow-hidden p-4 md:p-6">
       <div className="flex flex-col gap-4 md:flex-row lg:flex-col">
-        <div className="mx-auto flex aspect-[3/4] w-full max-w-[200px] shrink-0 items-center justify-center overflow-hidden rounded-md border border-gray-200 shadow-lg">
+        <div className="mx-auto flex aspect-[3/4] w-full max-w-[200px] shrink-0 items-center justify-center overflow-hidden rounded-md  border-gray-200 shadow-lg border-2">
           <img
             src={imageUrl || '/placeholder.svg'}
             alt={title}

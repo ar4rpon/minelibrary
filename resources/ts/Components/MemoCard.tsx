@@ -63,7 +63,7 @@ const MemoCard = memo(function MemoCard({
   };
 
   return (
-    <Card className="mx-auto w-full max-w-4xl overflow-hidden">
+    <Card className="mx-auto w-full overflow-hidden">
       <CardContent className="p-4 md:p-6" >
         <div className="flex flex-col gap-4 md:flex-row lg:block">
           <div className="flex items-center">
@@ -71,7 +71,7 @@ const MemoCard = memo(function MemoCard({
               src={book.coverUrl}
               alt={book.title}
               loading="lazy"
-              className="h-24 w-20 object-cover lg:hidden"
+              className="h-24 w-20 object-cover lg:hidden rounded-md border-2"
             />
           </div>
           <div className="flex flex-1 flex-col justify-between space-y-4">
@@ -81,7 +81,7 @@ const MemoCard = memo(function MemoCard({
                   src={book.coverUrl}
                   alt={book.title}
                   loading="lazy"
-                  className="mt-2 hidden h-24 w-20 object-cover lg:inline-block"
+                  className="mt-2 hidden h-24 w-20 object-cover lg:inline-block rounded-md border-2"
                 />
                 <div>
                   <h2 className="text-xl font-bold sm:text-2xl">

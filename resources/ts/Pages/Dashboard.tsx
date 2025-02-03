@@ -11,22 +11,16 @@ export default function Dashboard() {
     coverUrl: 'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg',
   };
   return (
-    <AuthenticatedLayout
-      header={
-        <h2 className="text-xl font-semibold leading-tight text-gray-800">
-          Dashboard
-        </h2>
-      }
-    >
+    <AuthenticatedLayout header="ダッシュボード">
       <Head title="Dashboard" />
 
       <div className="py-12">
         <div className="mx-auto max-w-7xl">
-          <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-            <div className="p-6 text-gray-900">You're logged in!</div>
+          <div>
+            <h2 className="text-2xl">最近書いたメモ</h2>
           </div>
-
           <div className="mt-8 grid gap-x-8 gap-y-4 lg:grid-cols-3">
+
             <MemoCard
               id="1"
               content="サンプルコンテンツサンプルコンテンツサンプルコンテンツサンプルコンテンツサンプルコンテンツサンプルコンテンツサンプルコンテンツサンプルコンテンツサンプルコンテンツサンプルコンテンツサンプルコンテンツサンプルコンテンツ"
