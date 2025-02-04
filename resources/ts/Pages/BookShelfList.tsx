@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import { BaseDialog } from '@/Dialog/BaseDialog';
 
 export default function BookShelfList() {
   return (
@@ -13,7 +14,10 @@ export default function BookShelfList() {
               お気に入り本一覧
             </h2>
           </div>
-          <div className="mt-8">main content</div>
+          <div className="mt-8">
+            <BaseDialog />
+
+          </div>
         </div>
       </div>
     </AuthenticatedLayout>
