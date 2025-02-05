@@ -8,15 +8,8 @@ import {
 } from '@/Components/ui/dropdown-menu';
 import { Heart, Plus } from 'lucide-react';
 import { useState } from 'react';
-
-interface BookCardProps {
-  title: string;
-  author: string;
-  publisher: string;
-  publishDate: string;
-  price: number;
-  imageUrl: string;
-}
+import FavoriteIcon from './FavoriteIcon';
+import { BookProps } from '@/types';
 
 export default function BookCard({
   title = '本のタイトル',
@@ -25,7 +18,7 @@ export default function BookCard({
   publishDate = '2024年2月2日',
   price = 1500,
   imageUrl = 'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg',
-}: BookCardProps) {
+}: BookProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [bookshelves] = useState(['本棚1', '本棚2', '本棚3']);
 
@@ -68,17 +61,7 @@ export default function BookCard({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="shrink-0"
-              onClick={() => setIsFavorite(!isFavorite)}
-            >
-              <Heart
-                className={`h-5 w-5 ${isFavorite ? 'fill-current text-red-500' : 'text-muted-foreground'}`}
-              />
-            </Button>
+            <FavoriteIcon isFavorite={isFavorite} onClick={() => setIsFavorite(!isFavorite)} />
           </div>
         </div>
       </div>
