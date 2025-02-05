@@ -9,6 +9,8 @@ import { Button } from "@/Components/ui/button"
 import { BookProps } from '@/types';
 import AmazonButton from "@/Components/AmazonButton"
 import RakutenButton from "@/Components/RakutenButton"
+import FavoriteIcon from "@/Components/FavoriteIcon";
+import { useState } from "react";
 
 export function BookDetailDialog({
   title = '本のタイトル',
@@ -19,6 +21,7 @@ export function BookDetailDialog({
   imageUrl = 'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg',
   isbn = '9784297129163'
 }: BookProps) {
+  const [isFavorite, setIsFavorite] = useState(false);
 
   return (
     <Dialog>
@@ -42,9 +45,12 @@ export function BookDetailDialog({
 
             <div className="space-y-4">
               <h2 className="text-2xl font-bold">{title}</h2>
-              <div className="space-y-1 text-sm text-muted-foreground">
-                <p>{`${publishDate} / ${author} / ${publisher}`}</p>
-                <p className="text-lg text-red-600">¥{price.toLocaleString()}</p>
+              <div className="flex justify-between">
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <p>{`${publishDate} / ${author} / ${publisher}`}</p>
+                  <p className="text-lg text-red-600">¥{price.toLocaleString()}</p>
+                </div>
+                <FavoriteIcon isFavorite={isFavorite} onClick={() => setIsFavorite(!isFavorite)} />
               </div>
             </div>
 
