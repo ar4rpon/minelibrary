@@ -12,3 +12,13 @@ export type PageProps<
     user: User;
   };
 };
+
+interface BookProps {
+  title: string;
+  author: string;
+  publisher: string;
+  publishDate: string;
+  price: number;
+  imageUrl: string;
+  isbn?: string;
+}
