@@ -9,6 +9,7 @@ import {
 } from "@/Components/ui/dialog"
 import { Button } from "@/Components/ui/button"
 import { Input } from "@/Components/ui/input"
+import { Textarea } from "@/Components/ui/textarea"
 import { Label } from "@/Components/ui/label"
 
 export function BaseDialog() {
@@ -21,10 +22,12 @@ export function BaseDialog() {
         <DialogHeader>
           <DialogTitle>編集</DialogTitle>
           <DialogDescription>
-            <div className="flex mt-4 flex-col">
-              <div className="grid w-full max-w-sm items-center gap-1.5">
-                <Label htmlFor="memo">Memo</Label>
-                <Input type="email" id="memo" placeholder="Memo" />
+            <div className="flex mt-4 flex-col w-full">
+              <div className="grid items-center text-left gap-1.5">
+                <Label className="mb-1" htmlFor="memo" >Memo</Label>
+                <Textarea id="memo" placeholder="Memo" >
+                  ここに初期値を入力しておく
+                </Textarea>
               </div>
               <div className="mt-6 flex justify-end">
                 <Button type="submit" className="mr-4" >決定</Button>
