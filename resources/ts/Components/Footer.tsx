@@ -3,7 +3,7 @@ import ApplicationLogo from './ApplicationLogo';
 
 export default function Footer() {
   return (
-    <footer className="mx-auto max-w-7xl px-4">
+    <footer className="mx-auto max-w-7xl px-4 ">
       <div className="flex flex-col pt-4 text-sm">
         <ApplicationLogo />
         <div className="pt-4">

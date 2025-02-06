@@ -1,13 +1,6 @@
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
 import {
-  Dialog,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/Components/ui/dialog';
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -15,7 +8,9 @@ import {
 } from '@/Components/ui/dropdown-menu';
 import { Separator } from '@/Components/ui/separator';
 import { MoreVertical, Pencil, Trash } from 'lucide-react';
-import { lazy, memo, Suspense, useState, useEffect } from 'react';
+import { lazy, memo, Suspense, useState } from 'react';
+import { DeleteMemoDialog } from '@/Dialog/Memo/DeleteMemoDialog';
+import { EditMemoDialog } from '@/Dialog/Memo/EditMemoDialog';
 
 interface MemoCardProps {
   id: string;
@@ -48,6 +43,7 @@ const MemoCard = memo(function MemoCard({
   },
 }: MemoCardProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const handleEdit = () => {
     console.log('Edit note:', id);
@@ -56,6 +52,10 @@ const MemoCard = memo(function MemoCard({
   const handleDelete = () => {
     setDeleteDialogOpen(true);
   };
+  const confirmEdit = () => {
+    console.log('Edit note:', id);
+    setDeleteDialogOpen(false);
+  };
 
   const confirmDelete = () => {
     console.log('Delete note:', id);
@@ -63,30 +63,22 @@ const MemoCard = memo(function MemoCard({
   };
 
   return (
-    <Card className="mx-auto w-full max-w-4xl overflow-hidden">
-      <CardContent className="p-4 md:p-6" >
-        <div className="flex flex-col gap-4 md:flex-row lg:block">
+    <Card className="mx-auto w-full overflow-hidden">
+      <CardContent className="p-4 md:p-6">
+        <div className="flex flex-row gap-4">
           <div className="flex items-center">
             <img
               src={book.coverUrl}
               alt={book.title}
               loading="lazy"
-              className="h-24 w-20 object-cover lg:hidden"
+              className="h-24 w-20 rounded-md border-2 object-cover"
             />
           </div>
           <div className="flex flex-1 flex-col justify-between space-y-4">
             <div className="space-y-2">
               <div className="flex items-start justify-between">
-                <img
-                  src={book.coverUrl}
-                  alt={book.title}
-                  loading="lazy"
-                  className="mt-2 hidden h-24 w-20 object-cover lg:inline-block"
-                />
-                <div>
-                  <h2 className="text-xl font-bold sm:text-2xl">
-                    {book.title}
-                  </h2>
+                <div className="lg:pl-2">
+                  <h2 className="text-xl font-bold">{book.title}</h2>
                   <p className="text-sm text-muted-foreground">{book.author}</p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {new Date(createdAt).toLocaleDateString('ja-JP')}
@@ -119,36 +111,16 @@ const MemoCard = memo(function MemoCard({
         </div>
       </CardContent>
 
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <DialogContent
-            onClick={(e) => e.stopPropagation()}
-            onCloseAutoFocus={(event) => {
-              event.preventDefault();
-              document.body.style.pointerEvents = '';
-            }}
-            className="focus:outline-none"
-          >
-            <DialogHeader>
-              <DialogTitle>メモの削除</DialogTitle>
-              <DialogDescription>
-                このメモを削除してもよろしいですか？この操作は取り消せません。
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setDeleteDialogOpen(false)}
-              >
-                キャンセル
-              </Button>
-              <Button variant="destructive" onClick={confirmDelete}>
-                削除
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Suspense>
-      </Dialog>
+      <DeleteMemoDialog
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={confirmDelete} />
+      <EditMemoDialog
+        isOpen={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        onConfirm={confirmDelete}
+      />
+
     </Card>
   );
 });
