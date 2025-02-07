@@ -1,4 +1,4 @@
-import { MemoDialog } from './index';
+import { BaseDialog } from "../BaseDialog";
 import { DialogHeader, DialogTitle, DialogDescription } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
 import { Textarea } from "@/Components/ui/textarea";
@@ -12,7 +12,7 @@ interface CreateDialogProps {
 
 export function CreateMemoDialog({ isOpen, onClose, onConfirm }: CreateDialogProps) {
   return (
-    <MemoDialog isOpen={isOpen} onClose={onClose}>
+    <BaseDialog isOpen={isOpen} onClose={onClose}>
       <DialogHeader>
         <DialogTitle>作成</DialogTitle>
       </DialogHeader>
@@ -31,6 +31,6 @@ export function CreateMemoDialog({ isOpen, onClose, onConfirm }: CreateDialogPro
           </div>
         </div>
       </DialogDescription>
-    </MemoDialog>
+    </BaseDialog>
   );
 }

@@ -1,4 +1,4 @@
-import { MemoDialog } from './index';
+import { BaseDialog } from '../BaseDialog';
 import { DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/Components/ui/dialog';
 import { Button } from '@/Components/ui/button';
 
@@ -10,7 +10,7 @@ interface DeleteDialogProps {
 
 export function DeleteMemoDialog({ isOpen, onClose, onConfirm }: DeleteDialogProps) {
   return (
-    <MemoDialog isOpen={isOpen} onClose={onClose}>
+    <BaseDialog isOpen={isOpen} onClose={onClose}>
       <DialogHeader>
         <DialogTitle>メモの削除</DialogTitle>
         <DialogDescription>
@@ -21,6 +21,6 @@ export function DeleteMemoDialog({ isOpen, onClose, onConfirm }: DeleteDialogPro
         <Button variant="outline" onClick={onClose}>キャンセル</Button>
         <Button variant="destructive" onClick={onConfirm}>削除</Button>
       </DialogFooter>
-    </MemoDialog>
+    </BaseDialog>
   );
 }

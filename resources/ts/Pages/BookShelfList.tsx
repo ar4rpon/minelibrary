@@ -12,6 +12,7 @@ export default function BookShelfList() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [detailBookDialogOpen, setDetailBookDialogOpen] = useState(false);
   let id: string = "1";
   const handleEdit = () => {
     setEditDialogOpen(true);
@@ -39,6 +40,15 @@ export default function BookShelfList() {
     console.log('Delete note:', id);
     setDeleteDialogOpen(false);
   };
+
+  const handleDetailBook = () => {
+    setDetailBookDialogOpen(true);
+  };
+
+  const confirmDetailBook = () => {
+    console.log('Delete note:', id);
+    setDetailBookDialogOpen(false);
+  };
   return (
     <AuthenticatedLayout header="BookShelfList">
       <Head title="BookShelfList" />
@@ -51,7 +61,19 @@ export default function BookShelfList() {
             </h2>
           </div>
           <div className="mt-8">
-            <BookDetailDialog title="本のタイトル" author='著者名' publisher='出版社' publishDate='2024年2月1日' price={1500} imageUrl='https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg' />
+            <h2>DetailBookDialog</h2>
+            <Button onClick={handleDetailBook}>書籍詳細</Button>
+            <BookDetailDialog
+              title="本のタイトル"
+              author='著者名'
+              publisher='出版社'
+              publishDate='2024年2月1日'
+              price={1500}
+              imageUrl='https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg'
+              isOpen={detailBookDialogOpen}
+              onClose={() => setDetailBookDialogOpen(false)}
+              onConfirm={confirmDetailBook}
+            />
           </div>
           <div className="flex flex-col mt-4">
             <h2>CreateMemoDialog</h2>

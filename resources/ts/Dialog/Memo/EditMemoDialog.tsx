@@ -1,4 +1,4 @@
-import { MemoDialog } from './index';
+import { BaseDialog } from "../BaseDialog";
 import { DialogHeader, DialogTitle, DialogDescription } from "@/Components/ui/dialog";
 import { Button } from "@/Components/ui/button";
 import { Textarea } from "@/Components/ui/textarea";
@@ -12,7 +12,7 @@ interface EditDialogProps {
 
 export function EditMemoDialog({ isOpen, onClose, onConfirm }: EditDialogProps) {
   return (
-    <MemoDialog isOpen={isOpen} onClose={onClose}>
+    <BaseDialog isOpen={isOpen} onClose={onClose}>
       <DialogHeader>
         <DialogTitle>編集</DialogTitle>
       </DialogHeader>
@@ -30,6 +30,6 @@ export function EditMemoDialog({ isOpen, onClose, onConfirm }: EditDialogProps) 
           </div>
         </div>
       </DialogDescription>
-    </MemoDialog>
+    </BaseDialog>
   );
 }
