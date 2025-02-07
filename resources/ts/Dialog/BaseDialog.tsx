@@ -1,44 +1,33 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose
-} from "@/Components/ui/dialog"
-import { Button } from "@/Components/ui/button"
-import { Input } from "@/Components/ui/input"
-import { Textarea } from "@/Components/ui/textarea"
-import { Label } from "@/Components/ui/label"
+import { Dialog } from "@/Components/ui/dialog";
+import { lazy, Suspense } from 'react';
 
-export function BaseDialog() {
+const DialogContent = lazy(() =>
+  import('@/Components/ui/dialog').then((module) => ({
+    default: module.DialogContent,
+  })),
+);
+
+interface DialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}
+
+export function BaseDialog({ isOpen, onClose, children }: DialogProps) {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">ボタン</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>編集</DialogTitle>
-          <DialogDescription>
-            <div className="flex mt-4 flex-col w-full">
-              <div className="grid items-center text-left gap-1.5">
-                <Label className="mb-1" htmlFor="memo" >Memo</Label>
-                <Textarea id="memo" placeholder="Memo" >
-                  ここに初期値を入力しておく
-                </Textarea>
-              </div>
-              <div className="mt-6 flex justify-end">
-                <Button type="submit" className="mr-4" >決定</Button>
-                <DialogClose>
-                  <Button variant="destructive">キャンセル</Button>
-                </DialogClose>
-              </div>
-            </div>
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <DialogContent
+          onClick={(e) => e.stopPropagation()}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            document.body.style.pointerEvents = '';
+          }}
+          className="max-h-[90vh] flex flex-col"
+        >
+          {children}
+        </DialogContent>
+      </Suspense>
     </Dialog>
-  )
+  );
 }
