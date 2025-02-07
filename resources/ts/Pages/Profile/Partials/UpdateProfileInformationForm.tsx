@@ -1,7 +1,7 @@
-import InputError from '@/Components/defaultConponent/InputError';
-import InputLabel from '@/Components/defaultConponent/InputLabel';
-import PrimaryButton from '@/Components/defaultConponent/PrimaryButton';
-import TextInput from '@/Components/defaultConponent/TextInput';
+import InputError from '@/Components/InputError';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -32,9 +32,7 @@ export default function UpdateProfileInformation({
   return (
     <section className={className}>
       <header>
-        <h2 className="text-lg font-medium text-gray-900">
-
-        </h2>
+        <h2 className="text-lg font-medium text-gray-900"></h2>
 
         <p className="mt-1 text-sm text-gray-600">
           Update your account's profile information and email address.
@@ -43,25 +41,24 @@ export default function UpdateProfileInformation({
 
       <form onSubmit={submit} className="mt-6 space-y-6">
         <div>
-          <InputLabel htmlFor="name" value="Name" />
+          <Label htmlFor="name">Name</Label>
 
-          <TextInput
+          <Input
             id="name"
             className="mt-1 block w-full"
             value={data.name}
             onChange={(e) => setData('name', e.target.value)}
             required
-            isFocused
             autoComplete="name"
-          />
+          ></Input>
 
           <InputError className="mt-2" message={errors.name} />
         </div>
 
         <div>
-          <InputLabel htmlFor="email" value="Email" />
+          <Label htmlFor="email">Email</Label>
 
-          <TextInput
+          <Input
             id="email"
             type="email"
             className="mt-1 block w-full"
@@ -69,7 +66,7 @@ export default function UpdateProfileInformation({
             onChange={(e) => setData('email', e.target.value)}
             required
             autoComplete="username"
-          />
+          ></Input>
 
           <InputError className="mt-2" message={errors.email} />
         </div>
@@ -97,8 +94,7 @@ export default function UpdateProfileInformation({
         )}
 
         <div className="flex items-center gap-4">
-          <PrimaryButton disabled={processing}>Save</PrimaryButton>
-
+          <Button disabled={processing}>保存</Button>
           <Transition
             show={recentlySuccessful}
             enter="transition ease-in-out"

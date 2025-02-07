@@ -1,7 +1,7 @@
-import InputError from '@/Components/defaultConponent/InputError';
-import InputLabel from '@/Components/defaultConponent/InputLabel';
-import PrimaryButton from '@/Components/defaultConponent/PrimaryButton';
-import TextInput from '@/Components/defaultConponent/TextInput';
+import InputError from '@/Components/InputError';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -28,26 +28,25 @@ export default function Register() {
 
       <form onSubmit={submit}>
         <div>
-          <InputLabel htmlFor="name" value="Name" />
+          <Label htmlFor="name">Name</Label>
 
-          <TextInput
+          <Input
             id="name"
             name="name"
             value={data.name}
             className="mt-1 block w-full"
             autoComplete="name"
-            isFocused={true}
             onChange={(e) => setData('name', e.target.value)}
             required
-          />
+          ></Input>
 
           <InputError message={errors.name} className="mt-2" />
         </div>
 
         <div className="mt-4">
-          <InputLabel htmlFor="email" value="Email" />
+          <Label htmlFor="email">Email</Label>
 
-          <TextInput
+          <Input
             id="email"
             type="email"
             name="email"
@@ -56,15 +55,15 @@ export default function Register() {
             autoComplete="username"
             onChange={(e) => setData('email', e.target.value)}
             required
-          />
+          ></Input>
 
           <InputError message={errors.email} className="mt-2" />
         </div>
 
         <div className="mt-4">
-          <InputLabel htmlFor="password" value="Password" />
+          <Label htmlFor="password">Password</Label>
 
-          <TextInput
+          <Input
             id="password"
             type="password"
             name="password"
@@ -73,18 +72,15 @@ export default function Register() {
             autoComplete="new-password"
             onChange={(e) => setData('password', e.target.value)}
             required
-          />
+          ></Input>
 
           <InputError message={errors.password} className="mt-2" />
         </div>
 
         <div className="mt-4">
-          <InputLabel
-            htmlFor="password_confirmation"
-            value="Confirm Password"
-          />
+          <Label htmlFor="password_confirmation">Confirm Password</Label>
 
-          <TextInput
+          <Input
             id="password_confirmation"
             type="password"
             name="password_confirmation"
@@ -93,7 +89,7 @@ export default function Register() {
             autoComplete="new-password"
             onChange={(e) => setData('password_confirmation', e.target.value)}
             required
-          />
+          ></Input>
 
           <InputError message={errors.password_confirmation} className="mt-2" />
         </div>
@@ -106,9 +102,9 @@ export default function Register() {
             Already registered?
           </Link>
 
-          <PrimaryButton className="ms-4" disabled={processing}>
-            Register
-          </PrimaryButton>
+          <Button className="ms-4" disabled={processing}>
+            登録
+          </Button>
         </div>
       </form>
     </GuestLayout>

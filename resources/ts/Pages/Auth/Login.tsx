@@ -1,9 +1,8 @@
-
+import InputError from '@/Components/InputError';
+import { Button } from '@/Components/ui/button';
 import { Checkbox } from '@/Components/ui/checkbox';
-import InputError from '@/Components/defaultConponent/InputError';
-import InputLabel from '@/Components/defaultConponent/InputLabel';
-import PrimaryButton from '@/Components/defaultConponent/PrimaryButton';
-import TextInput from '@/Components/defaultConponent/TextInput';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -34,33 +33,30 @@ export default function Login({
       <Head title="Log in" />
 
       {status && (
-        <div className="mb-4 text-sm font-medium text-green-600">
-          {status}
-        </div>
+        <div className="mb-4 text-sm font-medium text-green-600">{status}</div>
       )}
 
       <form onSubmit={submit}>
         <div>
-          <InputLabel htmlFor="email" value="Email" />
+          <Label htmlFor="email">Email</Label>
 
-          <TextInput
+          <Input
             id="email"
             type="email"
             name="email"
             value={data.email}
             className="mt-1 block w-full"
             autoComplete="username"
-            isFocused={true}
             onChange={(e) => setData('email', e.target.value)}
-          />
+          ></Input>
 
           <InputError message={errors.email} className="mt-2" />
         </div>
 
         <div className="mt-4">
-          <InputLabel htmlFor="password" value="Password" />
+          <Label htmlFor="email">Password</Label>
 
-          <TextInput
+          <Input
             id="password"
             type="password"
             name="password"
@@ -68,7 +64,7 @@ export default function Login({
             className="mt-1 block w-full"
             autoComplete="current-password"
             onChange={(e) => setData('password', e.target.value)}
-          />
+          ></Input>
 
           <InputError message={errors.password} className="mt-2" />
         </div>
@@ -78,11 +74,11 @@ export default function Login({
             <Checkbox
               name="remember"
               checked={data.remember}
-              onCheckedChange={(checked) => setData('remember', checked as boolean)}
+              onCheckedChange={(checked) =>
+                setData('remember', checked as boolean)
+              }
             />
-            <span className="ms-2 text-sm text-gray-600">
-              Remember me
-            </span>
+            <span className="ms-2 text-sm text-gray-600">Remember me</span>
           </label>
         </div>
 
@@ -96,9 +92,9 @@ export default function Login({
             </Link>
           )}
 
-          <PrimaryButton className="ms-4" disabled={processing}>
-            Log in
-          </PrimaryButton>
+          <Button className="ms-4" disabled={processing}>
+            ログイン
+          </Button>
         </div>
       </form>
     </GuestLayout>
