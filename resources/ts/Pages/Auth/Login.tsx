@@ -1,8 +1,8 @@
-import Checkbox from '@/Components/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import Checkbox from '@/Components/defaultConponent/Checkbox';
+import InputError from '@/Components/defaultConponent/InputError';
+import InputLabel from '@/Components/defaultConponent/InputLabel';
+import PrimaryButton from '@/Components/defaultConponent/PrimaryButton';
+import TextInput from '@/Components/defaultConponent/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
