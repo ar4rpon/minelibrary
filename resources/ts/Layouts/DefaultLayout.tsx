@@ -2,7 +2,7 @@ import Footer from '@/Components/Footer';
 import Navigation from '@/Components/Navigation';
 import { PropsWithChildren, ReactNode } from 'react';
 
-export default function Authenticated({
+export default function DefaultLayout({
   header,
   children,
 }: PropsWithChildren<{ header?: ReactNode }>) {

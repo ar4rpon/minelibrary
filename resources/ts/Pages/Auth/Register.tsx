@@ -2,7 +2,7 @@ import InputError from '@/Components/InputError';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -23,7 +23,7 @@ export default function Register() {
   };
 
   return (
-    <AuthenticatedLayout>
+    <DefaultLayout>
       <Head title="Register" />
 
       <form onSubmit={submit}>
@@ -107,6 +107,6 @@ export default function Register() {
           </Button>
         </div>
       </form>
-    </AuthenticatedLayout>
+    </DefaultLayout>
   );
 }

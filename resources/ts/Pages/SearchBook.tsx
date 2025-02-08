@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/Components/ui/select';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
@@ -89,7 +89,7 @@ const SearchPage = () => {
   }, [currentPage]);
 
   return (
-    <AuthenticatedLayout header="検索ページ">
+    <DefaultLayout header="検索ページ">
       <Head title="検索ページ" />
 
       <div className="mb-6 flex flex-col gap-4 sm:flex-row">
@@ -204,7 +204,7 @@ const SearchPage = () => {
           </PaginationContent>
         </Pagination>
       )}
-    </AuthenticatedLayout>
+    </DefaultLayout>
   );
 };
 

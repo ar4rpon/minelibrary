@@ -1,7 +1,7 @@
 import InputError from '@/Components/InputError';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -17,7 +17,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
   };
 
   return (
-    <AuthenticatedLayout>
+    <DefaultLayout>
       <Head title="Forgot Password" />
 
       <div className="mb-4 text-sm text-gray-600">
@@ -48,6 +48,6 @@ export default function ForgotPassword({ status }: { status?: string }) {
           </Button>
         </div>
       </form>
-    </AuthenticatedLayout>
+    </DefaultLayout>
   );
 }

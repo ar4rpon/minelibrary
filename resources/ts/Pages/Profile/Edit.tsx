@@ -1,5 +1,5 @@
 import { Card } from '@/Components/ui/card';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 import DeleteUserForm from './Partials/DeleteUserForm';
@@ -11,7 +11,7 @@ export default function Edit({
   status,
 }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
   return (
-    <AuthenticatedLayout header="プロフィール編集">
+    <DefaultLayout header="プロフィール編集">
       <Head title="プロフィール編集" />
       <div>
         <div className="mb-4 rounded-sm border border-green-600 bg-white shadow-md">
@@ -46,6 +46,6 @@ export default function Edit({
           <DeleteUserForm />
         </Card>
       </div>
-    </AuthenticatedLayout>
+    </DefaultLayout>
   );
 }

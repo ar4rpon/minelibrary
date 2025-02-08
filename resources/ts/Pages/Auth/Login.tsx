@@ -3,7 +3,7 @@ import { Button } from '@/Components/ui/button';
 import { Checkbox } from '@/Components/ui/checkbox';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -29,7 +29,7 @@ export default function Login({
   };
 
   return (
-    <AuthenticatedLayout>
+    <DefaultLayout>
       <Head title="Log in" />
 
       {status && (
@@ -97,6 +97,6 @@ export default function Login({
           </Button>
         </div>
       </form>
-    </AuthenticatedLayout>
+    </DefaultLayout>
   );
 }
