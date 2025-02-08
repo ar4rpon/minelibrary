@@ -13,7 +13,7 @@ export type PageProps<
   };
 };
 
-interface BookProps {
+export interface BookProps {
   title: string;
   author: string;
   publisher: string;

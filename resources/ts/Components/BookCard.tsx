@@ -6,10 +6,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
-import { Heart, Plus } from 'lucide-react';
+import { BookProps } from '@/types';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import FavoriteIcon from './FavoriteIcon';
-import { BookProps } from '@/types';
 
 export default function BookCard({
   title = '本のタイトル',
@@ -25,7 +25,7 @@ export default function BookCard({
   return (
     <Card className="mx-auto w-full max-w-4xl overflow-hidden p-4 md:p-6">
       <div className="flex flex-col gap-4 md:flex-row lg:flex-col">
-        <div className="mx-auto flex aspect-[3/4] w-full max-w-[200px] shrink-0 items-center justify-center overflow-hidden rounded-md  border-gray-200 shadow-lg border-2">
+        <div className="mx-auto flex aspect-[3/4] w-full max-w-[200px] shrink-0 items-center justify-center overflow-hidden rounded-md border-2 border-gray-200 shadow-lg">
           <img
             src={imageUrl || '/placeholder.svg'}
             alt={title}
@@ -61,7 +61,10 @@ export default function BookCard({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <FavoriteIcon isFavorite={isFavorite} onClick={() => setIsFavorite(!isFavorite)} />
+            <FavoriteIcon
+              isFavorite={isFavorite}
+              onClick={() => setIsFavorite(!isFavorite)}
+            />
           </div>
         </div>
       </div>

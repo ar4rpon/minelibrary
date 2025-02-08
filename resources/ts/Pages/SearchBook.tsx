@@ -1,17 +1,184 @@
+import BookCard from '@/Components/BookCard';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/Components/ui/pagination';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/Components/ui/select';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
-export default function SearchBook() {
+interface Book {
+  id: string;
+  title: string;
+  authors: string[];
+  publishedDate: string;
+  isbn?: string;
+  publisher?: string;
+}
+
+interface ApiResponse {
+  items: Book[];
+  totalItems: number;
+}
+
+const SearchPage = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchMethod, setSearchMethod] = useState<'title' | 'isbn'>('title');
+  const [genre, setGenre] = useState('all');
+  const [sortBy, setSortBy] = useState('relevance');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [results, setResults] = useState<Book[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const itemsPerPage = 9;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const searchBooks = async () => {
+    setLoading(true);
+    try {
+      // テストデータ
+      const testData: ApiResponse = {
+        items: Array.from({ length: 30 }, (_, index) => ({
+          id: `${index + 1}`,
+          title: `テスト本${index + 1}`,
+          authors: [`著者${index + 1}`],
+          publishedDate: '2023-01-01',
+          isbn: `123456789${index}`,
+          publisher: `出版社${index + 1}`,
+        })),
+        totalItems: 30,
+      };
+
+      // API呼び出しの代わりにテストデータを使用
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedItems = testData.items.slice(
+        startIndex,
+        startIndex + itemsPerPage,
+      );
+      setResults(paginatedItems);
+      setTotalItems(testData.totalItems);
+    } catch (error) {
+      console.error('Error fetching books:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo(0, 0); // ページの一番上に移動
+  };
+
+  useEffect(() => {
+    searchBooks();
+  }, [currentPage]);
+
   return (
-    <AuthenticatedLayout header="SearchBook">
-      <Head title="SearchBook" />
+    <AuthenticatedLayout header="検索ページ">
+      <Head title="検索ページ" />
 
-      <div className="rounded-sm border border-green-600 bg-white shadow-md">
-        <h2 className="px-2 py-2 text-xl font-semibold md:px-4 md:py-4 md:text-2xl">
-          SearchBook
-        </h2>
+      <div className="mb-6 flex gap-4">
+        <Select
+          value={searchMethod}
+          onValueChange={(v: 'title' | 'isbn') => setSearchMethod(v)}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="検索方法" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="title">タイトル</SelectItem>
+            <SelectItem value="isbn">ISBN</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={genre} onValueChange={setGenre}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="ジャンル" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">すべてのジャンル</SelectItem>
+            <SelectItem value="programming">プログラミング</SelectItem>
+            <SelectItem value="business">ビジネス</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Input
+          placeholder="検索キーワードを入力"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+        <Button onClick={searchBooks} disabled={loading}>
+          {loading ? '検索中...' : '検索'}
+        </Button>
       </div>
-      <div className="mt-8">main content</div>
+
+      <div className="mb-4">
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="並び替え" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="relevance">関連度</SelectItem>
+            <SelectItem value="newest">新しい順</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {results.map((book) => (
+          <BookCard
+            key={book.id}
+            title={book.title}
+            author={book.authors.join(', ')}
+            publisher={book.publisher || '不明'}
+            publishDate={book.publishedDate}
+            imageUrl={
+              'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg'
+            }
+            price={1500}
+          />
+        ))}
+      </div>
+
+      {totalItems > 0 && (
+        <Pagination className="mt-6">
+          <PaginationContent>
+            {currentPage > 1 && (
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                />
+              </PaginationItem>
+            )}
+            <PaginationItem>
+              <span>{currentPage}</span>
+            </PaginationItem>
+            {currentPage < totalPages && (
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => handlePageChange(currentPage + 1)}
+                />
+              </PaginationItem>
+            )}
+          </PaginationContent>
+        </Pagination>
+      )}
     </AuthenticatedLayout>
   );
-}
+};
+
+export default SearchPage;
