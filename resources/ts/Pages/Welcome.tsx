@@ -14,13 +14,7 @@ export default function Welcome({}: PageProps<{
   };
 
   return (
-    <AuthenticatedLayout
-      header={
-        <h2 className="text-xl font-semibold leading-tight text-gray-800">
-          TOP PAGE
-        </h2>
-      }
-    >
+    <AuthenticatedLayout header="TOP PAGE">
       <Head title="TOP PAGE" />
 
       <div className="py-12">

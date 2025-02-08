@@ -12,7 +12,6 @@ export default function MemoList() {
   return (
     <AuthenticatedLayout header="メモ一覧">
       <Head title="MemoList" />
-
       <div className="py-12">
         <div className="mx-auto max-w-7xl">
           <div className="rounded-sm border border-green-600 bg-white shadow-md">
