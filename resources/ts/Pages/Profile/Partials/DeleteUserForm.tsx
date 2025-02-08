@@ -1,5 +1,10 @@
 import InputError from '@/Components/InputError';
 import { Button } from '@/Components/ui/button';
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/Components/ui/dialog';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { BaseDialog } from '@/Dialog/BaseDialog';
@@ -63,16 +68,15 @@ export default function DeleteUserForm({
         アカウント削除
       </Button>
       <BaseDialog isOpen={confirmingUserDeletion} onClose={closeDialog}>
-        <form onSubmit={deleteUser} className="p-6">
-          <h2 className="text-lg font-medium text-gray-900">
-            Are you sure you want to delete your account?
-          </h2>
-
-          <p className="mt-1 text-sm text-gray-600">
+        <DialogHeader>
+          <DialogTitle>アカウント削除確認</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={deleteUser}>
+          <DialogDescription>
             Once your account is deleted, all of its resources and data will be
             permanently deleted. Please enter your password to confirm you would
             like to permanently delete your account.
-          </p>
+          </DialogDescription>
 
           <div className="mt-6">
             <Label htmlFor="password" className="sr-only">
