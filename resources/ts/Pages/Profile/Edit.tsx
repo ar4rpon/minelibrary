@@ -13,42 +13,38 @@ export default function Edit({
   return (
     <AuthenticatedLayout header="プロフィール編集">
       <Head title="プロフィール編集" />
-      <div className="py-12">
-        <div className="mx-auto max-w-7xl">
-          <div>
-            <div className="mb-4 rounded-sm border border-green-600 bg-white shadow-md">
-              <p className="px-2 py-2 text-xl font-semibold md:px-4 md:py-4 md:text-2xl">
-                プロフィール変更
-              </p>
-            </div>
-            <Card className="p-6 shadow-lg">
-              <UpdateProfileInformationForm
-                mustVerifyEmail={mustVerifyEmail}
-                status={status}
-              />
-            </Card>
-          </div>
-          <div className="mt-8">
-            <div className="mb-4 rounded-sm border border-green-600 bg-white shadow-md">
-              <p className="px-2 py-2 text-xl font-semibold md:px-4 md:py-4 md:text-2xl">
-                パスワード変更
-              </p>
-            </div>
-            <Card className="p-6 shadow-lg">
-              <UpdatePasswordForm />
-            </Card>
-          </div>
-          <div className="mt-8">
-            <div className="mb-4 rounded-sm border border-green-600 bg-white shadow-md">
-              <p className="px-2 py-2 text-xl font-semibold md:px-4 md:py-4 md:text-2xl">
-                アカウント削除
-              </p>
-            </div>
-            <Card className="p-6 shadow-lg">
-              <DeleteUserForm />
-            </Card>
-          </div>
+      <div>
+        <div className="mb-4 rounded-sm border border-green-600 bg-white shadow-md">
+          <p className="px-2 py-2 text-xl font-semibold md:px-4 md:py-4 md:text-2xl">
+            プロフィール変更
+          </p>
         </div>
+        <Card className="p-6 shadow-lg">
+          <UpdateProfileInformationForm
+            mustVerifyEmail={mustVerifyEmail}
+            status={status}
+          />
+        </Card>
+      </div>
+      <div className="mt-8">
+        <div className="mb-4 rounded-sm border border-green-600 bg-white shadow-md">
+          <p className="px-2 py-2 text-xl font-semibold md:px-4 md:py-4 md:text-2xl">
+            パスワード変更
+          </p>
+        </div>
+        <Card className="p-6 shadow-lg">
+          <UpdatePasswordForm />
+        </Card>
+      </div>
+      <div className="mt-8">
+        <div className="mb-4 rounded-sm border border-green-600 bg-white shadow-md">
+          <p className="px-2 py-2 text-xl font-semibold md:px-4 md:py-4 md:text-2xl">
+            アカウント削除
+          </p>
+        </div>
+        <Card className="p-6 shadow-lg">
+          <DeleteUserForm />
+        </Card>
       </div>
     </AuthenticatedLayout>
   );

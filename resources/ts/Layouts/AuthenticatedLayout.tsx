@@ -20,7 +20,7 @@ export default function Authenticated({
         )}
 
         {/* コンテンツ */}
-        <main className="mx-auto min-h-dvh max-w-7xl bg-green-100 px-4 sm:px-6 lg:px-8 xl:max-w-full">
+        <main className="mx-auto min-h-dvh max-w-7xl bg-green-100 px-4 py-12 sm:px-6 lg:px-8 xl:max-w-full">
           {children}
         </main>
       </div>

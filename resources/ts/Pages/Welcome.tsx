@@ -17,12 +17,8 @@ export default function Welcome({}: PageProps<{
     <AuthenticatedLayout header="TOP PAGE">
       <Head title="TOP PAGE" />
 
-      <div className="py-12">
-        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-            <div className="p-6 text-gray-900">TOP PAGE</div>
-          </div>
-        </div>
+      <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+        <div className="p-6 text-gray-900">TOP PAGE</div>
       </div>
     </AuthenticatedLayout>
   );
