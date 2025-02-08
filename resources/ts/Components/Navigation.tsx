@@ -7,6 +7,7 @@ import {
 } from '@/Components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
 import { Link, usePage } from '@inertiajs/react';
+import { DialogTitle } from '@radix-ui/react-dialog';
 import {
   BookHeart,
   ChevronDown,
@@ -198,8 +199,8 @@ export default function Navigation() {
                 <SheetContent
                   side="right"
                   className="w-[300px] overflow-y-auto"
-                  onInteractOutside={(e) => e.preventDefault()}
                 >
+                  <DialogTitle className="sr-only">メニュー</DialogTitle>
                   <div className="mt-10 space-y-4">
                     <MobileMenuLink
                       icon={UserRoundPen}
