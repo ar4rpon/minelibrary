@@ -26,6 +26,9 @@ Route::get('/searchbook', function () {
     return Inertia::render('SearchBook');
 })->middleware(['auth', 'verified'])->name('searchbook');
 
+Route::get('/privacy', function () {
+    return Inertia::render('PrivacyPolicy');
+})->middleware(['auth', 'verified'])->name('privacy');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

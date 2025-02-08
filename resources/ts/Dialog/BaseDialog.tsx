@@ -1,4 +1,4 @@
-import { Dialog } from "@/Components/ui/dialog";
+import { Dialog } from '@/Components/ui/dialog';
 import { lazy, Suspense } from 'react';
 
 const DialogContent = lazy(() =>
@@ -23,7 +23,8 @@ export function BaseDialog({ isOpen, onClose, children }: DialogProps) {
             event.preventDefault();
             document.body.style.pointerEvents = '';
           }}
-          className="max-h-[90vh] flex flex-col"
+          className="flex max-h-[90vh] flex-col"
+          aria-describedby={undefined}
         >
           {children}
         </DialogContent>

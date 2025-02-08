@@ -32,10 +32,8 @@ export default function UpdateProfileInformation({
   return (
     <section className={className}>
       <header>
-        <h2 className="text-lg font-medium text-gray-900"></h2>
-
         <p className="mt-1 text-sm text-gray-600">
-          Update your account's profile information and email address.
+          アカウント情報を更新します。
         </p>
       </header>
 
