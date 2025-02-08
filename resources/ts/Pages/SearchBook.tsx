@@ -4,7 +4,9 @@ import { Input } from '@/Components/ui/input';
 import {
   Pagination,
   PaginationContent,
+  PaginationFirst,
   PaginationItem,
+  PaginationLast,
   PaginationNext,
   PaginationPrevious,
 } from '@/Components/ui/pagination';
@@ -155,24 +157,44 @@ const SearchPage = () => {
       </div>
 
       {totalItems > 0 && (
-        <Pagination className="mt-6">
+        <Pagination className="mt-8">
           <PaginationContent>
             {currentPage > 1 && (
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                />
-              </PaginationItem>
+              <>
+                <PaginationItem>
+                  <PaginationFirst
+                    className="rounded-md bg-white px-3 py-2"
+                    onClick={() => handlePageChange(1)}
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationPrevious
+                    className="rounded-md bg-white px-3 py-2"
+                    onClick={() =>
+                      handlePageChange(Math.max(1, currentPage - 1))
+                    }
+                  />
+                </PaginationItem>
+              </>
             )}
-            <PaginationItem>
+            <PaginationItem className="mx-4">
               <span>{currentPage}</span>
             </PaginationItem>
             {currentPage < totalPages && (
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => handlePageChange(currentPage + 1)}
-                />
-              </PaginationItem>
+              <>
+                <PaginationItem>
+                  <PaginationNext
+                    className="rounded-md bg-white px-3 py-2"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLast
+                    className="rounded-md bg-white px-3 py-2"
+                    onClick={() => handlePageChange(totalPages)}
+                  />
+                </PaginationItem>
+              </>
             )}
           </PaginationContent>
         </Pagination>
