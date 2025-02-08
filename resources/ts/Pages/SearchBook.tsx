@@ -92,12 +92,12 @@ const SearchPage = () => {
     <AuthenticatedLayout header="検索ページ">
       <Head title="検索ページ" />
 
-      <div className="mb-6 flex gap-4">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row">
         <Select
           value={searchMethod}
           onValueChange={(v: 'title' | 'isbn') => setSearchMethod(v)}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="検索方法" />
           </SelectTrigger>
           <SelectContent>
@@ -107,7 +107,7 @@ const SearchPage = () => {
         </Select>
 
         <Select value={genre} onValueChange={setGenre}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="ジャンル" />
           </SelectTrigger>
           <SelectContent>
@@ -121,16 +121,21 @@ const SearchPage = () => {
           placeholder="検索キーワードを入力"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full"
         />
 
-        <Button onClick={searchBooks} disabled={loading}>
+        <Button
+          onClick={searchBooks}
+          disabled={loading}
+          className="w-full sm:w-auto"
+        >
           {loading ? '検索中...' : '検索'}
         </Button>
       </div>
 
       <div className="mb-4">
         <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="並び替え" />
           </SelectTrigger>
           <SelectContent>

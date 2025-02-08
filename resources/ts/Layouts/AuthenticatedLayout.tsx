@@ -21,7 +21,7 @@ export default function Authenticated({
 
         {/* コンテンツ */}
         <div className="bg-green-100">
-          <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
             {children}
           </main>
         </div>
