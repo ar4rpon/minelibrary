@@ -7,14 +7,15 @@ import {
   DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
 import { Separator } from '@/Components/ui/separator';
-import { MoreVertical, Pencil, Trash } from 'lucide-react';
-import { lazy, memo, Suspense, useState } from 'react';
+import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
 import { DeleteMemoDialog } from '@/Dialog/Memo/DeleteMemoDialog';
 import { EditMemoDialog } from '@/Dialog/Memo/EditMemoDialog';
+import { MoreVertical, Pencil, Plus, Trash } from 'lucide-react';
+import { lazy, memo, useState } from 'react';
 
 interface MemoCardProps {
   id: string;
-  content: string;
+  contents: string[];
   createdAt: string;
   book: {
     id: string;
@@ -33,7 +34,7 @@ const DialogContent = lazy(() =>
 
 const MemoCard = memo(function MemoCard({
   id = '1',
-  content = 'サンプルコンテンツ',
+  contents = ['サンプルコンテンツ'],
   createdAt = '2024-02-02T10:00:00Z',
   book = {
     id: 'b1',
@@ -44,22 +45,36 @@ const MemoCard = memo(function MemoCard({
 }: MemoCardProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [selectedContent, setSelectedContent] = useState<string | null>(null);
 
-  const handleEdit = () => {
-    console.log('Edit note:', id);
+  const handleEdit = (content: string) => {
+    setSelectedContent(content);
+    setEditDialogOpen(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (content: string) => {
+    setSelectedContent(content);
     setDeleteDialogOpen(true);
   };
+
+  const handleCreate = () => {
+    setCreateDialogOpen(true);
+  };
+
   const confirmEdit = () => {
-    console.log('Edit note:', id);
-    setDeleteDialogOpen(false);
+    console.log('Edit note:', id, selectedContent);
+    setEditDialogOpen(false);
   };
 
   const confirmDelete = () => {
-    console.log('Delete note:', id);
+    console.log('Delete note:', id, selectedContent);
     setDeleteDialogOpen(false);
+  };
+
+  const confirmCreate = () => {
+    console.log('Create note:', id);
+    setCreateDialogOpen(false);
   };
 
   return (
@@ -74,39 +89,47 @@ const MemoCard = memo(function MemoCard({
               className="h-24 w-20 rounded-md border-2 object-cover"
             />
           </div>
-          <div className="flex flex-1 flex-col justify-between space-y-4">
-            <div className="space-y-2">
+          <div className="flex flex-1 flex-col space-y-4">
+            <div className="flex justify-between space-y-2">
               <div className="flex items-start justify-between">
-                <div className="lg:pl-2">
+                <div>
                   <h2 className="text-xl font-bold">{book.title}</h2>
                   <p className="text-sm text-muted-foreground">{book.author}</p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {new Date(createdAt).toLocaleDateString('ja-JP')}
                   </p>
                 </div>
+              </div>
+              <Button variant="outline" size="icon" onClick={handleCreate}>
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+            <Separator className="my-4" />
+            {contents.map((content, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between border-b pb-2"
+              >
+                <p className="line-clamp-4 flex-1 text-sm">{content}</p>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="shrink-0">
+                    <Button variant="ghost" size="icon">
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-52">
-                    <DropdownMenuItem onClick={handleEdit}>
+                    <DropdownMenuItem onClick={() => handleEdit(content)}>
                       <Pencil className="mr-2 h-4 w-4" />
                       編集
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleDelete}>
+                    <DropdownMenuItem onClick={() => handleDelete(content)}>
                       <Trash className="mr-2 h-4 w-4" />
                       削除
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-            </div>
-
-            <Separator className="my-4" />
-
-            <p className="line-clamp-4 text-sm">{content}</p>
+            ))}
           </div>
         </div>
       </CardContent>
@@ -114,13 +137,18 @@ const MemoCard = memo(function MemoCard({
       <DeleteMemoDialog
         isOpen={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
-        onConfirm={confirmDelete} />
+        onConfirm={confirmDelete}
+      />
       <EditMemoDialog
         isOpen={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
-        onConfirm={confirmDelete}
+        onConfirm={confirmEdit}
       />
-
+      <CreateMemoDialog
+        isOpen={createDialogOpen}
+        onClose={() => setCreateDialogOpen(false)}
+        onConfirm={confirmCreate}
+      />
     </Card>
   );
 });
