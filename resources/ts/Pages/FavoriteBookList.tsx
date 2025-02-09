@@ -1,11 +1,11 @@
 import BookCard from '@/Components/BookCard';
 import BookShelfDescription from '@/Components/BookShelfDescription';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
 
 export default function FavoriteBookList() {
   return (
-    <AuthenticatedLayout header="FavoriteBookList">
+    <DefaultLayout header="FavoriteBookList">
       <Head title="FavoriteBookList" />
 
       <div className="rounded-sm border border-green-600 bg-white shadow-md">
@@ -44,6 +44,6 @@ export default function FavoriteBookList() {
           imageUrl="https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg"
         />
       </div>
-    </AuthenticatedLayout>
+    </DefaultLayout>
   );
 }

@@ -1,6 +1,6 @@
 import BookCard from '@/Components/BookCard';
 import MemoCard from '@/Components/MemoCard';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
 
 export default function Dashboard() {
@@ -11,7 +11,7 @@ export default function Dashboard() {
     coverUrl: 'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg',
   };
   return (
-    <AuthenticatedLayout header="ダッシュボード">
+    <DefaultLayout header="ダッシュボード">
       <Head title="Dashboard" />
 
       <div className="rounded-sm border border-green-600 bg-white shadow-md">
@@ -65,6 +65,6 @@ export default function Dashboard() {
           imageUrl="https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg"
         />
       </div>
-    </AuthenticatedLayout>
+    </DefaultLayout>
   );
 }

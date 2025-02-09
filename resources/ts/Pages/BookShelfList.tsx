@@ -3,7 +3,7 @@ import { BookDetailDialog } from '@/Dialog/BookDetailDialog';
 import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
 import { DeleteMemoDialog } from '@/Dialog/Memo/DeleteMemoDialog';
 import { EditMemoDialog } from '@/Dialog/Memo/EditMemoDialog';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -49,7 +49,7 @@ export default function BookShelfList() {
     setDetailBookDialogOpen(false);
   };
   return (
-    <AuthenticatedLayout header="BookShelfList">
+    <DefaultLayout header="BookShelfList">
       <Head title="BookShelfList" />
 
       <div className="rounded-sm border border-green-600 bg-white shadow-md">
@@ -99,6 +99,6 @@ export default function BookShelfList() {
           onConfirm={confirmDelete}
         />
       </div>
-    </AuthenticatedLayout>
+    </DefaultLayout>
   );
 }

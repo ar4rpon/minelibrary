@@ -1,15 +1,9 @@
-import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/Components/ui/dropdown-menu';
-import { Heart, Plus } from 'lucide-react';
+import { BookDetailDialog } from '@/Dialog/BookDetailDialog';
+import { BookProps } from '@/types';
 import { useState } from 'react';
 import FavoriteIcon from './FavoriteIcon';
-import { BookProps } from '@/types';
+import { Button } from './ui/button';
 
 export default function BookCard({
   title = '本のタイトル',
@@ -20,12 +14,20 @@ export default function BookCard({
   imageUrl = 'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg',
 }: BookProps) {
   const [isFavorite, setIsFavorite] = useState(false);
-  const [bookshelves] = useState(['本棚1', '本棚2', '本棚3']);
+  const [detailBookDialogOpen, setDetailBookDialogOpen] = useState(false);
+  const handleDetailBook = () => {
+    setDetailBookDialogOpen(true);
+  };
+
+  const confirmDetailBook = () => {
+    console.log('Delete note:');
+    setDetailBookDialogOpen(false);
+  };
 
   return (
     <Card className="mx-auto w-full max-w-4xl overflow-hidden p-4 md:p-6">
       <div className="flex flex-col gap-4 md:flex-row lg:flex-col">
-        <div className="mx-auto flex aspect-[3/4] w-full max-w-[200px] shrink-0 items-center justify-center overflow-hidden rounded-md  border-gray-200 shadow-lg border-2">
+        <div className="mx-auto flex aspect-[3/4] w-full max-w-[200px] shrink-0 items-center justify-center overflow-hidden rounded-md border-2 border-gray-200 shadow-lg">
           <img
             src={imageUrl || '/placeholder.svg'}
             alt={title}
@@ -45,23 +47,24 @@ export default function BookCard({
           </div>
 
           <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex-1">
-                  本棚に追加
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52">
-                {bookshelves.map((shelf) => (
-                  <DropdownMenuItem key={shelf}>{shelf}</DropdownMenuItem>
-                ))}
-                <DropdownMenuItem className="justify-between">
-                  本棚を作成する
-                  <Plus />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <FavoriteIcon isFavorite={isFavorite} onClick={() => setIsFavorite(!isFavorite)} />
+            <Button onClick={handleDetailBook} className="w-full">
+              詳細を見る
+            </Button>
+            <BookDetailDialog
+              title={title}
+              author={author}
+              publisher={publisher}
+              publishDate={publishDate}
+              price={1500}
+              imageUrl={imageUrl}
+              isOpen={detailBookDialogOpen}
+              onClose={() => setDetailBookDialogOpen(false)}
+              onConfirm={confirmDetailBook}
+            />
+            <FavoriteIcon
+              isFavorite={isFavorite}
+              onClick={() => setIsFavorite(!isFavorite)}
+            />
           </div>
         </div>
       </div>

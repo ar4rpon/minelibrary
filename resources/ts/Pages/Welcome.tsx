@@ -1,4 +1,4 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 
@@ -14,12 +14,12 @@ export default function Welcome({}: PageProps<{
   };
 
   return (
-    <AuthenticatedLayout header="TOP PAGE">
+    <DefaultLayout header="TOP PAGE">
       <Head title="TOP PAGE" />
 
       <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
         <div className="p-6 text-gray-900">TOP PAGE</div>
       </div>
-    </AuthenticatedLayout>
+    </DefaultLayout>
   );
 }
