@@ -17,8 +17,11 @@ Route::get('/favoritebooklist', function () {
     return Inertia::render('FavoriteBookList');
 })->middleware(['auth', 'verified'])->name('favoritebooklist');
 Route::get('/bookshelflist', function () {
-    return Inertia::render('BookShelfList');
+    return Inertia::render('BookShelf/BookShelfList');
 })->middleware(['auth', 'verified'])->name('bookshelflist');
+Route::get('/bookshelfdetail', function () {
+    return Inertia::render('BookShelf/BookShelfDetail');
+})->middleware(['auth', 'verified'])->name('bookshelfdetail');
 Route::get('/memolist', function () {
     return Inertia::render('MemoList');
 })->middleware(['auth', 'verified'])->name('memolist');
