@@ -39,7 +39,7 @@ const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchMethod, setSearchMethod] = useState<'title' | 'isbn'>('title');
   const [genre, setGenre] = useState('all');
-  const [sortBy, setSortBy] = useState('relevance');
+  const [sortBy, setSortBy] = useState('standard');
   const [currentPage, setCurrentPage] = useState(1);
   const [results, setResults] = useState<Book[]>([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -110,6 +110,7 @@ const SearchPage = () => {
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="ジャンル" />
           </SelectTrigger>
+          {/* 楽天BooksAPIからジャンルを取得する（あらかじめDBに登録しておいてそれを持ってくる） */}
           <SelectContent>
             <SelectItem value="all">すべてのジャンル</SelectItem>
             <SelectItem value="programming">プログラミング</SelectItem>
@@ -139,8 +140,10 @@ const SearchPage = () => {
             <SelectValue placeholder="並び替え" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="relevance">関連度</SelectItem>
-            <SelectItem value="newest">新しい順</SelectItem>
+            <SelectItem value="standard">おすすめ順</SelectItem>
+            <SelectItem value="sales">人気順</SelectItem>
+            <SelectItem value="-releaseDate">発売が新しい順</SelectItem>
+            <SelectItem value="+releaseDate">発売が古い順</SelectItem>
           </SelectContent>
         </Select>
       </div>
