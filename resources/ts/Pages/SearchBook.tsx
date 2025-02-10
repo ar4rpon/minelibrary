@@ -1,4 +1,4 @@
-import BookCard from '@/Components/BookCard';
+import BookCard from '@/Components/Book/BookCard';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import {
