@@ -1,4 +1,4 @@
-import BookShelfCard from '@/Components/BookShelfCard';
+import BookShelfCard from '@/Components/BookShelf/BookShelfCard';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
 

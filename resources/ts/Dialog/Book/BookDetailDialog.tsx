@@ -1,6 +1,6 @@
-import AmazonButton from '@/Components/AmazonButton';
-import FavoriteIcon from '@/Components/FavoriteIcon';
-import RakutenButton from '@/Components/RakutenButton';
+import AmazonButton from '@/Components/Book/AmazonButton';
+import FavoriteIcon from '@/Components/Book/FavoriteIcon';
+import RakutenButton from '@/Components/Book/RakutenButton';
 import {
   DialogDescription,
   DialogHeader,
@@ -8,7 +8,7 @@ import {
 } from '@/Components/ui/dialog';
 import { BookProps } from '@/types';
 import { useState } from 'react';
-import { BaseDialog } from './BaseDialog';
+import { BaseDialog } from '../BaseDialog';
 
 interface BookDetailDialogProps {
   isOpen: boolean;

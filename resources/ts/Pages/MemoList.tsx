@@ -1,4 +1,4 @@
-import MemoCard from '@/Components/MemoCard';
+import MemoCard from '@/Components/Memo/MemoCard';
 import {
   Select,
   SelectContent,

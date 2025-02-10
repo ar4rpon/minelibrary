@@ -1,5 +1,5 @@
 import BookCard from '@/Components/BookCard';
-import MemoCard from '@/Components/MemoCard';
+import MemoCard from '@/Components/Memo/MemoCard';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
 

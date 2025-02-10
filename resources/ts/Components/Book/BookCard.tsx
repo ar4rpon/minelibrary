@@ -1,5 +1,5 @@
 import { Card } from '@/Components/ui/card';
-import { BookDetailDialog } from '@/Dialog/BookDetailDialog';
+import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
 import { BookProps } from '@/types';
 import { useState } from 'react';
 import FavoriteIcon from './FavoriteIcon';

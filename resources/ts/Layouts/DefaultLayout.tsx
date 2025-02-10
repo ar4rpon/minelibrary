@@ -1,5 +1,5 @@
-import Footer from '@/Components/Footer';
-import Navigation from '@/Components/Navigation';
+import Footer from '@/Layouts/Footer';
+import Navigation from '@/Layouts/Navigation';
 import { PropsWithChildren, ReactNode } from 'react';
 
 export default function DefaultLayout({
