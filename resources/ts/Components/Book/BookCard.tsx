@@ -2,8 +2,8 @@ import { Card } from '@/Components/ui/card';
 import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
 import { BookProps } from '@/types';
 import { useState } from 'react';
-import FavoriteIcon from './FavoriteIcon';
-import { Button } from './ui/button';
+import FavoriteIcon from '@/Components/Book/FavoriteIcon';
+import { Button } from '@/Components/ui/button';
 
 export default function BookCard({
   title = '本のタイトル',

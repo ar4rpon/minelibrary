@@ -1,6 +1,6 @@
 import { LabelHTMLAttributes } from 'react';
-import { Button } from './ui/button';
-import AmazonLogo from './Icon/Amazon';
+import { Button } from '@/Components/ui/button';
+import AmazonLogo from '@/Components/Icon/Amazon';
 
 export default function AmazonButton({
   url,
