@@ -14,8 +14,6 @@ export default function FavoriteBookList() {
         </h2>
       </div>
 
-      <BookShelfDescription />
-
       <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-4 lg:grid-cols-3">
         <BookCard
           title="本のタイトル"
