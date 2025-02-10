@@ -1,25 +1,20 @@
 import BookCard from '@/Components/Book/BookCard';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
+import BookShelfDescription from '@/Components/BookShelf/BookShelfDescription';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
 
-export default function FavoriteBookList() {
-  const [sortBy, setSortBy] = useState('newDate');
+export default function BookShelfDetail() {
   return (
     <DefaultLayout header="FavoriteBookList">
       <Head title="FavoriteBookList" />
-      <div className="mb-4">
-        <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="並び替え" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="newDate">追加が新しい順</SelectItem>
-            <SelectItem value="oldDate">追加が古い順</SelectItem>
-          </SelectContent>
-        </Select>
+
+      <div className="rounded-sm border border-green-600 bg-white shadow-md">
+        <h2 className="px-2 py-2 text-xl font-semibold md:px-4 md:py-4 md:text-2xl">
+          BookShelfDetail
+        </h2>
       </div>
+
+      <BookShelfDescription />
 
       <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-4 lg:grid-cols-3">
         <BookCard
@@ -49,8 +44,6 @@ export default function FavoriteBookList() {
           imageUrl="https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg"
         />
       </div>
-
-
     </DefaultLayout>
   );
 }

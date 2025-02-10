@@ -1,5 +1,5 @@
-import PrimaryButton from '@/Components/PrimaryButton';
-import GuestLayout from '@/Layouts/GuestLayout';
+import { Button } from '@/Components/ui/button';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -13,7 +13,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
   };
 
   return (
-    <GuestLayout>
+    <DefaultLayout>
       <Head title="Email Verification" />
 
       <div className="mb-4 text-sm text-gray-600">
@@ -31,10 +31,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
 
       <form onSubmit={submit}>
         <div className="mt-4 flex items-center justify-between">
-          <PrimaryButton disabled={processing}>
-            Resend Verification Email
-          </PrimaryButton>
-
+          <Button disabled={processing}>認証メールを再送信する</Button>
           <Link
             href={route('logout')}
             method="post"
@@ -45,6 +42,6 @@ export default function VerifyEmail({ status }: { status?: string }) {
           </Link>
         </div>
       </form>
-    </GuestLayout>
+    </DefaultLayout>
   );
 }

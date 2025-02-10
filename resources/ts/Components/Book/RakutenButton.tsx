@@ -1,6 +1,6 @@
 import { LabelHTMLAttributes } from 'react';
-import { Button } from './ui/button';
-import RakutenLogo from './Icon/Rakuten';
+import { Button } from '@/Components/ui/button';
+import RakutenLogo from '@/Components/Icon/Rakuten';
 
 export default function RakutenButton({
   url,

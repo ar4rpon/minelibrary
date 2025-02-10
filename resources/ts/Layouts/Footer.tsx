@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import ApplicationLogo from './ApplicationLogo';
+import ApplicationLogo from '@/Components/Icon/ApplicationLogo';
 
 export default function Footer() {
   return (

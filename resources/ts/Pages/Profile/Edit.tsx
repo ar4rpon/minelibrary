@@ -1,4 +1,5 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Card } from '@/Components/ui/card';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 import DeleteUserForm from './Partials/DeleteUserForm';
@@ -10,34 +11,41 @@ export default function Edit({
   status,
 }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
   return (
-    <AuthenticatedLayout
-      header={
-        <h2 className="text-xl font-semibold leading-tight text-gray-800">
-          Profile
-        </h2>
-      }
-    >
-      <Head title="Profile" />
-
-      <div className="py-12">
-        <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-          <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-            <UpdateProfileInformationForm
-              mustVerifyEmail={mustVerifyEmail}
-              status={status}
-              className="max-w-xl"
-            />
-          </div>
-
-          <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-            <UpdatePasswordForm className="max-w-xl" />
-          </div>
-
-          <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-            <DeleteUserForm className="max-w-xl" />
-          </div>
+    <DefaultLayout header="プロフィール編集">
+      <Head title="プロフィール編集" />
+      <div>
+        <div className="mb-4 rounded-sm border border-green-600 bg-white shadow-md">
+          <p className="px-2 py-2 text-xl font-semibold md:px-4 md:py-4 md:text-2xl">
+            プロフィール変更
+          </p>
         </div>
+        <Card className="p-6 shadow-lg">
+          <UpdateProfileInformationForm
+            mustVerifyEmail={mustVerifyEmail}
+            status={status}
+          />
+        </Card>
       </div>
-    </AuthenticatedLayout>
+      <div className="mt-8">
+        <div className="mb-4 rounded-sm border border-green-600 bg-white shadow-md">
+          <p className="px-2 py-2 text-xl font-semibold md:px-4 md:py-4 md:text-2xl">
+            パスワード変更
+          </p>
+        </div>
+        <Card className="p-6 shadow-lg">
+          <UpdatePasswordForm />
+        </Card>
+      </div>
+      <div className="mt-8">
+        <div className="mb-4 rounded-sm border border-green-600 bg-white shadow-md">
+          <p className="px-2 py-2 text-xl font-semibold md:px-4 md:py-4 md:text-2xl">
+            アカウント削除
+          </p>
+        </div>
+        <Card className="p-6 shadow-lg">
+          <DeleteUserForm />
+        </Card>
+      </div>
+    </DefaultLayout>
   );
 }
