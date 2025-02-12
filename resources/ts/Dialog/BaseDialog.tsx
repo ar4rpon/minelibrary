@@ -1,5 +1,6 @@
 import { Dialog } from '@/Components/ui/dialog';
 import { lazy, Suspense } from 'react';
+import { DialogProps } from '@/types';
 
 const DialogContent = lazy(() =>
   import('@/Components/ui/dialog').then((module) => ({
@@ -7,11 +8,7 @@ const DialogContent = lazy(() =>
   })),
 );
 
-interface DialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-}
+
 
 export function BaseDialog({ isOpen, onClose, children }: DialogProps) {
   return (

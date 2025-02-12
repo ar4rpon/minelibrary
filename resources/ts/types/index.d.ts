@@ -16,9 +16,17 @@ export type PageProps<
 export interface BookProps {
   title: string;
   author: string;
-  publisher: string;
-  publishDate: string;
-  price: number;
-  imageUrl: string;
-  isbn?: string;
+  publisherName: string;
+  salesDate: string;
+  itemPrice: number;
+  largeImageUrl: string;
+  isbn: string;
+  itemCaption: string;
+}
+
+export interface DialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm?: () => void;
+  children?: React.ReactNode;
 }

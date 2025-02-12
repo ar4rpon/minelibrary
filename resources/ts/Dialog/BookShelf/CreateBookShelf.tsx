@@ -4,14 +4,11 @@ import { Button } from "@/Components/ui/button";
 import { Textarea } from "@/Components/ui/textarea";
 import { Label } from "@/Components/ui/label";
 import { Input } from "@/Components/ui/input";
+import { DialogProps } from "@/types";
 
-interface CreateDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-}
 
-export function CreateBookShelfDialog({ isOpen, onClose, onConfirm }: CreateDialogProps) {
+
+export function CreateBookShelfDialog({ isOpen, onClose, onConfirm }: DialogProps) {
   return (
     <BaseDialog isOpen={isOpen} onClose={onClose}>
       <DialogHeader>

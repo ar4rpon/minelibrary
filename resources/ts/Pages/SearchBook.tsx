@@ -20,18 +20,11 @@ import {
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { BookProps } from '@/types';
 
 // 楽天APIのレスポンス構造に合わせてインターフェースを修正
 interface Book {
-  Item: {
-    title: string;
-    author: string;
-    publisherName: string;
-    salesDate: string;
-    largeImageUrl: string;
-    itemPrice: number;
-    isbn: string;
-  }
+  Item: BookProps;
 }
 
 // ページプロパティの型定義
@@ -48,11 +41,10 @@ interface PageProps {
 }
 
 const SearchPage = () => {
-  // usePage()フックを使用してページプロパティにアクセス
   const { results, totalItems, filters } = usePage().props as unknown as PageProps;
   console.log('Page props:', usePage().props);
 
-  // 状態をフィルターの初期値で初期化
+
   const [searchTerm, setSearchTerm] = useState(filters.keyword || '');
   const [searchMethod, setSearchMethod] = useState<'title' | 'isbn'>(filters.searchMethod || 'title');
   const [genre, setGenre] = useState('001');
@@ -63,7 +55,7 @@ const SearchPage = () => {
   const itemsPerPage = 9;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // 検索関数を修正
+
   const searchBooks = () => {
     setLoading(true);
     router.get('/searchbook', {
@@ -92,7 +84,6 @@ const SearchPage = () => {
     }
   }, [filters.page, currentPage]);
 
-  // ページ変更時に検索を実行
   useEffect(() => {
     setCurrentPage(filters.page || 1);
   }, [filters.page]);
@@ -120,10 +111,24 @@ const SearchPage = () => {
             <SelectValue placeholder="ジャンル" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">すべてのジャンル</SelectItem>
-            <SelectItem value="001">本・雑誌・コミック</SelectItem>
-            <SelectItem value="001004">コンピュータ・IT</SelectItem>
-            <SelectItem value="001005">ビジネス・経済・就職</SelectItem>
+            <SelectItem value="001">すべてのジャンル</SelectItem>
+            <SelectItem value="001002">語学・学習参考書</SelectItem>
+            <SelectItem value="001004">小説・エッセイ</SelectItem>
+            <SelectItem value="001005">パソコン・システム開発</SelectItem>
+            <SelectItem value="001006">ビジネス・経済・就職</SelectItem>
+            <SelectItem value="001012">科学・技術</SelectItem>
+            <SelectItem value="001016">資格・検定</SelectItem>
+            <SelectItem value="001008">人文・思想・社会</SelectItem>
+            <SelectItem value="001007">旅行・留学・アウトドア</SelectItem>
+            <SelectItem value="001009">ホビー・スポーツ・美術</SelectItem>
+            <SelectItem value="001010">美容・暮らし・健康・料理</SelectItem>
+            <SelectItem value="001011">エンタメ・ゲーム</SelectItem>
+            <SelectItem value="001013">写真集・タレント</SelectItem>
+            <SelectItem value="001003">絵本・児童書・図鑑</SelectItem>
+            <SelectItem value="001017">ライトノベル</SelectItem>
+            <SelectItem value="001019">文庫</SelectItem>
+            <SelectItem value="001001">漫画（コミック）</SelectItem>
+            <SelectItem value="001028">医学・薬学・看護学・歯科学</SelectItem>
           </SelectContent>
         </Select>
 
@@ -150,11 +155,11 @@ const SearchPage = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="standard">標準</SelectItem>
-            <SelectItem value="sales">売れている</SelectItem>
-            <SelectItem value="-releaseDate">発売日デスク</SelectItem>
-            <SelectItem value="+releaseDate">発売日アスク</SelectItem>
-            <SelectItem value="+itemPrice">価格が安い</SelectItem>
-            <SelectItem value="-itemPrice">価格が高い</SelectItem>
+            <SelectItem value="sales">売れている順</SelectItem>
+            <SelectItem value="-releaseDate">発売日が新しい順</SelectItem>
+            <SelectItem value="+releaseDate">発売日が古い順</SelectItem>
+            <SelectItem value="+itemPrice">価格が安い順</SelectItem>
+            <SelectItem value="-itemPrice">価格が高い順</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -166,10 +171,12 @@ const SearchPage = () => {
               key={item.Item.isbn}
               title={item.Item.title}
               author={item.Item.author}
-              publisher={item.Item.publisherName || ''}
-              publishDate={item.Item.salesDate}
-              imageUrl={item.Item.largeImageUrl || ''}
-              price={item.Item.itemPrice || 0}
+              publisherName={item.Item.publisherName || ''}
+              salesDate={item.Item.salesDate}
+              largeImageUrl={item.Item.largeImageUrl || ''}
+              itemPrice={item.Item.itemPrice || 0}
+              isbn={item.Item.isbn}
+              itemCaption={item.Item.itemCaption || '説明はありません。'}
             />
           ))
         ) : (
@@ -192,7 +199,7 @@ const SearchPage = () => {
                   <PaginationPrevious
                     className="rounded-md bg-white px-3 py-2"
                     onClick={() =>
-                      handlePageChange(Math.max(1, currentPage - 1))
+                      handlePageChange(Math.max(1, Number(currentPage) - 1))
                     }
                   />
                 </PaginationItem>
@@ -206,7 +213,7 @@ const SearchPage = () => {
                 <PaginationItem>
                   <PaginationNext
                     className="rounded-md bg-white px-3 py-2"
-                    onClick={() => handlePageChange(currentPage + 1)}
+                    onClick={() => handlePageChange(Number(currentPage) + 1)}
                   />
                 </PaginationItem>
                 <PaginationItem>
