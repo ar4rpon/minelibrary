@@ -18,75 +18,84 @@ import {
   SelectValue,
 } from '@/Components/ui/select';
 import DefaultLayout from '@/Layouts/DefaultLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
+// 楽天APIのレスポンス構造に合わせてインターフェースを修正
 interface Book {
-  id: string;
-  title: string;
-  authors: string[];
-  publishedDate: string;
-  isbn?: string;
-  publisher?: string;
+  Item: {
+    title: string;
+    author: string;
+    publisherName: string;
+    salesDate: string;
+    largeImageUrl: string;
+    itemPrice: number;
+    isbn: string;
+  }
 }
 
-interface ApiResponse {
-  items: Book[];
+// ページプロパティの型定義
+interface PageProps {
+  results: Book[];
   totalItems: number;
+  filters: {
+    keyword?: string;
+    page?: number;
+    genre?: string;
+    sort?: string;
+    searchMethod?: 'title' | 'isbn';
+  };
 }
 
 const SearchPage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchMethod, setSearchMethod] = useState<'title' | 'isbn'>('title');
-  const [genre, setGenre] = useState('all');
+  // usePage()フックを使用してページプロパティにアクセス
+  const { results, totalItems, filters } = usePage().props as unknown as PageProps;
+  console.log('Page props:', usePage().props);
+
+  // 状態をフィルターの初期値で初期化
+  const [searchTerm, setSearchTerm] = useState(filters.keyword || '');
+  const [searchMethod, setSearchMethod] = useState<'title' | 'isbn'>(filters.searchMethod || 'title');
+  const [genre, setGenre] = useState('001');
   const [sortBy, setSortBy] = useState('standard');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [results, setResults] = useState<Book[]>([]);
-  const [totalItems, setTotalItems] = useState(0);
+  const [currentPage, setCurrentPage] = useState(filters.page || 1);
   const [loading, setLoading] = useState(false);
 
   const itemsPerPage = 9;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  const searchBooks = async () => {
+  // 検索関数を修正
+  const searchBooks = () => {
     setLoading(true);
-    try {
-      // テストデータ
-      const testData: ApiResponse = {
-        items: Array.from({ length: 30 }, (_, index) => ({
-          id: `${index + 1}`,
-          title: `テスト本${index + 1}`,
-          authors: [`著者${index + 1}`],
-          publishedDate: '2023-01-01',
-          isbn: `123456789${index}`,
-          publisher: `出版社${index + 1}`,
-        })),
-        totalItems: 30,
-      };
-
-      // API呼び出しの代わりにテストデータを使用
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const paginatedItems = testData.items.slice(
-        startIndex,
-        startIndex + itemsPerPage,
-      );
-      setResults(paginatedItems);
-      setTotalItems(testData.totalItems);
-    } catch (error) {
-      console.error('Error fetching books:', error);
-    } finally {
-      setLoading(false);
-    }
+    router.get('/searchbook', {
+      keyword: searchTerm,
+      page: currentPage,
+      genre: genre,
+      sort: sortBy,
+      searchMethod: searchMethod,
+    }, {
+      preserveState: true,
+      preserveScroll: true,
+      only: ['results', 'totalItems', 'filters'],
+      onFinish: () => setLoading(false),
+    });
   };
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-    window.scrollTo(0, 0); // ページの一番上に移動
+    window.scrollTo(0, 0);
   };
 
+  // 初期検索を行うためのuseEffect
   useEffect(() => {
-    searchBooks();
-  }, [currentPage]);
+    if (filters.page !== currentPage) {
+      searchBooks();
+    }
+  }, [filters.page, currentPage]);
+
+  // ページ変更時に検索を実行
+  useEffect(() => {
+    setCurrentPage(filters.page || 1);
+  }, [filters.page]);
 
   return (
     <DefaultLayout header="検索ページ">
@@ -110,11 +119,11 @@ const SearchPage = () => {
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="ジャンル" />
           </SelectTrigger>
-          {/* 楽天BooksAPIからジャンルを取得する（あらかじめDBに登録しておいてそれを持ってくる） */}
           <SelectContent>
             <SelectItem value="all">すべてのジャンル</SelectItem>
-            <SelectItem value="programming">プログラミング</SelectItem>
-            <SelectItem value="business">ビジネス</SelectItem>
+            <SelectItem value="001">本・雑誌・コミック</SelectItem>
+            <SelectItem value="001004">コンピュータ・IT</SelectItem>
+            <SelectItem value="001005">ビジネス・経済・就職</SelectItem>
           </SelectContent>
         </Select>
 
@@ -140,28 +149,32 @@ const SearchPage = () => {
             <SelectValue placeholder="並び替え" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="standard">おすすめ順</SelectItem>
-            <SelectItem value="sales">人気順</SelectItem>
-            <SelectItem value="-releaseDate">発売が新しい順</SelectItem>
-            <SelectItem value="+releaseDate">発売が古い順</SelectItem>
+            <SelectItem value="standard">標準</SelectItem>
+            <SelectItem value="sales">売れている</SelectItem>
+            <SelectItem value="-releaseDate">発売日デスク</SelectItem>
+            <SelectItem value="+releaseDate">発売日アスク</SelectItem>
+            <SelectItem value="+itemPrice">価格が安い</SelectItem>
+            <SelectItem value="-itemPrice">価格が高い</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {results.map((book) => (
-          <BookCard
-            key={book.id}
-            title={book.title}
-            author={book.authors.join(', ')}
-            publisher={book.publisher || '不明'}
-            publishDate={book.publishedDate}
-            imageUrl={
-              'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg'
-            }
-            price={1500}
-          />
-        ))}
+        {results && results.length > 0 ? (
+          results.map((item) => (
+            <BookCard
+              key={item.Item.isbn}
+              title={item.Item.title}
+              author={item.Item.author}
+              publisher={item.Item.publisherName || ''}
+              publishDate={item.Item.salesDate}
+              imageUrl={item.Item.largeImageUrl || ''}
+              price={item.Item.itemPrice || 0}
+            />
+          ))
+        ) : (
+          <p>検索結果がありません。</p>
+        )}
       </div>
 
       {totalItems > 0 && (

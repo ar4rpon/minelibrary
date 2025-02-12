@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\BookSearchController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -25,9 +26,9 @@ Route::get('/bookshelfdetail', function () {
 Route::get('/memolist', function () {
     return Inertia::render('MemoList');
 })->middleware(['auth', 'verified'])->name('memolist');
-Route::get('/searchbook', function () {
-    return Inertia::render('SearchBook');
-})->middleware(['auth', 'verified'])->name('searchbook');
+Route::get('/searchbook', [BookSearchController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('searchbook');
 
 Route::get('/privacy', function () {
     return Inertia::render('PrivacyPolicy');
