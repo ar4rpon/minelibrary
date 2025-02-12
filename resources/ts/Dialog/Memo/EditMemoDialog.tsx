@@ -6,18 +6,14 @@ import {
 } from '@/Components/ui/dialog';
 import { Textarea } from '@/Components/ui/textarea';
 import { BaseDialog } from '../BaseDialog';
+import { DialogProps } from '@/types';
 
-interface EditDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-}
 
 export function EditMemoDialog({
   isOpen,
   onClose,
   onConfirm,
-}: EditDialogProps) {
+}: DialogProps) {
   return (
     <BaseDialog isOpen={isOpen} onClose={onClose}>
       <DialogHeader>

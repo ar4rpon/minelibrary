@@ -8,10 +8,12 @@ import { Button } from '@/Components/ui/button';
 export default function BookCard({
   title = '本のタイトル',
   author = '著者名',
-  publisher = '出版社',
-  publishDate = '2024年2月2日',
-  price = 1500,
-  imageUrl = 'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg',
+  publisherName = '出版社',
+  salesDate = '2024年2月2日',
+  itemPrice = 1500,
+  isbn = "",
+  largeImageUrl = 'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg',
+  itemCaption = '説明はありません。'
 }: BookProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [detailBookDialogOpen, setDetailBookDialogOpen] = useState(false);
@@ -29,7 +31,7 @@ export default function BookCard({
       <div className="flex flex-col gap-4 md:flex-row lg:flex-col">
         <div className="mx-auto flex aspect-[3/4] w-full max-w-[200px] shrink-0 items-center justify-center overflow-hidden rounded-md border-2 border-gray-200 shadow-lg">
           <img
-            src={imageUrl || '/placeholder.svg'}
+            src={largeImageUrl || '/placeholder.svg'}
             alt={title}
             className="h-full w-full object-cover"
           />
@@ -41,8 +43,8 @@ export default function BookCard({
               {title}
             </h2>
             <div className="space-y-1 text-sm text-muted-foreground sm:text-left">
-              <p>{`${publishDate} / ${author} / ${publisher}`}</p>
-              <p className="text-lg font-semibold">¥{price.toLocaleString()}</p>
+              <p>{`${salesDate} / ${author} / ${publisherName}`}</p>
+              <p className="text-lg font-semibold">¥{itemPrice.toLocaleString()}</p>
             </div>
           </div>
 
@@ -53,13 +55,15 @@ export default function BookCard({
             <BookDetailDialog
               title={title}
               author={author}
-              publisher={publisher}
-              publishDate={publishDate}
-              price={1500}
-              imageUrl={imageUrl}
+              publisherName={publisherName}
+              salesDate={salesDate}
+              itemPrice={itemPrice}
+              isbn={isbn}
+              largeImageUrl={largeImageUrl}
               isOpen={detailBookDialogOpen}
               onClose={() => setDetailBookDialogOpen(false)}
               onConfirm={confirmDetailBook}
+              itemCaption={itemCaption}
             />
             <FavoriteIcon
               isFavorite={isFavorite}

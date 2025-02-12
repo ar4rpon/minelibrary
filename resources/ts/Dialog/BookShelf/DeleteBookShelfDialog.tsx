@@ -1,14 +1,10 @@
 import { BaseDialog } from '../BaseDialog';
 import { DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/Components/ui/dialog';
 import { Button } from '@/Components/ui/button';
+import { DialogProps } from '@/types';
 
-interface DeleteDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-}
 
-export function DeleteBookShelfDialog({ isOpen, onClose, onConfirm }: DeleteDialogProps) {
+export function DeleteBookShelfDialog({ isOpen, onClose, onConfirm }: DialogProps) {
   return (
     <BaseDialog isOpen={isOpen} onClose={onClose}>
       <DialogHeader>

@@ -18,75 +18,76 @@ import {
   SelectValue,
 } from '@/Components/ui/select';
 import DefaultLayout from '@/Layouts/DefaultLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { BookProps } from '@/types';
+import BookGenreSelect from '@/Components/Book/BookGenreSelect';
 
+// 楽天APIのレスポンス構造に合わせてインターフェースを修正
 interface Book {
-  id: string;
-  title: string;
-  authors: string[];
-  publishedDate: string;
-  isbn?: string;
-  publisher?: string;
+  Item: BookProps;
 }
 
-interface ApiResponse {
-  items: Book[];
+// ページプロパティの型定義
+interface PageProps {
+  results: Book[];
   totalItems: number;
+  filters: {
+    keyword?: string;
+    page?: number;
+    genre?: string;
+    sort?: string;
+    searchMethod?: 'title' | 'isbn';
+  };
 }
 
 const SearchPage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchMethod, setSearchMethod] = useState<'title' | 'isbn'>('title');
-  const [genre, setGenre] = useState('all');
+  const { results, totalItems, filters } = usePage().props as unknown as PageProps;
+  console.log('Page props:', usePage().props);
+
+
+  const [searchTerm, setSearchTerm] = useState(filters.keyword || '');
+  const [searchMethod, setSearchMethod] = useState<'title' | 'isbn'>(filters.searchMethod || 'title');
+  const [genre, setGenre] = useState('001');
   const [sortBy, setSortBy] = useState('standard');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [results, setResults] = useState<Book[]>([]);
-  const [totalItems, setTotalItems] = useState(0);
+  const [currentPage, setCurrentPage] = useState(filters.page || 1);
   const [loading, setLoading] = useState(false);
 
   const itemsPerPage = 9;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  const searchBooks = async () => {
-    setLoading(true);
-    try {
-      // テストデータ
-      const testData: ApiResponse = {
-        items: Array.from({ length: 30 }, (_, index) => ({
-          id: `${index + 1}`,
-          title: `テスト本${index + 1}`,
-          authors: [`著者${index + 1}`],
-          publishedDate: '2023-01-01',
-          isbn: `123456789${index}`,
-          publisher: `出版社${index + 1}`,
-        })),
-        totalItems: 30,
-      };
 
-      // API呼び出しの代わりにテストデータを使用
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const paginatedItems = testData.items.slice(
-        startIndex,
-        startIndex + itemsPerPage,
-      );
-      setResults(paginatedItems);
-      setTotalItems(testData.totalItems);
-    } catch (error) {
-      console.error('Error fetching books:', error);
-    } finally {
-      setLoading(false);
-    }
+  const searchBooks = () => {
+    setLoading(true);
+    router.get('/searchbook', {
+      keyword: searchTerm,
+      page: currentPage,
+      genre: genre,
+      sort: sortBy,
+      searchMethod: searchMethod,
+    }, {
+      preserveState: true,
+      preserveScroll: true,
+      only: ['results', 'totalItems', 'filters'],
+      onFinish: () => setLoading(false),
+    });
   };
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-    window.scrollTo(0, 0); // ページの一番上に移動
+    window.scrollTo(0, 0);
   };
 
+  // 初期検索を行うためのuseEffect
   useEffect(() => {
-    searchBooks();
-  }, [currentPage]);
+    if (filters.page !== currentPage) {
+      searchBooks();
+    }
+  }, [filters.page, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(filters.page || 1);
+  }, [filters.page]);
 
   return (
     <DefaultLayout header="検索ページ">
@@ -106,17 +107,7 @@ const SearchPage = () => {
           </SelectContent>
         </Select>
 
-        <Select value={genre} onValueChange={setGenre}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="ジャンル" />
-          </SelectTrigger>
-          {/* 楽天BooksAPIからジャンルを取得する（あらかじめDBに登録しておいてそれを持ってくる） */}
-          <SelectContent>
-            <SelectItem value="all">すべてのジャンル</SelectItem>
-            <SelectItem value="programming">プログラミング</SelectItem>
-            <SelectItem value="business">ビジネス</SelectItem>
-          </SelectContent>
-        </Select>
+        <BookGenreSelect value={genre} onValueChange={setGenre} />
 
         <Input
           placeholder="検索キーワードを入力"
@@ -140,28 +131,34 @@ const SearchPage = () => {
             <SelectValue placeholder="並び替え" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="standard">おすすめ順</SelectItem>
-            <SelectItem value="sales">人気順</SelectItem>
-            <SelectItem value="-releaseDate">発売が新しい順</SelectItem>
-            <SelectItem value="+releaseDate">発売が古い順</SelectItem>
+            <SelectItem value="standard">標準</SelectItem>
+            <SelectItem value="sales">売れている順</SelectItem>
+            <SelectItem value="-releaseDate">発売日が新しい順</SelectItem>
+            <SelectItem value="+releaseDate">発売日が古い順</SelectItem>
+            <SelectItem value="+itemPrice">価格が安い順</SelectItem>
+            <SelectItem value="-itemPrice">価格が高い順</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {results.map((book) => (
-          <BookCard
-            key={book.id}
-            title={book.title}
-            author={book.authors.join(', ')}
-            publisher={book.publisher || '不明'}
-            publishDate={book.publishedDate}
-            imageUrl={
-              'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg'
-            }
-            price={1500}
-          />
-        ))}
+        {results && results.length > 0 ? (
+          results.map((item) => (
+            <BookCard
+              key={item.Item.isbn}
+              title={item.Item.title}
+              author={item.Item.author}
+              publisherName={item.Item.publisherName || ''}
+              salesDate={item.Item.salesDate}
+              largeImageUrl={item.Item.largeImageUrl || ''}
+              itemPrice={item.Item.itemPrice || 0}
+              isbn={item.Item.isbn}
+              itemCaption={item.Item.itemCaption || '説明はありません。'}
+            />
+          ))
+        ) : (
+          <p className='font-bold'>検索結果がありません</p>
+        )}
       </div>
 
       {totalItems > 0 && (
@@ -179,7 +176,7 @@ const SearchPage = () => {
                   <PaginationPrevious
                     className="rounded-md bg-white px-3 py-2"
                     onClick={() =>
-                      handlePageChange(Math.max(1, currentPage - 1))
+                      handlePageChange(Math.max(1, Number(currentPage) - 1))
                     }
                   />
                 </PaginationItem>
@@ -193,7 +190,7 @@ const SearchPage = () => {
                 <PaginationItem>
                   <PaginationNext
                     className="rounded-md bg-white px-3 py-2"
-                    onClick={() => handlePageChange(currentPage + 1)}
+                    onClick={() => handlePageChange(Number(currentPage) + 1)}
                   />
                 </PaginationItem>
                 <PaginationItem>

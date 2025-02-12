@@ -7,18 +7,15 @@ import {
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
 import { BaseDialog } from '../BaseDialog';
+import { DialogProps } from '@/types';
 
-interface CreateDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-}
+
 
 export function CreateMemoDialog({
   isOpen,
   onClose,
   onConfirm,
-}: CreateDialogProps) {
+}: DialogProps) {
   return (
     <BaseDialog isOpen={isOpen} onClose={onClose}>
       <DialogHeader>
