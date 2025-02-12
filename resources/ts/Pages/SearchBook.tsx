@@ -1,15 +1,7 @@
 import BookCard from '@/Components/Book/BookCard';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationFirst,
-  PaginationItem,
-  PaginationLast,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/Components/ui/pagination';
+import CommonPagination from '@/Components/Common/CommonPagination';
 import {
   Select,
   SelectContent,
@@ -161,49 +153,12 @@ const SearchPage = () => {
         )}
       </div>
 
-      {totalItems > 0 && (
-        <Pagination className="mt-8">
-          <PaginationContent>
-            {currentPage > 1 && (
-              <>
-                <PaginationItem>
-                  <PaginationFirst
-                    className="rounded-md bg-white px-3 py-2"
-                    onClick={() => handlePageChange(1)}
-                  />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationPrevious
-                    className="rounded-md bg-white px-3 py-2"
-                    onClick={() =>
-                      handlePageChange(Math.max(1, Number(currentPage) - 1))
-                    }
-                  />
-                </PaginationItem>
-              </>
-            )}
-            <PaginationItem className="mx-4">
-              <span>{currentPage}</span>
-            </PaginationItem>
-            {currentPage < totalPages && (
-              <>
-                <PaginationItem>
-                  <PaginationNext
-                    className="rounded-md bg-white px-3 py-2"
-                    onClick={() => handlePageChange(Number(currentPage) + 1)}
-                  />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLast
-                    className="rounded-md bg-white px-3 py-2"
-                    onClick={() => handlePageChange(totalPages)}
-                  />
-                </PaginationItem>
-              </>
-            )}
-          </PaginationContent>
-        </Pagination>
-      )}
+      <CommonPagination
+        totalPages={totalPages}
+        totalItems={totalItems}
+        currentPage={currentPage}
+        handlePageChange={handlePageChange}
+      />
     </DefaultLayout>
   );
 };
