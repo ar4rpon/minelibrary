@@ -25,6 +25,7 @@ datetime updated_at
 
 memo {
 int id pk
+int user_id fk
 string isbn fk
 string memo
 int memo_chapter

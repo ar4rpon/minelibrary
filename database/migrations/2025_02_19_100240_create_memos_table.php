@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('memos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade');
             $table->string('isbn');
             $table->text('memo');
             $table->unsignedInteger('memo_chapter')->nullable();
