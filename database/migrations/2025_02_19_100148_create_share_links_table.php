@@ -12,11 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('share_links', function (Blueprint $table) {
-            $table->integer('share_link_id')->primary();
+            $table->id();
             $table->string('share_link_url');
-            $table->foreignId('book_list_id')->constrained()->onDelete('cascade');
-            $table->timestamp('expiry_date');
-            $table->timestamp('created_at')->useCurrent();
+            $table->foreignId('book_list_id')
+                ->constrained()
+                ->onDelete('cascade');
+            $table->date('expiry_date');
+            $table->timestamps();
         });
     }
 
@@ -25,9 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('share_links', function (Blueprint $table) {
-            $table->dropForeign(['book_list_id']);
-        });
         Schema::dropIfExists('share_links');
     }
 };
