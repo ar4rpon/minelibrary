@@ -36,7 +36,7 @@ datetime updated_at
 favorite_book {
 int id pk
 string isbn fk
-int id fk
+int user_id fk
 enum read_status
 datetime created_at
 datetime updated_at
@@ -62,6 +62,7 @@ datetime updated_at
 
 favorite_book_list {
 int id pk
+int user_id fk
 int book_list_id fk
 datetime created_at
 datetime updated_at

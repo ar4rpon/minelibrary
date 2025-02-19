@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Enums\ReadStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Collection;
+
 
 class FavoriteBook extends Model
 {
@@ -14,7 +16,7 @@ class FavoriteBook extends Model
     /**
      * 複数代入可能な属性
      *
-     * @var array<string>
+     * @var array<mixed>
      */
     protected $fillable = [
         'isbn',
@@ -82,9 +84,9 @@ class FavoriteBook extends Model
      * 指定されたユーザーIDのお気に入りの本を取得する
      *
      * @param int $userId
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public static function getFavoritesByUserId(int $userId): \Illuminate\Database\Eloquent\Collection
+    public static function getFavoritesByUserId(int $userId): Collection
     {
         return self::where('user_id', $userId)->get();
     }
