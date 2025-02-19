@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('memos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade');
             $table->string('isbn');
             $table->text('memo');
-            $table->unsignedInteger('memo_chapter');
-            $table->unsignedInteger('memo_page');
+            $table->unsignedInteger('memo_chapter')->nullable();
+            $table->unsignedInteger('memo_page')->nullable();
             $table->timestamps();
 
             $table->foreign('isbn')

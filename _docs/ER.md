@@ -25,6 +25,7 @@ datetime updated_at
 
 memo {
 int id pk
+int user_id fk
 string isbn fk
 string memo
 int memo_chapter
@@ -36,6 +37,7 @@ datetime updated_at
 favorite_book {
 int id pk
 string isbn fk
+int user_id fk
 enum read_status
 datetime created_at
 datetime updated_at
@@ -61,6 +63,7 @@ datetime updated_at
 
 favorite_book_list {
 int id pk
+int user_id fk
 int book_list_id fk
 datetime created_at
 datetime updated_at
@@ -68,7 +71,7 @@ datetime updated_at
 
 share_link {
 int id pk
-string share_link_url
+string share_token_url
 int book_list_id fk
 datetime expiry_date
 datetime created_at

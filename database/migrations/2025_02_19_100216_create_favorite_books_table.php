@@ -15,6 +15,9 @@ return new class extends Migration
         Schema::create('favorite_books', function (Blueprint $table) {
             $table->id();
             $table->string('isbn');
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade');
             $table->enum('read_status', array_column(ReadStatus::cases(), 'value'))
                 ->default(ReadStatus::WANTREAD->value);
             $table->timestamps();

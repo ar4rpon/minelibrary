@@ -13,18 +13,17 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * 複数代入可能な属性
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * シリアライズ時に隠すべき属性
      *
      * @var list<string>
      */
@@ -34,7 +33,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * キャストすべき属性
      *
      * @return array<string, string>
      */

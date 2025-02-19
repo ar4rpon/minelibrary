@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('share_links', function (Blueprint $table) {
             $table->id();
-            $table->string('share_link_url');
+            $table->string('share_token');
             $table->foreignId('book_list_id')
                 ->constrained()
                 ->onDelete('cascade');
