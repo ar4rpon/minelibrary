@@ -71,7 +71,7 @@ datetime updated_at
 
 share_link {
 int id pk
-string share_link_url
+string share_token_url
 int book_list_id fk
 datetime expiry_date
 datetime created_at
