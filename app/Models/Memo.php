@@ -19,4 +19,45 @@ class Memo extends Model
         'memo_chapter',
         'memo_page',
     ];
+
+    /**
+     * メモを作成する
+     *
+     * @param string $isbn
+     * @param string $memo
+     * @param string|null $memoChapter
+     * @param int|null $memoPage
+     * @return self
+     */
+    public static function createMemo(string $isbn, string $memo, ?string $memoChapter = null, ?int $memoPage = null): self
+    {
+        return self::create([
+            'isbn' => $isbn,
+            'memo' => $memo,
+            'memo_chapter' => $memoChapter,
+            'memo_page' => $memoPage,
+        ]);
+    }
+
+    /**
+     * メモを更新する
+     *
+     * @param int $id
+     * @param string $memo
+     * @param string|null $memoChapter
+     * @param int|null $memoPage
+     * @return bool
+     */
+    public static function updateMemo(int $id, string $memo, ?string $memoChapter = null, ?int $memoPage = null): bool
+    {
+        $memoRecord = self::find($id);
+        if ($memoRecord) {
+            return $memoRecord->update([
+                'memo' => $memo,
+                'memo_chapter' => $memoChapter,
+                'memo_page' => $memoPage,
+            ]);
+        }
+        return false;
+    }
 }
