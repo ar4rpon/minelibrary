@@ -42,4 +42,27 @@ class Book extends Model
         'title',
         'image_url',
     ];
+
+
+    /**
+     * 本を追加するメソッド
+     *
+     * @param array $data
+     * @return Book
+     */
+    public function addBook(array $data): Book
+    {
+        return self::create($data);
+    }
+
+    /**
+     * ISBNで本の情報を取得するメソッド
+     *
+     * @param string $isbn
+     * @return Book|null
+     */
+    public function getBookInfo(string $isbn): ?Book
+    {
+        return self::find($isbn);
+    }
 }
