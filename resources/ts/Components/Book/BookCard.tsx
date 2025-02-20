@@ -44,7 +44,6 @@ export default function BookCard({
       sales_date: salesDate,
       image_url: largeImageUrl,
     })
-
   };
 
   return (
