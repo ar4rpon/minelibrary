@@ -1,19 +1,20 @@
 import { Card } from '@/Components/ui/card';
 import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
 import { BookProps } from '@/types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import FavoriteIcon from '@/Components/Book/FavoriteIcon';
 import { Button } from '@/Components/ui/button';
 
 export default function BookCard({
-  title = '本のタイトル',
-  author = '著者名',
-  publisherName = '出版社',
-  salesDate = '2024年2月2日',
-  itemPrice = 1500,
-  isbn = "",
-  largeImageUrl = 'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg',
-  itemCaption = '説明はありません。'
+  title,
+  author,
+  publisherName,
+  salesDate,
+  itemPrice,
+  isbn,
+  largeImageUrl,
+  itemCaption
 }: BookProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [detailBookDialogOpen, setDetailBookDialogOpen] = useState(false);
@@ -24,6 +25,25 @@ export default function BookCard({
   const confirmDetailBook = () => {
     console.log('Delete note:');
     setDetailBookDialogOpen(false);
+  };
+
+  // お気に入り状態を取得
+  useEffect(() => {
+    axios.get('/books/favorite-status', { params: { isbn } })
+      .then(response => setIsFavorite(response.data.isFavorite));
+  }, [isbn]);
+
+  // お気に入り追加処理
+  const handleFavoriteClick = () => {
+    setIsFavorite(!isFavorite)
+    axios.post('/books/toggle-favorite', {
+      isbn: isbn,
+      title: title,
+      author: author,
+      publisher_name: publisherName,
+      sales_date: salesDate,
+      image_url: largeImageUrl,
+    })
   };
 
   return (
@@ -67,7 +87,7 @@ export default function BookCard({
             />
             <FavoriteIcon
               isFavorite={isFavorite}
-              onClick={() => setIsFavorite(!isFavorite)}
+              onClick={() => handleFavoriteClick()}
             />
           </div>
         </div>

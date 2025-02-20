@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\BookSearchController;
+use App\Http\Controllers\FavoriteBookController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -38,6 +39,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // お気に入り処理
+    Route::post('/books/toggle-favorite', [FavoriteBookController::class, 'toggleFavorite']);
+    Route::get('/books/favorite-status', [FavoriteBookController::class, 'getFavoriteStatus']);
 });
 
 require __DIR__ . '/auth.php';

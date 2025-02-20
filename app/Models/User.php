@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -20,6 +21,10 @@ class User extends Authenticatable
     protected $fillable = [
         'email',
         'password',
+        'name',
+        'profile_image',
+        'profile_message',
+        'is_memo_publish',
     ];
 
     /**
@@ -43,5 +48,33 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * ユーザーのお気に入りの本を取得
+     *
+     * @return HasMany
+     */
+    public function favoriteBooks(): HasMany
+    {
+        return $this->hasMany(FavoriteBook::class);
+    }
+
+    /**
+     * ユーザーのお気に入りの本リストを取得
+     *
+     * @return HasMany
+     */
+    public function favoriteBookLists(): HasMany
+    {
+        return $this->hasMany(FavoriteBookList::class);
+    }
+
+    /**
+     * The books that the user has favorited.
+     */
+    public function favorites()
+    {
+        return $this->belongsToMany(Book::class, 'favorites', 'user_id', 'book_id');
     }
 }

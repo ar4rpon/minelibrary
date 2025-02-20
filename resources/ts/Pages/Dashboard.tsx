@@ -1,4 +1,3 @@
-import BookCard from '@/Components/Book/BookCard';
 import MemoCard from '@/Components/Memo/MemoCard';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
@@ -29,32 +28,6 @@ export default function Dashboard() {
           ]}
           createdAt="2024-02-02T10:00:00Z"
           book={sampleBook}
-        />
-        <BookCard
-          title="本のタイトル"
-          author="著者名"
-          publisher="出版社"
-          publishDate="2024年2月2日"
-          price={1500}
-          imageUrl="https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg"
-        />
-
-        <BookCard
-          title="本のタイトル"
-          author="著者名"
-          publisher="出版社"
-          publishDate="2024年2月2日"
-          price={1500}
-          imageUrl="https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg"
-        />
-
-        <BookCard
-          title="本のタイトル"
-          author="著者名"
-          publisher="出版社"
-          publishDate="2024年2月2日"
-          price={15000}
-          imageUrl="https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg"
         />
       </div>
     </DefaultLayout>
