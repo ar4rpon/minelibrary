@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Http;
 // use Illuminate\Support\Facades\Log;
-
-
-
 use Illuminate\Http\Request;
 
 class BookSearchController extends Controller
@@ -40,6 +37,16 @@ class BookSearchController extends Controller
             $results = $data['Items'] ?? [];
             $totalItems = $data['count'] ?? 0;
         }
+        $results = array_map(function ($item) {
+            if (isset($item['Item']['largeImageUrl'])) {
+                $item['Item']['largeImageUrl'] = str_replace(
+                    'ex=200x200',
+                    'ex=300x300',
+                    $item['Item']['largeImageUrl']
+                );
+            }
+            return $item;
+        }, $results);
 
         return Inertia::render('SearchBook', [
             'results' => $results,
