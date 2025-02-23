@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\FavoriteBook;
+use App\Models\Book; // Import the Book model
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 use App\Http\Controllers\BookController;
 
 class FavoriteBookController extends Controller
@@ -14,6 +16,33 @@ class FavoriteBookController extends Controller
     public function __construct(BookController $bookController)
     {
         $this->bookController = $bookController;
+    }
+    public function index()
+    {
+        $user = Auth::user();
+        $favorites = FavoriteBook::where('user_id', $user->id)
+            ->with('book')
+            ->get()
+            ->map(function ($favorite) {
+                return [
+                    'isbn' => $favorite->isbn,
+                    'read_status' => $favorite->read_status,
+                    'created_at' => $favorite->created_at,
+                    'book' => [
+                        'title' => $favorite->book->title,
+                        'author' => $favorite->book->author,
+                        'publisher_name' => $favorite->book->publisher_name,
+                        'sales_date' => $favorite->book->sales_date,
+                        'image_url' => $favorite->book->image_url,
+                        'item_caption' => $favorite->book->item_caption,
+                        'item_price' => $favorite->book->item_price,
+                    ],
+                ];
+            });
+
+        return Inertia::render('FavoriteBookList', [
+            'favorites' => $favorites
+        ]);
     }
 
     public function toggleFavorite(Request $request)

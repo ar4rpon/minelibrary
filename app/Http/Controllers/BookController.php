@@ -17,6 +17,8 @@ class BookController extends Controller
             'publisher_name' => 'required|string',
             'sales_date' => 'required|string',
             'image_url' => 'required|string',
+            'item_caption' => 'required|string',
+            'item_price' => 'required|integer',
         ]);
 
         $bookData = $request->only([
@@ -26,6 +28,8 @@ class BookController extends Controller
             'publisher_name',
             'sales_date',
             'image_url',
+            'item_caption',
+            'item_price',
         ]);
 
         $existingBook = (new Book())->getBookInfo($request->isbn);

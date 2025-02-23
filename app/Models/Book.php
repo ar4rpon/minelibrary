@@ -41,6 +41,17 @@ class Book extends Model
         'sales_date',
         'title',
         'image_url',
+        'item_caption',
+        'item_price',
+    ];
+
+    /**
+     * 属性のキャスト
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'item_price' => 'integer',
     ];
 
 
