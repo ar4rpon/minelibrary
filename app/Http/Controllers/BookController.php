@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    public function store(Request $request)
+    public function getOrStore(Request $request)
     {
         $request->validate([
             'isbn' => 'required|string',
@@ -19,16 +19,22 @@ class BookController extends Controller
             'image_url' => 'required|string',
         ]);
 
-        $book = Book::firstOrCreate(
-            ['isbn' => $request->isbn],
-            [
-                'title' => $request->title,
-                'author' => $request->author,
-                'publisher_name' => $request->publisher_name,
-                'sales_date' => $request->sales_date,
-                'image_url' => $request->image_url,
-            ]
-        );
+        $bookData = $request->only([
+            'isbn',
+            'title',
+            'author',
+            'publisher_name',
+            'sales_date',
+            'image_url',
+        ]);
+
+        $existingBook = (new Book())->getBookInfo($request->isbn);
+
+        if ($existingBook) {
+            return $existingBook;
+        }
+
+        $book = (new Book())->addBook($bookData);
         return $book;
     }
 }

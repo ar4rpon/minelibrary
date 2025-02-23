@@ -5,45 +5,41 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\FavoriteBook;
 use Illuminate\Support\Facades\Auth;
-use App\Enums\ReadStatus;
 use App\Http\Controllers\BookController;
 
 class FavoriteBookController extends Controller
 {
+    protected $bookController;
+
+    public function __construct(BookController $bookController)
+    {
+        $this->bookController = $bookController;
+    }
+
     public function toggleFavorite(Request $request)
     {
-        $bookController = new BookController();
-        $book = $bookController->store($request);
-
+        $book = $this->bookController->getOrStore($request);
         $user = Auth::user();
-        $favoriteBook = FavoriteBook::where('user_id', $user->id)
-            ->where('isbn', $book->isbn)
-            ->first();
 
-        if ($favoriteBook) {
-            $favoriteBook->delete();
+        $isFavorite = FavoriteBook::isFavorite($book->isbn, $user->id);
+
+        if ($isFavorite) {
+            FavoriteBook::where('isbn', $book->isbn)
+                ->where('user_id', $user->id)
+                ->delete();
             $isFavorite = false;
         } else {
-            FavoriteBook::create([
-                'user_id' => $user->id,
-                'isbn' => $book->isbn,
-                'read_status' => ReadStatus::WANTREAD->value,
-            ]);
+            FavoriteBook::addFavorite($book->isbn, $user->id);
             $isFavorite = true;
         }
 
         return response()->json(['isFavorite' => $isFavorite]);
     }
+
     public function getFavoriteStatus(Request $request)
     {
-        $request->validate([
-            'isbn' => 'required|string',
-        ]);
-
         $user = Auth::user();
-        $isFavorite = FavoriteBook::where('user_id', $user->id)
-            ->where('isbn', $request->isbn)
-            ->exists();
+        $isFavorite = FavoriteBook::isFavorite($request->isbn, $user->id);
 
         return response()->json(['isFavorite' => $isFavorite]);
     }
