@@ -90,4 +90,18 @@ class FavoriteBook extends Model
     {
         return self::where('user_id', $userId)->get();
     }
+
+    /**
+     * 指定されたISBNとユーザーIDに対応するお気に入り本が存在するかを判定する
+     *
+     * @param string $isbn
+     * @param int $userId
+     * @return bool
+     */
+    public static function isFavorite(string $isbn, int $userId): bool
+    {
+        return self::where('isbn', $isbn)
+            ->where('user_id', $userId)
+            ->exists();
+    }
 }
