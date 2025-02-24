@@ -3,7 +3,9 @@ import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
 import { UpdateReadStatusDialog } from '@/Dialog/Book/UpdateReadStatusDialog';
+import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
 import { BookProps, ReadStatus } from '@/types';
+import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { Book, BookOpen, Edit, Heart, Library } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -31,6 +33,7 @@ export default function BookCard({
   const [selectedStatus, setSelectedStatus] = useState<ReadStatus>(
     readStatus ?? 'want_read',
   );
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   const handleDetailBook = () => setDetailBookDialogOpen(true);
   const confirmDetailBook = () => setDetailBookDialogOpen(false);
@@ -53,6 +56,25 @@ export default function BookCard({
       item_caption: itemCaption,
       item_price: itemPrice,
     });
+  };
+
+  const confirmCreate = async (
+    memo: string,
+    chapter?: number,
+    page?: number,
+  ) => {
+    try {
+      await axios.post('/memo/create', {
+        isbn: isbn,
+        memo,
+        memo_chapter: chapter,
+        memo_page: page,
+      });
+      router.reload();
+    } catch (error) {
+      console.error('Failed to create memo:', error);
+    }
+    setCreateDialogOpen(false);
   };
 
   const updateReadStatus = (readStatus: ReadStatus) => {
@@ -137,7 +159,12 @@ export default function BookCard({
                   <BookOpen className="mr-2 h-4 w-4" />
                   <span>進捗を変更</span>
                 </Button>
-                <Button variant="outline" className="w-full" size="lg">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  size="lg"
+                  onClick={() => setCreateDialogOpen(true)}
+                >
                   <Edit className="mr-2 h-4 w-4" />
                   <span className="hidden sm:inline">メモを書く</span>
                   <span className="sm:hidden">メモ</span>
@@ -208,6 +235,12 @@ export default function BookCard({
           onClose={() => setDetailBookDialogOpen(false)}
           onConfirm={confirmDetailBook}
           itemCaption={itemCaption}
+        />
+        <CreateMemoDialog
+          isOpen={createDialogOpen}
+          onClose={() => setCreateDialogOpen(false)}
+          onMemoConfirm={confirmCreate}
+          isbn={isbn}
         />
       </div>
     </Card>

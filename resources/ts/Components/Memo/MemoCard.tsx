@@ -128,7 +128,7 @@ const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
                       {content.memo}
                     </p>
                     {(content.memo_chapter || content.memo_page) && (
-                      <p className="text-xs text-gray-500">
+                      <p className="mt-1 text-xs text-gray-500">
                         {content.memo_chapter && ` ${content.memo_chapter}章`}
                         {content.memo_chapter && content.memo_page && ' | '}
                         {content.memo_page && `${content.memo_page}P`}
