@@ -120,26 +120,39 @@ const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
             {contents.map((content) => (
               <div
                 key={content.id}
-                className="flex items-center justify-between border-b pb-2"
+                className="flex flex-col items-start justify-between border-b pb-2"
               >
-                <p className="line-clamp-4 flex-1 text-sm">{content.memo}</p>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-52">
-                    <DropdownMenuItem onClick={() => handleEdit(content)}>
-                      <Pencil className="mr-2 h-4 w-4" />
-                      編集
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleDelete(content)}>
-                      <Trash className="mr-2 h-4 w-4" />
-                      削除
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex w-full items-center justify-between">
+                  <div className="flex flex-col">
+                    <p className="line-clamp-4 flex-1 text-sm">
+                      {content.memo}
+                    </p>
+                    {(content.memo_chapter || content.memo_page) && (
+                      <p className="text-xs text-gray-500">
+                        {content.memo_chapter && ` ${content.memo_chapter}章`}
+                        {content.memo_chapter && content.memo_page && ' | '}
+                        {content.memo_page && `${content.memo_page}P`}
+                      </p>
+                    )}
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-52">
+                      <DropdownMenuItem onClick={() => handleEdit(content)}>
+                        <Pencil className="mr-2 h-4 w-4" />
+                        編集
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDelete(content)}>
+                        <Trash className="mr-2 h-4 w-4" />
+                        削除
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
             ))}
           </div>
