@@ -13,7 +13,7 @@ export type PageProps<
   };
 };
 
-export type BookStatus = 'want_read' | 'reading' | 'done_read';
+export type ReadStatus = 'want_read' | 'reading' | 'done_read';
 
 export interface BookProps {
   isbn: string;
@@ -24,7 +24,7 @@ export interface BookProps {
   salesDate: string;
   itemPrice: number;
   imageUrl: string;
-  readStatus?: BookStatus;
+  readStatus?: ReadStatus;
   // API用
   largeImageUrl?: string;
 }

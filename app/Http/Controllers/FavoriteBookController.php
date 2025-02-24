@@ -47,10 +47,14 @@ class FavoriteBookController extends Controller
     public function updateReadStatus(Request $request)
     {
         $user = Auth::user();
-        $favorites = FavoriteBook::where('user_id', $user->id)
-            ->where('isbn', $request->isbn);
-        $favorites->updateReadStatus($request->readStatus);
-        return response()->json(['readStatus' => $request->readStatus]);
+        $favorite = FavoriteBook::where('user_id', $user->id)
+            ->where('isbn', $request->isbn)
+            ->first();
+
+        if ($favorite) {
+            $favorite->update(['read_status' => $request->readStatus]);
+            return response()->json(['readStatus' => $request->readStatus]);
+        }
     }
 
     public function toggleFavorite(Request $request)

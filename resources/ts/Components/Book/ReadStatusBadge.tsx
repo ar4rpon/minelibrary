@@ -1,12 +1,12 @@
 import { cn } from '@/Lib/utils';
-import { BookStatus } from '@/types/';
+import { ReadStatus } from '@/types/';
 import { BookOpen, CheckCircle, Clock } from 'lucide-react';
 
-interface BookStatusBadgeProps {
-  status: BookStatus;
+interface ReadStatusBadgeProps {
+  status: ReadStatus;
 }
 
-export function BookStatusBadge({ status }: BookStatusBadgeProps) {
+export function ReadStatusBadge({ status }: ReadStatusBadgeProps) {
   const statusConfig = {
     want_read: {
       icon: Clock,

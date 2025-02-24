@@ -2,11 +2,12 @@ import FavoriteIcon from '@/Components/Icon/FavoriteIcon';
 import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
-import { BookProps } from '@/types';
+import { UpdateReadStatusDialog } from '@/Dialog/Book/UpdateReadStatusDialog';
+import { BookProps, ReadStatus } from '@/types';
 import axios from 'axios';
 import { Book, BookOpen, Edit, Heart, Library } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { BookStatusBadge } from './BookStatusBadge';
+import { ReadStatusBadge } from './ReadStatusBadge';
 
 interface UnifiedBookCardProps extends BookProps {
   variant?: 'favorite' | 'default';
@@ -22,9 +23,14 @@ export default function BookCard({
   imageUrl,
   itemCaption,
   variant = 'default',
+  readStatus,
 }: UnifiedBookCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [detailBookDialogOpen, setDetailBookDialogOpen] = useState(false);
+  const [readStatusDialogOpen, setReadStatusDialogOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<ReadStatus>(
+    readStatus ?? 'want_read',
+  );
 
   const handleDetailBook = () => setDetailBookDialogOpen(true);
   const confirmDetailBook = () => setDetailBookDialogOpen(false);
@@ -49,6 +55,14 @@ export default function BookCard({
     });
   };
 
+  const updateReadStatus = (readStatus: ReadStatus) => {
+    setReadStatusDialogOpen(false);
+    axios.post('/books/update-status', {
+      isbn,
+      readStatus: readStatus,
+    });
+  };
+
   return (
     <Card
       className={`mx-auto w-full ${variant === 'favorite' ? 'p-4' : 'max-w-4xl overflow-hidden p-4 md:p-6'}`}
@@ -60,7 +74,9 @@ export default function BookCard({
             : 'flex flex-col gap-4 md:flex-row lg:flex-col'
         }
       >
-        {variant === 'favorite' && <BookStatusBadge status={'done_read'} />}
+        {variant === 'favorite' && selectedStatus && (
+          <ReadStatusBadge status={selectedStatus} />
+        )}
 
         <div
           className={`mx-auto aspect-[3/4] w-full max-w-[200px] overflow-hidden rounded-md border-2 border-gray-200 shadow-lg ${
@@ -108,7 +124,11 @@ export default function BookCard({
           {variant === 'favorite' ? (
             <>
               <div className="grid gap-2 sm:grid-cols-2">
-                <Button className="w-full" size="lg">
+                <Button
+                  className="w-full"
+                  size="lg"
+                  onClick={() => setReadStatusDialogOpen(true)}
+                >
                   <BookOpen className="mr-2 h-4 w-4" />
                   <span>進捗を変更</span>
                 </Button>
@@ -159,6 +179,16 @@ export default function BookCard({
             </div>
           )}
         </div>
+
+        {readStatus && (
+          <UpdateReadStatusDialog
+            isOpen={readStatusDialogOpen}
+            onClose={() => setReadStatusDialogOpen(false)}
+            readStatus={selectedStatus}
+            onChangeValue={setSelectedStatus}
+            onConfirm={() => updateReadStatus(selectedStatus)}
+          />
+        )}
 
         <BookDetailDialog
           title={title}
