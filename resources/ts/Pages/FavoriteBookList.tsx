@@ -43,6 +43,7 @@ export default function FavoriteBookList() {
               isbn={item.isbn}
               itemCaption={item.itemCaption || '説明はありません。'}
               variant="favorite"
+              readStatus={item.read_status}
             />
           ))
         ) : (
