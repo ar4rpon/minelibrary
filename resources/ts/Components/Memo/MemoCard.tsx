@@ -10,7 +10,7 @@ import { Separator } from '@/Components/ui/separator';
 import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
 import { DeleteMemoDialog } from '@/Dialog/Memo/DeleteMemoDialog';
 import { EditMemoDialog } from '@/Dialog/Memo/EditMemoDialog';
-import { BookProps } from '@/types';
+import { BookProps, MemoContent } from '@/types';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { MoreVertical, Pencil, Plus, Trash } from 'lucide-react';
@@ -18,7 +18,7 @@ import { memo, useState } from 'react';
 
 interface MemoCardProps {
   id: string;
-  contents: string[];
+  contents: MemoContent[];
   book: BookProps;
 }
 
@@ -26,29 +26,45 @@ const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [selectedContent, setSelectedContent] = useState<string | null>(null);
+  const [selectedMemo, setSelectedMemo] = useState<MemoContent | null>(null);
 
-  const handleEdit = (content: string) => {
-    setSelectedContent(content);
+  const handleEdit = (content: MemoContent) => {
+    setSelectedMemo(content);
     setEditDialogOpen(true);
   };
 
-  const handleDelete = (content: string) => {
-    setSelectedContent(content);
+  const handleDelete = (content: MemoContent) => {
+    setSelectedMemo(content);
     setDeleteDialogOpen(true);
   };
 
-  const handleCreate = () => {
-    setCreateDialogOpen(true);
-  };
-
-  const confirmEdit = () => {
-    console.log('Edit note:', id, selectedContent);
+  const confirmEdit = async (
+    updatedMemo: string,
+    chapter?: number,
+    page?: number,
+  ) => {
+    if (!selectedMemo) return;
+    try {
+      await axios.put(`/memo/${selectedMemo.id}`, {
+        memo: updatedMemo,
+        memo_chapter: chapter,
+        memo_page: page,
+      });
+      router.reload();
+    } catch (error) {
+      console.error('Failed to edit memo:', error);
+    }
     setEditDialogOpen(false);
   };
 
-  const confirmDelete = () => {
-    console.log('Delete note:', id, selectedContent);
+  const confirmDelete = async () => {
+    if (!selectedMemo) return;
+    try {
+      await axios.delete(`/memo/${selectedMemo.id}`);
+      router.reload();
+    } catch (error) {
+      console.error('Failed to delete memo:', error);
+    }
     setDeleteDialogOpen(false);
   };
 
@@ -91,17 +107,22 @@ const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
                   <p className="text-sm text-muted-foreground">{book.author}</p>
                 </div>
               </div>
-              <Button variant="outline" size="icon" onClick={handleCreate}>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setCreateDialogOpen(true)}
+              >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
             <Separator className="my-4" />
-            {contents.map((content, index) => (
+
+            {contents.map((content) => (
               <div
-                key={index}
+                key={content.id}
                 className="flex items-center justify-between border-b pb-2"
               >
-                <p className="line-clamp-4 flex-1 text-sm">{content}</p>
+                <p className="line-clamp-4 flex-1 text-sm">{content.memo}</p>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
@@ -133,7 +154,10 @@ const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
       <EditMemoDialog
         isOpen={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
-        onConfirm={confirmEdit}
+        onEditMemoConfirm={confirmEdit}
+        initialContent={selectedMemo?.memo || ''}
+        initialChapter={selectedMemo?.memo_chapter}
+        initialPage={selectedMemo?.memo_page}
       />
       <CreateMemoDialog
         isOpen={createDialogOpen}

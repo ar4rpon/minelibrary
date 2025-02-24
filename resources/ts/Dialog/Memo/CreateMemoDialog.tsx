@@ -20,7 +20,6 @@ export function CreateMemoDialog({
   isOpen,
   onClose,
   onMemoConfirm,
-  isbn,
 }: CreateMemoDialogProps) {
   const [chapter, setChapter] = useState<string>('');
   const [page, setPage] = useState<string>('');

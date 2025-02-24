@@ -36,8 +36,16 @@ class MemoController extends Controller
         $memos = $query->get()->groupBy('isbn')->map(function ($group) {
             return [
                 'id' => $group->first()->isbn,
-                'contents' => $group->pluck('memo')->toArray(),
+                'contents' => $group->map(function ($memo) {
+                    return [
+                        'id' => $memo->id,
+                        'memo' => $memo->memo,
+                        'memo_chapter' => $memo->memo_chapter,
+                        'memo_page' => $memo->memo_page,
+                    ];
+                })->toArray(),
                 'book' => array_merge($group->first()->book->toArray(), [
+                    'isbn' => $group->first()->book->isbn,
                     'publisherName' => $group->first()->book->publisher_name,
                     'itemCaption' => $group->first()->book->item_caption,
                     'salesDate' => $group->first()->book->sales_date,
@@ -78,5 +86,39 @@ class MemoController extends Controller
         );
 
         return response()->json(['memo' => $memo], 201);
+    }
+
+    public function update(Request $request, $memo_id)
+    {
+        $user = Auth::user();
+        $memo = Memo::where('id', $memo_id)->where('user_id', $user->id)->first();
+
+        $validator = Validator::make($request->all(), [
+            'memo' => 'required|string',
+            'memo_chapter' => 'nullable|integer',
+            'memo_page' => 'nullable|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $memo->updateMemo(
+            $request->memo,
+            $request->memo_chapter,
+            $request->memo_page
+        );
+    }
+
+    public function destroy($memo_id)
+    {
+        $user = Auth::user();
+        $memo = Memo::where('id', $memo_id)->where('user_id', $user->id)->first();
+
+        if ($memo->delete()) {
+            return response()->json(['message' => 'Memo deleted successfully'], 200);
+        } else {
+            return response()->json(['error' => 'Failed to delete memo'], 500);
+        }
     }
 }

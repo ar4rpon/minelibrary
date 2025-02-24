@@ -7,13 +7,13 @@ import {
   SelectValue,
 } from '@/Components/ui/select';
 import DefaultLayout from '@/Layouts/DefaultLayout';
-import { BookProps } from '@/types';
+import { BookProps, MemoContent } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface MemoData {
   id: string;
-  contents: string[];
+  contents: MemoContent[];
   book: BookProps;
 }
 

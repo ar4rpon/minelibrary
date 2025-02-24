@@ -29,6 +29,13 @@ export interface BookProps {
   largeImageUrl?: string;
 }
 
+export interface MemoContent {
+  id: number;
+  memo: string;
+  memo_chapter?: number;
+  memo_page?: number;
+}
+
 export interface DialogProps {
   isOpen: boolean;
   onClose: () => void;

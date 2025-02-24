@@ -1,10 +1,22 @@
-import { BaseDialog } from '../BaseDialog';
-import { DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/Components/ui/dialog';
 import { Button } from '@/Components/ui/button';
+import {
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/Components/ui/dialog';
 import { DialogProps } from '@/types';
+import { BaseDialog } from '../BaseDialog';
 
+interface DeleteMemoDialogProps extends DialogProps {
+  onConfirm: () => void;
+}
 
-export function DeleteMemoDialog({ isOpen, onClose, onConfirm }: DialogProps) {
+export function DeleteMemoDialog({
+  isOpen,
+  onClose,
+  onConfirm,
+}: DeleteMemoDialogProps) {
   return (
     <BaseDialog isOpen={isOpen} onClose={onClose}>
       <DialogHeader>
@@ -14,8 +26,12 @@ export function DeleteMemoDialog({ isOpen, onClose, onConfirm }: DialogProps) {
         </DialogDescription>
       </DialogHeader>
       <DialogFooter>
-        <Button variant="outline" onClick={onClose}>キャンセル</Button>
-        <Button variant="destructive" onClick={onConfirm}>削除</Button>
+        <Button variant="outline" onClick={onClose}>
+          キャンセル
+        </Button>
+        <Button variant="destructive" onClick={onConfirm}>
+          削除
+        </Button>
       </DialogFooter>
     </BaseDialog>
   );

@@ -43,7 +43,9 @@ Route::middleware('auth')->group(function () {
     // 書籍ステータス処理
     Route::post('/books/update-status', [FavoriteBookController::class, 'updateReadStatus']);
     // メモ処理
-    Route::post('/memo/create', [MemoController::class, 'store']);
+    Route::post('/memo/create', [MemoController::class, 'store'])->name('memo.store');
+    Route::put('/memo/{memo_id}', [MemoController::class, 'update'])->name('memo.update');
+    Route::delete('/memo/{memo_id}', [MemoController::class, 'destroy'])->name('memo.destroy');
 });
 
 require __DIR__ . '/auth.php';
