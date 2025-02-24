@@ -10,39 +10,17 @@ import { Separator } from '@/Components/ui/separator';
 import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
 import { DeleteMemoDialog } from '@/Dialog/Memo/DeleteMemoDialog';
 import { EditMemoDialog } from '@/Dialog/Memo/EditMemoDialog';
+import { BookProps } from '@/types';
 import { MoreVertical, Pencil, Plus, Trash } from 'lucide-react';
-import { lazy, memo, useState } from 'react';
+import { memo, useState } from 'react';
 
 interface MemoCardProps {
   id: string;
   contents: string[];
-  createdAt: string;
-  book: {
-    id: string;
-    title: string;
-    author: string;
-    coverUrl: string;
-  };
+  book: BookProps;
 }
 
-// ダイアログコンテンツの遅延読み込み
-const DialogContent = lazy(() =>
-  import('@/Components/ui/dialog').then((module) => ({
-    default: module.DialogContent,
-  })),
-);
-
-const MemoCard = memo(function MemoCard({
-  id = '1',
-  contents = ['サンプルコンテンツ'],
-  createdAt = '2024-02-02T10:00:00Z',
-  book = {
-    id: 'b1',
-    title: '本のタイトル',
-    author: '著者名',
-    coverUrl: '/placeholder.svg',
-  },
-}: MemoCardProps) {
+const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -76,14 +54,14 @@ const MemoCard = memo(function MemoCard({
     console.log('Create note:', id);
     setCreateDialogOpen(false);
   };
-
+  console.log(book);
   return (
     <Card className="mx-auto w-full overflow-hidden">
       <CardContent className="p-4 md:p-6">
         <div className="flex flex-row gap-4">
           <div className="flex items-center">
             <img
-              src={book.coverUrl}
+              src={book.imageUrl}
               alt={book.title}
               loading="lazy"
               className="h-24 w-20 rounded-md border-2 object-cover"
@@ -95,9 +73,6 @@ const MemoCard = memo(function MemoCard({
                 <div>
                   <h2 className="text-xl font-bold">{book.title}</h2>
                   <p className="text-sm text-muted-foreground">{book.author}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {new Date(createdAt).toLocaleDateString('ja-JP')}
-                  </p>
                 </div>
               </div>
               <Button variant="outline" size="icon" onClick={handleCreate}>

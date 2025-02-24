@@ -7,58 +7,38 @@ import {
   SelectValue,
 } from '@/Components/ui/select';
 import DefaultLayout from '@/Layouts/DefaultLayout';
-import { Head } from '@inertiajs/react';
+import { BookProps } from '@/types';
+import { Head, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
+interface MemoData {
+  id: string;
+  contents: string[];
+  book: BookProps;
+}
+
 export default function MemoList() {
-  const sampleBook = {
-    id: 'b1',
-    title: 'サンプルブック',
-    author: '山田太郎',
-    coverUrl: 'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg',
+  const { memos, sortBy: initialSortBy } = usePage().props as unknown as {
+    memos: MemoData[];
+    sortBy: string;
   };
+  const [sortBy, setSortBy] = useState(initialSortBy);
 
-  const memoData = [
-    {
-      id: '1',
-      contents: [
-        'サンプルコンテンツ1',
-        'サンプルコンテンツ2',
-        'サンプルコンテンツ3',
-      ],
-      createdAt: '2024-02-02T10:00:00Z',
-      book: sampleBook,
-    },
-    {
-      id: '2',
-      contents: [
-        'サンプルコンテンツ4',
-        'サンプルコンテンツ5',
-        'サンプルコンテンツ6',
-      ],
-      createdAt: '2024-02-02T10:00:00Z',
-      book: sampleBook,
-    },
-    {
-      id: '3',
-      contents: [
-        'サンプルコンテンツ7',
-        'サンプルコンテンツ8',
-        'サンプルコンテンツ9',
-      ],
-      createdAt: '2024-02-02T10:00:00Z',
-      book: sampleBook,
-    },
-  ];
-
-  const [sortBy, setSortBy] = useState('date');
+  const handleSortChange = (newSortBy: string) => {
+    setSortBy(newSortBy);
+    router.get(
+      route('memos.index'),
+      { sortBy: newSortBy },
+      { preserveState: true },
+    );
+  };
 
   return (
     <DefaultLayout header="メモ一覧">
       <Head title="MemoList" />
 
       <div className="mb-4">
-        <Select value={sortBy} onValueChange={setSortBy}>
+        <Select value={sortBy} onValueChange={handleSortChange}>
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="並び替え" />
           </SelectTrigger>
@@ -70,12 +50,11 @@ export default function MemoList() {
       </div>
 
       <div className="grid grid-cols-1 gap-x-8 gap-y-4">
-        {memoData.map((memo) => (
+        {memos.map((memo) => (
           <MemoCard
             key={memo.id}
             id={memo.id}
             contents={memo.contents}
-            createdAt={memo.createdAt}
             book={memo.book}
           />
         ))}

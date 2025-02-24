@@ -123,7 +123,7 @@ export default function Navigation() {
             />
             <MemoizedMenuItem
               icon={NotepadText}
-              route={route('memolist')}
+              route={route('memos.index')}
               text="読書メモ一覧"
             />
             <DropdownMenuItem className="focus:bg-gray-100">
@@ -224,7 +224,7 @@ export default function Navigation() {
                     />
                     <MobileMenuLink
                       icon={NotepadText}
-                      route={route('memolist')}
+                      route={route('memos.index')}
                       text="読書メモ一覧"
                     />
                     <Link
