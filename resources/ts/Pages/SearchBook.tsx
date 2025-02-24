@@ -1,7 +1,8 @@
 import BookCard from '@/Components/Book/BookCard';
+import BookGenreSelect from '@/Components/Book/BookGenreSelect';
+import CommonPagination from '@/Components/Common/CommonPagination';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
-import CommonPagination from '@/Components/Common/CommonPagination';
 import {
   Select,
   SelectContent,
@@ -10,10 +11,9 @@ import {
   SelectValue,
 } from '@/Components/ui/select';
 import DefaultLayout from '@/Layouts/DefaultLayout';
+import { BookProps } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import { BookProps } from '@/types';
-import BookGenreSelect from '@/Components/Book/BookGenreSelect';
 
 // 楽天APIのレスポンス構造に合わせてインターフェースを修正
 interface Book {
@@ -34,12 +34,14 @@ interface PageProps {
 }
 
 const SearchPage = () => {
-  const { results, totalItems, filters } = usePage().props as unknown as PageProps;
+  const { results, totalItems, filters } = usePage()
+    .props as unknown as PageProps;
   console.log('Page props:', usePage().props);
 
-
   const [searchTerm, setSearchTerm] = useState(filters.keyword || '');
-  const [searchMethod, setSearchMethod] = useState<'title' | 'isbn'>(filters.searchMethod || 'title');
+  const [searchMethod, setSearchMethod] = useState<'title' | 'isbn'>(
+    filters.searchMethod || 'title',
+  );
   const [genre, setGenre] = useState('001');
   const [sortBy, setSortBy] = useState('standard');
   const [currentPage, setCurrentPage] = useState(filters.page || 1);
@@ -48,21 +50,24 @@ const SearchPage = () => {
   const itemsPerPage = 9;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-
   const searchBooks = () => {
     setLoading(true);
-    router.get('/searchbook', {
-      keyword: searchTerm,
-      page: currentPage,
-      genre: genre,
-      sort: sortBy,
-      searchMethod: searchMethod,
-    }, {
-      preserveState: true,
-      preserveScroll: true,
-      only: ['results', 'totalItems', 'filters'],
-      onFinish: () => setLoading(false),
-    });
+    router.get(
+      '/searchbook',
+      {
+        keyword: searchTerm,
+        page: currentPage,
+        genre: genre,
+        sort: sortBy,
+        searchMethod: searchMethod,
+      },
+      {
+        preserveState: true,
+        preserveScroll: true,
+        only: ['results', 'totalItems', 'filters'],
+        onFinish: () => setLoading(false),
+      },
+    );
   };
 
   const handlePageChange = (newPage: number) => {
@@ -142,14 +147,14 @@ const SearchPage = () => {
               author={item.Item.author}
               publisherName={item.Item.publisherName || ''}
               salesDate={item.Item.salesDate}
-              largeImageUrl={item.Item.largeImageUrl || ''}
-              itemPrice={item.Item.itemPrice || 0}
+              itemPrice={item.Item.itemPrice}
               isbn={item.Item.isbn}
+              imageUrl={item.Item.largeImageUrl || ''}
               itemCaption={item.Item.itemCaption || '説明はありません。'}
             />
           ))
         ) : (
-          <p className='font-bold'>検索結果がありません</p>
+          <p className="font-bold">検索結果がありません</p>
         )}
       </div>
 

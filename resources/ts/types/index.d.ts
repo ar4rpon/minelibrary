@@ -13,15 +13,20 @@ export type PageProps<
   };
 };
 
+export type ReadStatus = 'want_read' | 'reading' | 'done_read';
+
 export interface BookProps {
+  isbn: string;
   title: string;
   author: string;
   publisherName: string;
+  itemCaption: string;
   salesDate: string;
   itemPrice: number;
-  largeImageUrl: string;
-  isbn: string;
-  itemCaption: string;
+  imageUrl: string;
+  readStatus?: ReadStatus;
+  // API用
+  largeImageUrl?: string;
 }
 
 export interface DialogProps {

@@ -15,9 +15,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/favoritebooklist', function () {
-    return Inertia::render('FavoriteBookList');
-})->middleware(['auth', 'verified'])->name('favoritebooklist');
+Route::get('/favoritebooklist', [FavoriteBookController::class, 'index'])->middleware(['auth', 'verified'])->name('favorite.index');
 Route::get('/bookshelflist', function () {
     return Inertia::render('BookShelf/BookShelfList');
 })->middleware(['auth', 'verified'])->name('bookshelflist');
@@ -43,6 +41,8 @@ Route::middleware('auth')->group(function () {
     // お気に入り処理
     Route::post('/books/toggle-favorite', [FavoriteBookController::class, 'toggleFavorite']);
     Route::get('/books/favorite-status', [FavoriteBookController::class, 'getFavoriteStatus']);
+    // 書籍ステータス処理
+    Route::post('/books/update-status', [FavoriteBookController::class, 'updateReadStatus']);
 });
 
 require __DIR__ . '/auth.php';

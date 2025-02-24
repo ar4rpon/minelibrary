@@ -1,5 +1,4 @@
 import AmazonButton from '@/Components/Book/AmazonButton';
-import FavoriteIcon from '@/Components/Book/FavoriteIcon';
 import RakutenButton from '@/Components/Book/RakutenButton';
 import {
   DialogDescription,
@@ -10,16 +9,15 @@ import { BookProps, DialogProps } from '@/types';
 import { useState } from 'react';
 import { BaseDialog } from '../BaseDialog';
 
-
 export function BookDetailDialog({
-  title = '本のタイトル',
-  author = '著者名',
-  publisherName = '出版社',
-  salesDate = '2024年2月2日',
-  itemPrice = 1500,
-  largeImageUrl = 'https://shop.r10s.jp/book/cabinet/9163/9784297129163_1_4.jpg',
-  isbn = '',
-  itemCaption = '説明はありません',
+  title,
+  author,
+  publisherName,
+  salesDate,
+  itemPrice,
+  imageUrl,
+  isbn,
+  itemCaption,
   isOpen,
   onClose,
   onConfirm,
@@ -39,7 +37,7 @@ export function BookDetailDialog({
         <div className="space-y-6">
           <div className="mx-auto flex aspect-[3/4] w-full max-w-[200px] shrink-0 items-center justify-center overflow-hidden rounded-md border-2 border-gray-200 shadow-lg">
             <img
-              src={largeImageUrl || '/placeholder.svg'}
+              src={imageUrl || '/placeholder.svg'}
               alt={title}
               className="h-full w-full object-cover"
             />
@@ -54,10 +52,10 @@ export function BookDetailDialog({
                   ¥{itemPrice.toLocaleString()}
                 </p>
               </div>
-              <FavoriteIcon
+              {/* <FavoriteIcon
                 isFavorite={isFavorite}
                 onClick={() => setIsFavorite(!isFavorite)}
-              />
+              /> */}
             </div>
           </div>
 
@@ -74,9 +72,7 @@ export function BookDetailDialog({
           <div className="space-y-4">
             <h3 className="text-lg font-bold">書籍説明</h3>
             <div className="prose hidden-scrollbar max-h-[300px] overflow-y-auto">
-              <p className="text-gray-700">
-                {itemCaption}
-              </p>
+              <p className="text-gray-700">{itemCaption}</p>
             </div>
           </div>
 

@@ -69,16 +69,6 @@ class FavoriteBook extends Model
         ]);
     }
 
-    /**
-     * 読書ステータスを更新する
-     *
-     * @param ReadStatus $status
-     * @return bool
-     */
-    public function updateReadStatus(ReadStatus $status): bool
-    {
-        return $this->update(['read_status' => $status]);
-    }
 
     /**
      * 指定されたユーザーIDのお気に入りの本を取得する

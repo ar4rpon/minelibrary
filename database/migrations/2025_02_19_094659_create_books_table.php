@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('author');
             $table->string('publisher_name');
             $table->string('sales_date');
+            $table->text('item_caption');
+            $table->integer('item_price');
             $table->string('image_url');
             $table->timestamps();
         });
