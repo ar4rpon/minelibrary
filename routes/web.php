@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/books/favorite-status', [FavoriteBookController::class, 'getFavoriteStatus']);
     // 書籍ステータス処理
     Route::post('/books/update-status', [FavoriteBookController::class, 'updateReadStatus']);
+    // メモ処理
+    Route::post('/memo/create', [MemoController::class, 'store']);
 });
 
 require __DIR__ . '/auth.php';

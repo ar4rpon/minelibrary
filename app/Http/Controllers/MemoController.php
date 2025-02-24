@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\BookController;
 use App\Models\Memo;
 use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
@@ -54,7 +55,6 @@ class MemoController extends Controller
 
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'isbn' => 'required|string',
             'memo' => 'required|string',
@@ -66,11 +66,6 @@ class MemoController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $book = $this->bookController->getOrStore($request);
-
-        if (!$book) {
-            return response()->json(['error' => 'Book not found or could not be created'], 404);
-        }
 
         // メモの作成
         $user = Auth::user();

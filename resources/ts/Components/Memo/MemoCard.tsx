@@ -11,6 +11,8 @@ import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
 import { DeleteMemoDialog } from '@/Dialog/Memo/DeleteMemoDialog';
 import { EditMemoDialog } from '@/Dialog/Memo/EditMemoDialog';
 import { BookProps } from '@/types';
+import { router } from '@inertiajs/react';
+import axios from 'axios';
 import { MoreVertical, Pencil, Plus, Trash } from 'lucide-react';
 import { memo, useState } from 'react';
 
@@ -50,11 +52,25 @@ const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
     setDeleteDialogOpen(false);
   };
 
-  const confirmCreate = () => {
-    console.log('Create note:', id);
+  const confirmCreate = async (
+    memo: string,
+    chapter?: number,
+    page?: number,
+  ) => {
+    try {
+      await axios.post('/memo/create', {
+        isbn: id,
+        memo,
+        memo_chapter: chapter,
+        memo_page: page,
+      });
+      router.reload();
+    } catch (error) {
+      console.error('Failed to create memo:', error);
+    }
     setCreateDialogOpen(false);
   };
-  console.log(book);
+
   return (
     <Card className="mx-auto w-full overflow-hidden">
       <CardContent className="p-4 md:p-6">
@@ -122,7 +138,8 @@ const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
       <CreateMemoDialog
         isOpen={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
-        onConfirm={confirmCreate}
+        onMemoConfirm={confirmCreate}
+        isbn={id}
       />
     </Card>
   );

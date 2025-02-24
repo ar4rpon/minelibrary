@@ -31,6 +31,7 @@ class Memo extends Model
     protected $casts = [
         'memo_page' => 'integer',
         'memo_chapter' => 'integer',
+        'isbn' => 'string',
     ];
 
     /**
