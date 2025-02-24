@@ -10,70 +10,80 @@ import { Separator } from '@/Components/ui/separator';
 import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
 import { DeleteMemoDialog } from '@/Dialog/Memo/DeleteMemoDialog';
 import { EditMemoDialog } from '@/Dialog/Memo/EditMemoDialog';
+import { BookProps, MemoContent } from '@/types';
+import { router } from '@inertiajs/react';
+import axios from 'axios';
 import { MoreVertical, Pencil, Plus, Trash } from 'lucide-react';
-import { lazy, memo, useState } from 'react';
+import { memo, useState } from 'react';
 
 interface MemoCardProps {
   id: string;
-  contents: string[];
-  createdAt: string;
-  book: {
-    id: string;
-    title: string;
-    author: string;
-    coverUrl: string;
-  };
+  contents: MemoContent[];
+  book: BookProps;
 }
 
-// ダイアログコンテンツの遅延読み込み
-const DialogContent = lazy(() =>
-  import('@/Components/ui/dialog').then((module) => ({
-    default: module.DialogContent,
-  })),
-);
-
-const MemoCard = memo(function MemoCard({
-  id = '1',
-  contents = ['サンプルコンテンツ'],
-  createdAt = '2024-02-02T10:00:00Z',
-  book = {
-    id: 'b1',
-    title: '本のタイトル',
-    author: '著者名',
-    coverUrl: '/placeholder.svg',
-  },
-}: MemoCardProps) {
+const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [selectedContent, setSelectedContent] = useState<string | null>(null);
+  const [selectedMemo, setSelectedMemo] = useState<MemoContent | null>(null);
 
-  const handleEdit = (content: string) => {
-    setSelectedContent(content);
+  const handleEdit = (content: MemoContent) => {
+    setSelectedMemo(content);
     setEditDialogOpen(true);
   };
 
-  const handleDelete = (content: string) => {
-    setSelectedContent(content);
+  const handleDelete = (content: MemoContent) => {
+    setSelectedMemo(content);
     setDeleteDialogOpen(true);
   };
 
-  const handleCreate = () => {
-    setCreateDialogOpen(true);
-  };
-
-  const confirmEdit = () => {
-    console.log('Edit note:', id, selectedContent);
+  const confirmEdit = async (
+    updatedMemo: string,
+    chapter?: number,
+    page?: number,
+  ) => {
+    if (!selectedMemo) return;
+    try {
+      await axios.put(`/memo/${selectedMemo.id}`, {
+        memo: updatedMemo,
+        memo_chapter: chapter,
+        memo_page: page,
+      });
+      router.reload();
+    } catch (error) {
+      console.error('Failed to edit memo:', error);
+    }
     setEditDialogOpen(false);
   };
 
-  const confirmDelete = () => {
-    console.log('Delete note:', id, selectedContent);
+  const confirmDelete = async () => {
+    if (!selectedMemo) return;
+    try {
+      await axios.delete(`/memo/${selectedMemo.id}`);
+      router.reload();
+    } catch (error) {
+      console.error('Failed to delete memo:', error);
+    }
     setDeleteDialogOpen(false);
   };
 
-  const confirmCreate = () => {
-    console.log('Create note:', id);
+  const confirmCreate = async (
+    memo: string,
+    chapter?: number,
+    page?: number,
+  ) => {
+    try {
+      await axios.post('/memo/create', {
+        isbn: id,
+        memo,
+        memo_chapter: chapter,
+        memo_page: page,
+      });
+      router.reload();
+    } catch (error) {
+      console.error('Failed to create memo:', error);
+    }
     setCreateDialogOpen(false);
   };
 
@@ -83,7 +93,7 @@ const MemoCard = memo(function MemoCard({
         <div className="flex flex-row gap-4">
           <div className="flex items-center">
             <img
-              src={book.coverUrl}
+              src={book.imageUrl}
               alt={book.title}
               loading="lazy"
               className="h-24 w-20 rounded-md border-2 object-cover"
@@ -95,39 +105,54 @@ const MemoCard = memo(function MemoCard({
                 <div>
                   <h2 className="text-xl font-bold">{book.title}</h2>
                   <p className="text-sm text-muted-foreground">{book.author}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {new Date(createdAt).toLocaleDateString('ja-JP')}
-                  </p>
                 </div>
               </div>
-              <Button variant="outline" size="icon" onClick={handleCreate}>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setCreateDialogOpen(true)}
+              >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
             <Separator className="my-4" />
-            {contents.map((content, index) => (
+
+            {contents.map((content) => (
               <div
-                key={index}
-                className="flex items-center justify-between border-b pb-2"
+                key={content.id}
+                className="flex flex-col items-start justify-between border-b pb-2"
               >
-                <p className="line-clamp-4 flex-1 text-sm">{content}</p>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-52">
-                    <DropdownMenuItem onClick={() => handleEdit(content)}>
-                      <Pencil className="mr-2 h-4 w-4" />
-                      編集
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleDelete(content)}>
-                      <Trash className="mr-2 h-4 w-4" />
-                      削除
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex w-full items-center justify-between">
+                  <div className="flex flex-col">
+                    <p className="line-clamp-4 flex-1 text-sm">
+                      {content.memo}
+                    </p>
+                    {(content.memo_chapter || content.memo_page) && (
+                      <p className="mt-1 text-xs text-gray-500">
+                        {content.memo_chapter && ` ${content.memo_chapter}章`}
+                        {content.memo_chapter && content.memo_page && ' | '}
+                        {content.memo_page && `${content.memo_page}P`}
+                      </p>
+                    )}
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-52">
+                      <DropdownMenuItem onClick={() => handleEdit(content)}>
+                        <Pencil className="mr-2 h-4 w-4" />
+                        編集
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDelete(content)}>
+                        <Trash className="mr-2 h-4 w-4" />
+                        削除
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
             ))}
           </div>
@@ -142,12 +167,16 @@ const MemoCard = memo(function MemoCard({
       <EditMemoDialog
         isOpen={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
-        onConfirm={confirmEdit}
+        onEditMemoConfirm={confirmEdit}
+        initialContent={selectedMemo?.memo || ''}
+        initialChapter={selectedMemo?.memo_chapter}
+        initialPage={selectedMemo?.memo_page}
       />
       <CreateMemoDialog
         isOpen={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
-        onConfirm={confirmCreate}
+        onMemoConfirm={confirmCreate}
+        isbn={id}
       />
     </Card>
   );

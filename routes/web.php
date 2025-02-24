@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\BookSearchController;
 use App\Http\Controllers\FavoriteBookController;
+use App\Http\Controllers\MemoController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -22,9 +23,7 @@ Route::get('/bookshelflist', function () {
 Route::get('/bookshelfdetail', function () {
     return Inertia::render('BookShelf/BookShelfDetail');
 })->middleware(['auth', 'verified'])->name('bookshelfdetail');
-Route::get('/memolist', function () {
-    return Inertia::render('MemoList');
-})->middleware(['auth', 'verified'])->name('memolist');
+Route::get('/memolist',  [MemoController::class, 'index'])->middleware(['auth', 'verified'])->name('memos.index');
 Route::get('/searchbook', [BookSearchController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('searchbook');
@@ -43,6 +42,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/books/favorite-status', [FavoriteBookController::class, 'getFavoriteStatus']);
     // 書籍ステータス処理
     Route::post('/books/update-status', [FavoriteBookController::class, 'updateReadStatus']);
+    // メモ処理
+    Route::post('/memo/create', [MemoController::class, 'store'])->name('memo.store');
+    Route::put('/memo/{memo_id}', [MemoController::class, 'update'])->name('memo.update');
+    Route::delete('/memo/{memo_id}', [MemoController::class, 'destroy'])->name('memo.destroy');
+    // 書籍のメモを取得
+    Route::get('/book/{isbn}/memos', [MemoController::class, 'getBookMemos'])->middleware('auth');
 });
 
 require __DIR__ . '/auth.php';

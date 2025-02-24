@@ -45,7 +45,7 @@ export default function FavoriteBookList() {
               publisherName={item.book.publisher_name || ''}
               salesDate={item.book.sales_date}
               imageUrl={item.book.image_url || ''}
-              itemPrice={0}
+              itemPrice={item.book.item_price}
               isbn={item.isbn}
               itemCaption={item.book.item_caption || '説明はありません。'}
               variant="favorite"
