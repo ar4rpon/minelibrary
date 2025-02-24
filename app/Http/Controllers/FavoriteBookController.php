@@ -16,31 +16,40 @@ class FavoriteBookController extends Controller
     {
         $this->bookController = $bookController;
     }
-    public function index()
+
+    public function index(Request $request)
     {
         $user = Auth::user();
-        $favorites = FavoriteBook::where('user_id', $user->id)
-            ->with('book')
-            ->get()
-            ->map(function ($favorite) {
-                return [
-                    'isbn' => $favorite->isbn,
-                    'read_status' => $favorite->read_status,
-                    'created_at' => $favorite->created_at,
-                    'book' => [
-                        'title' => $favorite->book->title,
-                        'author' => $favorite->book->author,
-                        'publisher_name' => $favorite->book->publisher_name,
-                        'sales_date' => $favorite->book->sales_date,
-                        'image_url' => $favorite->book->image_url,
-                        'item_caption' => $favorite->book->item_caption,
-                        'item_price' => $favorite->book->item_price,
-                    ],
-                ];
-            });
+        $sortBy = $request->input('sortBy', 'newDate');
+
+        $query = FavoriteBook::where('user_id', $user->id)->with('book');
+
+        if ($sortBy === 'newDate') {
+            $query->orderBy('created_at', 'desc');
+        } elseif ($sortBy === 'oldDate') {
+            $query->orderBy('created_at', 'asc');
+        }
+
+        $favorites = $query->get()->map(function ($favorite) {
+            return [
+                'isbn' => $favorite->isbn,
+                'read_status' => $favorite->read_status,
+                'created_at' => $favorite->created_at,
+                'book' => [
+                    'title' => $favorite->book->title,
+                    'author' => $favorite->book->author,
+                    'publisher_name' => $favorite->book->publisher_name,
+                    'sales_date' => $favorite->book->sales_date,
+                    'image_url' => $favorite->book->image_url,
+                    'item_caption' => $favorite->book->item_caption,
+                    'item_price' => $favorite->book->item_price,
+                ],
+            ];
+        });
 
         return Inertia::render('FavoriteBookList', [
-            'favorites' => $favorites
+            'favorites' => $favorites,
+            'sortBy' => $sortBy,
         ]);
     }
 

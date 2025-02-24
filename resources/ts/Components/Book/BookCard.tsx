@@ -135,6 +135,7 @@ export default function BookCard({
                 <Button variant="outline" className="w-full" size="lg">
                   <Edit className="mr-2 h-4 w-4" />
                   <span className="hidden sm:inline">メモを書く</span>
+                  <span className="sm:hidden">メモ</span>
                 </Button>
               </div>
 

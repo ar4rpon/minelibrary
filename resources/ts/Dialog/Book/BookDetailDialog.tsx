@@ -1,6 +1,5 @@
 import AmazonButton from '@/Components/Book/AmazonButton';
 import RakutenButton from '@/Components/Book/RakutenButton';
-import FavoriteIcon from '@/Components/Icon/FavoriteIcon';
 import {
   DialogDescription,
   DialogHeader,
@@ -53,10 +52,10 @@ export function BookDetailDialog({
                   ¥{itemPrice.toLocaleString()}
                 </p>
               </div>
-              <FavoriteIcon
+              {/* <FavoriteIcon
                 isFavorite={isFavorite}
                 onClick={() => setIsFavorite(!isFavorite)}
-              />
+              /> */}
             </div>
           </div>
 

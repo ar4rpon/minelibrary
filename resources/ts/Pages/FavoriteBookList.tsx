@@ -7,13 +7,19 @@ import {
   SelectValue,
 } from '@/Components/ui/select';
 import DefaultLayout from '@/Layouts/DefaultLayout';
-import { Head, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, router, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
 export default function FavoriteBookList() {
   const [sortBy, setSortBy] = useState('newDate');
-  const { favorites } = usePage().props as any;
-  console.log('Page props:', usePage().props);
+  const { favorites, sortBy: initialSortBy } = usePage().props as any;
+
+  useEffect(() => {
+    if (sortBy !== initialSortBy) {
+      router.get(route('favorite.index'), { sortBy }, { preserveState: true });
+    }
+  }, [sortBy]);
+
   return (
     <DefaultLayout header="FavoriteBookList">
       <Head title="FavoriteBookList" />
@@ -41,7 +47,7 @@ export default function FavoriteBookList() {
               imageUrl={item.book.image_url || ''}
               itemPrice={0}
               isbn={item.isbn}
-              itemCaption={item.itemCaption || '説明はありません。'}
+              itemCaption={item.book.item_caption || '説明はありません。'}
               variant="favorite"
               readStatus={item.read_status}
             />

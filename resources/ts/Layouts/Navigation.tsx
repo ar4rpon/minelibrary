@@ -118,7 +118,7 @@ export default function Navigation() {
             />
             <MemoizedMenuItem
               icon={BookHeart}
-              route={route('favoritebooklist')}
+              route={route('favorite.index')}
               text="お気に入り本一覧"
             />
             <MemoizedMenuItem
@@ -219,7 +219,7 @@ export default function Navigation() {
                     />
                     <MobileMenuLink
                       icon={BookHeart}
-                      route={route('favoritebooklist')}
+                      route={route('favorite.index')}
                       text="お気に入り本一覧"
                     />
                     <MobileMenuLink

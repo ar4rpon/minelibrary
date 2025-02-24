@@ -15,7 +15,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/favoritebooklist', [FavoriteBookController::class, 'index'])->middleware(['auth', 'verified'])->name('favoritebooklist');
+Route::get('/favoritebooklist', [FavoriteBookController::class, 'index'])->middleware(['auth', 'verified'])->name('favorite.index');
 Route::get('/bookshelflist', function () {
     return Inertia::render('BookShelf/BookShelfList');
 })->middleware(['auth', 'verified'])->name('bookshelflist');
