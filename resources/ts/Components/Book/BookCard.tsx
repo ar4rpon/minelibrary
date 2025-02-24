@@ -96,15 +96,20 @@ export default function BookCard({
           }`}
         >
           <div className="space-y-2">
-            <h2
-              className={`${
-                variant === 'favorite'
-                  ? 'text-xl font-bold sm:text-2xl'
-                  : 'w-full truncate text-xl font-bold sm:text-left sm:text-2xl'
-              }`}
-            >
-              {title}
-            </h2>
+            <div className="flex">
+              <h2
+                className={`${
+                  variant === 'favorite'
+                    ? 'text-xl font-bold sm:text-2xl'
+                    : 'w-full truncate text-xl font-bold sm:text-left sm:text-2xl'
+                }`}
+              >
+                {title}
+              </h2>
+              <div
+                className={`${variant === 'favorite' ? 'hidden md:block md:w-28' : ''}`}
+              ></div>
+            </div>
             <div
               className={`text-sm text-muted-foreground ${
                 variant === 'favorite' ? 'space-y-1' : 'space-y-1 sm:text-left'
