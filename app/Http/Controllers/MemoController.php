@@ -121,4 +121,28 @@ class MemoController extends Controller
             return response()->json(['error' => 'Failed to delete memo'], 500);
         }
     }
+
+    public function getBookMemos($isbn)
+    {
+        $user = Auth::user();
+        $memos = Memo::where('isbn', $isbn)
+            ->with('user')
+            // 登録ユーザーのメモを判別させる
+            ->orderByRaw("CASE WHEN user_id = ? THEN 0 ELSE 1 END", [$user->id])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($memo) use ($user) {
+                return [
+                    'id' => $memo->id,
+                    'memo' => $memo->memo,
+                    'memo_chapter' => $memo->memo_chapter,
+                    'memo_page' => $memo->memo_page,
+                    'user_name' => $memo->user->name,
+                    'is_current_user' => $memo->user_id === $user->id,
+                    'created_at' => $memo->created_at->format('Y-m-d'),
+                ];
+            });
+
+        return response()->json($memos);
+    }
 }

@@ -6,8 +6,19 @@ import {
   DialogTitle,
 } from '@/Components/ui/dialog';
 import { BookProps, DialogProps } from '@/types';
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { BaseDialog } from '../BaseDialog';
+
+interface Memo {
+  id: number;
+  memo: string;
+  memo_chapter?: number;
+  memo_page?: number;
+  user_name: string;
+  is_current_user: boolean;
+  created_at: string;
+}
 
 export function BookDetailDialog({
   title,
@@ -20,9 +31,21 @@ export function BookDetailDialog({
   itemCaption,
   isOpen,
   onClose,
-  onConfirm,
 }: BookProps & DialogProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [memos, setMemos] = useState<Memo[]>([]);
+
+  useEffect(() => {
+    if (isOpen && isbn) {
+      axios
+        .get(`/book/${isbn}/memos`)
+        .then((response) => {
+          setMemos(response.data);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch memos:', error);
+        });
+    }
+  }, [isOpen, isbn]);
 
   return (
     <BaseDialog isOpen={isOpen} onClose={onClose}>
@@ -52,10 +75,6 @@ export function BookDetailDialog({
                   ¥{itemPrice.toLocaleString()}
                 </p>
               </div>
-              {/* <FavoriteIcon
-                isFavorite={isFavorite}
-                onClick={() => setIsFavorite(!isFavorite)}
-              /> */}
             </div>
           </div>
 
@@ -78,10 +97,26 @@ export function BookDetailDialog({
 
           <div className="space-y-4">
             <h3 className="text-lg font-bold">ユーザーのメモ・感想</h3>
-            <div className="max-h-[300px] overflow-y-auto">
-              <p className="text-gray-600">
-                ここにユーザーのメモや感想が入ります。ダミーテキストダミーテキスト...
-              </p>
+            <div className="hidden-scrollbar max-h-[300px] overflow-y-auto">
+              {memos.map((memo) => (
+                <div
+                  key={memo.id}
+                  className={`mb-2 rounded p-2 ${memo.is_current_user ? 'bg-blue-100' : 'bg-gray-100'}`}
+                >
+                  <p className="text-sm font-bold">
+                    {memo.is_current_user ? 'あなたのメモ' : memo.user_name}
+                  </p>
+                  <p className="text-gray-600">{memo.memo}</p>
+                  {(memo.memo_chapter || memo.memo_page) && (
+                    <p className="text-xs text-gray-500">
+                      {memo.memo_chapter && `章: ${memo.memo_chapter}`}
+                      {memo.memo_chapter && memo.memo_page && ' | '}
+                      {memo.memo_page && `ページ: ${memo.memo_page}`}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-400">{memo.created_at}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
