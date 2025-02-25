@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('book_list_book', function (Blueprint $table) {
+        Schema::create('book_shelf_book', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('book_list_id')
+            $table->foreignId('book_shelf_id')
                 ->constrained()
                 ->onDelete('cascade');
             $table->string('isbn');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('book_list_book');
+        Schema::dropIfExists('book_shelf_book');
     }
 };

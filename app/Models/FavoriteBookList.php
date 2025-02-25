@@ -17,7 +17,7 @@ class FavoriteBookList extends Model
      * @var array<mixed>
      */
     protected $fillable = [
-        'book_list_id',
+        'book_shelf_id',
         'user_id',
     ];
 
@@ -51,7 +51,7 @@ class FavoriteBookList extends Model
     public static function addFavorite(int $bookListId, int $userId): self
     {
         return self::create([
-            'book_list_id' => $bookListId,
+            'book_shelf_id' => $bookListId,
             'user_id' => $userId,
         ]);
     }
