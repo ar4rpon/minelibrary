@@ -49,10 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware('guest')->group(function () {
-    Route::get('/privacy', function () {
-        return Inertia::render('PrivacyPolicy');
-    })->name('privacy');
-});
+Route::get('/privacy', function () {
+    return Inertia::render('PrivacyPolicy');
+})->name('privacy');
 
 require __DIR__ . '/auth.php';
