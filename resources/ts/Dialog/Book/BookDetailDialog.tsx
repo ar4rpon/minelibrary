@@ -23,12 +23,12 @@ interface Memo {
 export function BookDetailDialog({
   title,
   author,
-  publisherName,
-  salesDate,
-  itemPrice,
-  imageUrl,
+  publisher_name,
+  sales_date,
+  item_price,
+  image_url,
   isbn,
-  itemCaption,
+  item_caption,
   isOpen,
   onClose,
 }: BookProps & DialogProps) {
@@ -60,7 +60,7 @@ export function BookDetailDialog({
         <div className="space-y-6">
           <div className="mx-auto flex aspect-[3/4] w-full max-w-[200px] shrink-0 items-center justify-center overflow-hidden rounded-md border-2 border-gray-200 shadow-lg">
             <img
-              src={imageUrl || '/placeholder.svg'}
+              src={image_url || '/placeholder.svg'}
               alt={title}
               className="h-full w-full object-cover"
             />
@@ -70,9 +70,9 @@ export function BookDetailDialog({
             <h2 className="text-2xl font-bold">{title}</h2>
             <div className="flex justify-between">
               <div className="space-y-1 text-sm text-muted-foreground">
-                <p>{`${salesDate} / ${author} / ${publisherName}`}</p>
+                <p>{`${sales_date} / ${author} / ${publisher_name}`}</p>
                 <p className="text-lg text-red-600">
-                  ¥{itemPrice.toLocaleString()}
+                  ¥{item_price.toLocaleString()}
                 </p>
               </div>
             </div>
@@ -91,7 +91,7 @@ export function BookDetailDialog({
           <div className="space-y-4">
             <h3 className="text-lg font-bold">書籍説明</h3>
             <div className="prose hidden-scrollbar max-h-[300px] overflow-y-auto">
-              <p className="text-gray-700">{itemCaption}</p>
+              <p className="text-gray-700">{item_caption}</p>
             </div>
           </div>
 

@@ -132,8 +132,8 @@ const SearchPage = () => {
             <SelectItem value="sales">売れている順</SelectItem>
             <SelectItem value="-releaseDate">発売日が新しい順</SelectItem>
             <SelectItem value="+releaseDate">発売日が古い順</SelectItem>
-            <SelectItem value="+itemPrice">価格が安い順</SelectItem>
-            <SelectItem value="-itemPrice">価格が高い順</SelectItem>
+            <SelectItem value="+item_price">価格が安い順</SelectItem>
+            <SelectItem value="-item_price">価格が高い順</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -145,12 +145,12 @@ const SearchPage = () => {
               key={item.Item.isbn}
               title={item.Item.title}
               author={item.Item.author}
-              publisherName={item.Item.publisherName || ''}
-              salesDate={item.Item.salesDate}
-              itemPrice={item.Item.itemPrice}
+              publisher_name={item.Item.publisher_name || ''}
+              sales_date={item.Item.sales_date}
+              item_price={item.Item.item_price}
               isbn={item.Item.isbn}
-              imageUrl={item.Item.largeImageUrl || ''}
-              itemCaption={item.Item.itemCaption || '説明はありません。'}
+              image_url={item.Item.image_url || ''}
+              item_caption={item.Item.item_caption || '説明はありません。'}
             />
           ))
         ) : (

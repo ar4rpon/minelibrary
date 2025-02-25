@@ -45,6 +45,13 @@ class BookSearchController extends Controller
                     $item['Item']['largeImageUrl']
                 );
             }
+            // 変数名を統一するためにキーを追加
+            $item['Item']['publisher_name'] = $item['Item']['publisherName'];
+            $item['Item']['item_caption'] = $item['Item']['itemCaption'];
+            $item['Item']['sales_date'] = $item['Item']['salesDate'];
+            $item['Item']['item_price'] = $item['Item']['itemPrice'];
+            $item['Item']['image_url'] = $item['Item']['largeImageUrl'];
+
             return $item;
         }, $results);
 

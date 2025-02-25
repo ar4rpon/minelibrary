@@ -93,7 +93,7 @@ const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
         <div className="flex flex-row gap-4">
           <div className="flex items-center">
             <img
-              src={book.imageUrl}
+              src={book.image_url}
               alt={book.title}
               loading="lazy"
               className="h-24 w-20 rounded-md border-2 object-cover"

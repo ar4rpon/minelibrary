@@ -18,12 +18,12 @@ interface UnifiedBookCardProps extends BookProps {
 export default function BookCard({
   title,
   author,
-  publisherName,
-  salesDate,
-  itemPrice,
+  publisher_name,
+  sales_date,
+  item_price,
   isbn,
-  imageUrl,
-  itemCaption,
+  image_url,
+  item_caption,
   variant = 'default',
   readStatus,
 }: UnifiedBookCardProps) {
@@ -50,11 +50,11 @@ export default function BookCard({
       isbn,
       title,
       author,
-      publisher_name: publisherName,
-      sales_date: salesDate,
-      image_url: imageUrl,
-      item_caption: itemCaption,
-      item_price: itemPrice,
+      publisher_name,
+      sales_date,
+      image_url,
+      item_caption,
+      item_price,
     });
   };
 
@@ -101,30 +101,27 @@ export default function BookCard({
         )}
 
         <div
-          className={`mx-auto aspect-[3/4] w-full max-w-[200px] overflow-hidden rounded-md border-2 border-gray-200 shadow-lg ${
-            variant === 'favorite' ? '' : 'shrink-0'
-          }`}
+          className={`mx-auto aspect-[3/4] w-full max-w-[200px] overflow-hidden rounded-md border-2 border-gray-200 shadow-lg ${variant === 'favorite' ? '' : 'shrink-0'
+            }`}
         >
           <img
-            src={imageUrl || '/placeholder.svg'}
+            src={image_url || '/placeholder.svg'}
             alt={title}
             className="h-full w-full object-cover"
           />
         </div>
 
         <div
-          className={`flex flex-col justify-between ${
-            variant === 'favorite' ? 'space-y-4' : 'flex-1 space-y-4'
-          }`}
+          className={`flex flex-col justify-between ${variant === 'favorite' ? 'space-y-4' : 'flex-1 space-y-4'
+            }`}
         >
           <div className="space-y-2">
             <div className="flex">
               <h2
-                className={`${
-                  variant === 'favorite'
-                    ? 'text-xl font-bold sm:text-2xl'
-                    : 'w-full truncate text-xl font-bold sm:text-left sm:text-2xl'
-                }`}
+                className={`${variant === 'favorite'
+                  ? 'text-xl font-bold sm:text-2xl'
+                  : 'w-full truncate text-xl font-bold sm:text-left sm:text-2xl'
+                  }`}
               >
                 {title}
               </h2>
@@ -133,16 +130,15 @@ export default function BookCard({
               ></div>
             </div>
             <div
-              className={`text-sm text-muted-foreground ${
-                variant === 'favorite' ? 'space-y-1' : 'space-y-1 sm:text-left'
-              }`}
+              className={`text-sm text-muted-foreground ${variant === 'favorite' ? 'space-y-1' : 'space-y-1 sm:text-left'
+                }`}
             >
               <p className={variant === 'default' ? 'w-full truncate' : ''}>
-                {`${salesDate} / ${author} / ${publisherName}`}
+                {`${sales_date} / ${author} / ${publisher_name}`}
               </p>
               {variant === 'default' && (
                 <p className="text-lg font-semibold text-red-600">
-                  ¥{itemPrice.toLocaleString()}
+                  ¥{item_price.toLocaleString()}
                 </p>
               )}
             </div>
@@ -226,15 +222,15 @@ export default function BookCard({
         <BookDetailDialog
           title={title}
           author={author}
-          publisherName={publisherName}
-          salesDate={salesDate}
-          itemPrice={itemPrice}
+          publisher_name={publisher_name}
+          sales_date={sales_date}
+          item_price={item_price}
           isbn={isbn}
-          imageUrl={imageUrl}
+          image_url={image_url}
           isOpen={detailBookDialogOpen}
           onClose={() => setDetailBookDialogOpen(false)}
           onConfirm={confirmDetailBook}
-          itemCaption={itemCaption}
+          item_caption={item_caption}
         />
         <CreateMemoDialog
           isOpen={createDialogOpen}
