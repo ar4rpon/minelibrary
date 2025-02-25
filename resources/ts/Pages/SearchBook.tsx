@@ -53,7 +53,7 @@ const SearchPage = () => {
   const searchBooks = () => {
     setLoading(true);
     router.get(
-      '/searchbook',
+      route('book.search'),
       {
         keyword: searchTerm,
         page: currentPage,

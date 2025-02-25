@@ -108,12 +108,12 @@ export default function Navigation() {
             />
             <MemoizedMenuItem
               icon={Search}
-              route={route('searchbook')}
+              route={route('book.search')}
               text="本を検索する"
             />
             <MemoizedMenuItem
               icon={Library}
-              route={route('bookshelflist')}
+              route={route('book-shelf.list')}
               text="本棚一覧"
             />
             <MemoizedMenuItem
@@ -209,12 +209,12 @@ export default function Navigation() {
                     />
                     <MobileMenuLink
                       icon={Search}
-                      route={route('searchbook')}
+                      route={route('book.search')}
                       text="本を検索する"
                     />
                     <MobileMenuLink
                       icon={Library}
-                      route={route('bookshelflist')}
+                      route={route('book-shelf.list')}
                       text="本棚一覧"
                     />
                     <MobileMenuLink
