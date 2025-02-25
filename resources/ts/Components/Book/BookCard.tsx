@@ -7,9 +7,11 @@ import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
 import { BookProps, ReadStatus } from '@/types';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
-import { Book, BookOpen, Edit, Heart, Library } from 'lucide-react';
+import { Book, BookOpen, Edit, Heart, Library, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { ReadStatusBadge } from './ReadStatusBadge';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/Components/ui/dropdown-menu';
+import { CreateBookShelfDialog } from '@/Dialog/BookShelf/CreateBookShelf';
 
 interface UnifiedBookCardProps extends BookProps {
   variant?: 'favorite' | 'default' | 'book-shelf';
@@ -30,10 +32,14 @@ export default function BookCard({
   const [isFavorite, setIsFavorite] = useState(false);
   const [detailBookDialogOpen, setDetailBookDialogOpen] = useState(false);
   const [readStatusDialogOpen, setReadStatusDialogOpen] = useState(false);
+  const [createBookShelfDialogOpen, setCreateBookShelfDialogOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<ReadStatus>(
     readStatus ?? 'want_read',
   );
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+
+  // 動作確認用変数
+  const bookshelves = ["本棚1本棚1本棚1本棚1本棚1本棚1本棚1本棚1本棚1本棚1", "本棚2", "本棚3"];
 
   const handleDetailBook = () => setDetailBookDialogOpen(true);
   const confirmDetailBook = () => setDetailBookDialogOpen(false);
@@ -187,15 +193,33 @@ export default function BookCard({
                   <Heart
                     className={`mr-2 h-4 w-4 ${isFavorite ? 'fill-current' : ''}`}
                   />
-                  {isFavorite ? 'お気に入り解除' : 'お気に入り'}
+                  <p className="hidden sm:inline">{isFavorite ? 'お気に入り解除' : 'お気に入り'}</p>
+                  <p className="sm:hidden">{isFavorite ? '解除' : '追加'}</p>
+
                 </Button>
 
                 {variant !== 'book-shelf' && (
-                  <Button variant="secondary" size="sm" className="flex-1">
-                    <Library className="mr-2 h-4 w-4" />
-                    <span className="hidden sm:inline">本棚に追加</span>
-                    <span className="sm:hidden">追加</span>
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="secondary" size="sm" className="flex-1">
+                        <Library className="mr-2 h-4 w-4" />
+                        <span className="hidden sm:inline">本棚に追加</span>
+                        <span className="sm:hidden">追加</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                      {bookshelves.map((shelf, index) => (
+                        <DropdownMenuItem key={index} className="truncate items-center flex">
+                          <Library />
+                          {shelf.length > 6 ? shelf.slice(0, 12) + '...' : shelf}
+                        </DropdownMenuItem>
+                      ))}
+                      <DropdownMenuItem className='items-center flex' onClick={() => setCreateBookShelfDialogOpen(true)}>
+                        <Plus />
+                        本棚を作成
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
                 {variant !== 'favorite' && (
                   <Button variant="secondary" size="sm" className="flex-1">
@@ -249,6 +273,9 @@ export default function BookCard({
           onMemoConfirm={confirmCreate}
           isbn={isbn}
         />
+        <CreateBookShelfDialog
+          isOpen={createBookShelfDialogOpen}
+          onClose={() => setCreateBookShelfDialogOpen(false)} />
       </div>
     </Card>
   );
