@@ -16,7 +16,7 @@ class BookList extends Model
      * @var array<string>
      */
     protected $fillable = [
-        'book_list_name',
+        'book_shelf_name',
         'description',
         'user_id',
         'is_public',
@@ -38,7 +38,7 @@ class BookList extends Model
      */
     public function books(): BelongsToMany
     {
-        return $this->belongsToMany(Book::class, 'book_list_book', 'book_list_id', 'isbn');
+        return $this->belongsToMany(Book::class, 'book_shelf_book', 'book_shelf_id', 'isbn');
     }
 
     /**
@@ -60,7 +60,7 @@ class BookList extends Model
      */
     public function updateName(string $name): bool
     {
-        return $this->update(['book_list_name' => $name]);
+        return $this->update(['book_shelf_name' => $name]);
     }
 
     /**

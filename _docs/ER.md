@@ -43,9 +43,9 @@ datetime created_at
 datetime updated_at
 }
 
-book_list {
+book_shelf {
 int id pk
-string book_list_name
+string book_shelf_name
 string description
 string user_id fk
 boolean is_public
@@ -53,18 +53,18 @@ datetime created_at
 datetime updated_at
 }
 
-book_list_book {
+book_shelf_book {
 int id pk
-int book_list_id fk
+int book_shelf_id fk
 string isbn fk
 datetime created_at
 datetime updated_at
 }
 
-favorite_book_list {
+favorite_book_shelf {
 int id pk
 int user_id fk
-int book_list_id fk
+int book_shelf_id fk
 datetime created_at
 datetime updated_at
 }
@@ -72,7 +72,7 @@ datetime updated_at
 share_link {
 int id pk
 string share_token_url
-int book_list_id fk
+int book_shelf_id fk
 datetime expiry_date
 datetime created_at
 datetime updated_at
@@ -80,12 +80,12 @@ datetime updated_at
 
 users ||--o{ memo : "作成する"
 users ||--o{ favorite_book : "お気に入りにする"
-users ||--o{ book_list : "作成する"
-users ||--o{ favorite_book_list : "お気に入りにする"
+users ||--o{ book_shelf : "作成する"
+users ||--o{ favorite_book_shelf : "お気に入りにする"
 book ||--o{ favorite_book : "登録される"
 book ||--o{ memo : "追加される"
-book_list ||--o{ book_list_book : "含む"
-book ||--o{ book_list_book : "登録される"
-book_list ||--o{ favorite_book_list : "お気に入りにされる"
-book_list ||--o| share_link : "共有される"
+book_shelf ||--o{ book_shelf_book : "含む"
+book ||--o{ book_shelf_book : "登録される"
+book_shelf ||--o{ favorite_book_shelf : "お気に入りにされる"
+book_shelf ||--o| share_link : "共有される"
 ```

@@ -15,7 +15,7 @@ class ShareLink extends Model
      */
     protected $fillable = [
         'share_link_url',
-        'book_list_id',
+        'book_shelf_id',
     ];
 
     /**
@@ -25,7 +25,7 @@ class ShareLink extends Model
      */
     protected $casts = [
         'expiry_date' => 'date',
-        'book_list_id' => 'integer',
+        'book_shelf_id' => 'integer',
     ];
 
     /**
@@ -41,17 +41,17 @@ class ShareLink extends Model
     /**
      * ブックリストから未ログインユーザーが閲覧できるURLを生成する
      *
-     * @param int $book_list_id
+     * @param int $book_shelf_id
      * @return string
      */
-    public function generateShareLink(int $book_list_id): string
+    public function generateShareLink(int $book_shelf_id): string
     {
         $uniqueToken = bin2hex(random_bytes(16));
         $expiryDate = now()->addDays(7);
 
         $shareLink = $this->create([
             'share_token' => $uniqueToken,
-            'book_list_id' => $book_list_id,
+            'book_shelf_id' => $book_shelf_id,
             'expiry_date' => $expiryDate,
         ]);
 
