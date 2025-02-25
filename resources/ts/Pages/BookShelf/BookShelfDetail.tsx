@@ -1,5 +1,6 @@
 import BookCard from '@/Components/Book/BookCard';
 import BookShelfDescription from '@/Components/BookShelf/BookShelfDescription';
+import { AddBookDialog } from '@/Dialog/BookShelf/AddBookDialog';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
 
@@ -85,6 +86,7 @@ export default function BookShelfDetail() {
           BookShelfDetail
         </h2>
       </div> */}
+      <AddBookDialog />
 
       <BookShelfDescription />
       <div className="mt-8 grid grid-cols-1 gap-y-4">
