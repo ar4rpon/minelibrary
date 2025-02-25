@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Collection;
 
-class FavoriteBookList extends Model
+class FavoriteBookShelf extends Model
 {
     use HasFactory;
 
@@ -36,22 +36,22 @@ class FavoriteBookList extends Model
      *
      * @return BelongsTo
      */
-    public function bookList(): BelongsTo
+    public function Bookshelf(): BelongsTo
     {
-        return $this->belongsTo(BookList::class);
+        return $this->belongsTo(BookShelf::class);
     }
 
     /**
      * お気に入りのブックリストを追加する
      *
-     * @param int $bookListId
+     * @param int $BookShelfId
      * @param int $userId
      * @return self
      */
-    public static function addFavorite(int $bookListId, int $userId): self
+    public static function addFavorite(int $BookShelfId, int $userId): self
     {
         return self::create([
-            'book_shelf_id' => $bookListId,
+            'book_shelf_id' => $BookShelfId,
             'user_id' => $userId,
         ]);
     }
