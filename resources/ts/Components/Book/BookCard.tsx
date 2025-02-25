@@ -221,7 +221,13 @@ export default function BookCard({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
                       {bookshelves.map((shelf, index) => (
-                        <DropdownMenuItem key={index} className="truncate items-center flex">
+                        <DropdownMenuItem key={index} className="truncate items-center flex"
+                          onClick={() => {
+                            axios.post('/book-shelf/add/books', {
+                              book_shelf_id: 1, // test用で固定１
+                              isbns: [isbn] // 現在のISBNのみの配列
+                            });
+                          }}>
                           <Library />
                           {shelf.length > 6 ? shelf.slice(0, 12) + '...' : shelf}
                         </DropdownMenuItem>

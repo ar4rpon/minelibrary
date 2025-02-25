@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
     // 本棚処理
     Route::prefix('book-shelf')->group(function () {
         Route::post('/create', [BookShelfController::class, 'store'])->name('book-shelf.store');
+        Route::post('/add/books', [BookShelfController::class, 'addBooks'])->name('book-shelf.add.books');
     });
 
     // プロフィール処理

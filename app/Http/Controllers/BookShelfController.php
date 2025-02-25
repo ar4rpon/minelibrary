@@ -27,4 +27,21 @@ class BookShelfController extends Controller
         );
         return $bookShelf;
     }
+
+    public function addBooks(Request $request)
+    {
+        $request->validate([
+            'book_shelf_id' => 'required|exists:book_shelves,id',
+            'isbns' => 'required|array',
+            'isbns.*' => 'required|string|exists:books,isbn'
+        ]);
+
+        $bookShelf = BookShelf::findOrFail($request->book_shelf_id);
+
+        foreach ($request->isbns as $isbn) {
+            $bookShelf->addBook($isbn);
+        }
+
+        return response()->json(['message' => 'Books added successfully'], 200);
+    }
 }

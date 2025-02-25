@@ -104,7 +104,7 @@ class BookShelf extends Model
      */
     public function addBook(string $isbn): void
     {
-        $this->books()->attach($isbn);
+        $this->books()->attach($isbn, ['created_at' => now()]);
     }
 
     /**
