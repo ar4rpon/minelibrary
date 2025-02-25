@@ -42,12 +42,12 @@ export default function FavoriteBookList() {
               key={item.isbn}
               title={item.book.title}
               author={item.book.author}
-              publisherName={item.book.publisher_name || ''}
-              salesDate={item.book.sales_date}
-              imageUrl={item.book.image_url || ''}
-              itemPrice={item.book.item_price}
+              publisher_name={item.book.publisher_name || ''}
+              sales_date={item.book.sales_date}
+              image_url={item.book.image_url || ''}
+              item_price={item.book.item_price}
               isbn={item.isbn}
-              itemCaption={item.book.item_caption || '説明はありません。'}
+              item_caption={item.book.item_caption || '説明はありません。'}
               variant="favorite"
               readStatus={item.read_status}
             />

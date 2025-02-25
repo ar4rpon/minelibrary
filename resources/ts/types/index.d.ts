@@ -19,11 +19,11 @@ export interface BookProps {
   isbn: string;
   title: string;
   author: string;
-  publisherName: string;
-  itemCaption: string;
-  salesDate: string;
-  itemPrice: number;
-  imageUrl: string;
+  publisher_name: string;
+  item_caption: string;
+  sales_date: string;
+  item_price: number;
+  image_url: string;
   readStatus?: ReadStatus;
   // API用
   largeImageUrl?: string;

@@ -46,11 +46,11 @@ class MemoController extends Controller
                 })->toArray(),
                 'book' => array_merge($group->first()->book->toArray(), [
                     'isbn' => $group->first()->book->isbn,
-                    'publisherName' => $group->first()->book->publisher_name,
-                    'itemCaption' => $group->first()->book->item_caption,
-                    'salesDate' => $group->first()->book->sales_date,
-                    'itemPrice' => $group->first()->book->item_price,
-                    'imageUrl' => $group->first()->book->image_url,
+                    'publisher_name' => $group->first()->book->publisher_name,
+                    'item_caption' => $group->first()->book->item_caption,
+                    'sales_date' => $group->first()->book->sales_date,
+                    'item_price' => $group->first()->book->item_price,
+                    'image_url' => $group->first()->book->image_url,
                 ]),
             ];
         })->values();
