@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 import { ReadStatusBadge } from './ReadStatusBadge';
 
 interface UnifiedBookCardProps extends BookProps {
-  variant?: 'favorite' | 'default';
+  variant?: 'favorite' | 'default' | 'book-shelf';
 }
 
 export default function BookCard({
@@ -87,21 +87,21 @@ export default function BookCard({
 
   return (
     <Card
-      className={`mx-auto w-full ${variant === 'favorite' ? 'p-4' : 'max-w-4xl overflow-hidden p-4 md:p-6'}`}
+      className={`mx-auto w-full ${variant === 'favorite' || variant === 'book-shelf' ? 'p-4' : 'max-w-4xl overflow-hidden p-4 md:p-6'}`}
     >
       <div
         className={
-          variant === 'favorite'
+          variant === 'favorite' || variant === 'book-shelf'
             ? 'relative grid gap-4 sm:grid-cols-[200px_1fr]'
             : 'flex flex-col gap-4 md:flex-row lg:flex-col'
         }
       >
-        {variant === 'favorite' && selectedStatus && (
+        {variant === 'favorite' || variant === 'book-shelf' && selectedStatus && (
           <ReadStatusBadge status={selectedStatus} />
         )}
 
         <div
-          className={`mx-auto aspect-[3/4] w-full max-w-[200px] overflow-hidden rounded-md border-2 border-gray-200 shadow-lg ${variant === 'favorite' ? '' : 'shrink-0'
+          className={`mx-auto aspect-[3/4] w-full max-w-[200px] overflow-hidden rounded-md border-2 border-gray-200 shadow-lg ${variant === 'favorite' || variant === 'book-shelf' ? '' : 'shrink-0'
             }`}
         >
           <img
@@ -112,13 +112,13 @@ export default function BookCard({
         </div>
 
         <div
-          className={`flex flex-col justify-between ${variant === 'favorite' ? 'space-y-4' : 'flex-1 space-y-4'
+          className={`flex flex-col justify-between ${variant === 'favorite' || variant === 'book-shelf' ? 'space-y-4' : 'flex-1 space-y-4'
             }`}
         >
           <div className="space-y-2">
             <div className="flex">
               <h2
-                className={`${variant === 'favorite'
+                className={`${variant === 'favorite' || variant === 'book-shelf'
                   ? 'text-xl font-bold sm:text-2xl'
                   : 'w-full truncate text-xl font-bold sm:text-left sm:text-2xl'
                   }`}
@@ -126,11 +126,11 @@ export default function BookCard({
                 {title}
               </h2>
               <div
-                className={`${variant === 'favorite' ? 'hidden md:block md:w-28' : ''}`}
+                className={`${variant === 'favorite' || variant === 'book-shelf' ? 'hidden md:block md:w-28' : ''}`}
               ></div>
             </div>
             <div
-              className={`text-sm text-muted-foreground ${variant === 'favorite' ? 'space-y-1' : 'space-y-1 sm:text-left'
+              className={`text-sm text-muted-foreground ${variant === 'favorite' || variant === 'book-shelf' ? 'space-y-1' : 'space-y-1 sm:text-left'
                 }`}
             >
               <p className={variant === 'default' ? 'w-full truncate' : ''}>
@@ -144,7 +144,7 @@ export default function BookCard({
             </div>
           </div>
 
-          {variant === 'favorite' ? (
+          {variant === 'favorite' || variant === 'book-shelf' ? (
             <>
               <div className="grid gap-2 sm:grid-cols-2">
                 <Button
@@ -189,11 +189,21 @@ export default function BookCard({
                   />
                   {isFavorite ? 'お気に入り解除' : 'お気に入り'}
                 </Button>
-                <Button variant="secondary" size="sm" className="flex-1">
-                  <Library className="mr-2 h-4 w-4" />
-                  <span className="hidden sm:inline">本棚に追加</span>
-                  <span className="sm:hidden">本棚</span>
-                </Button>
+
+                {variant !== 'book-shelf' && (
+                  <Button variant="secondary" size="sm" className="flex-1">
+                    <Library className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">本棚に追加</span>
+                    <span className="sm:hidden">追加</span>
+                  </Button>
+                )}
+                {variant !== 'favorite' && (
+                  <Button variant="secondary" size="sm" className="flex-1">
+                    <Library className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">本棚から削除する</span>
+                    <span className="sm:hidden">削除</span>
+                  </Button>
+                )}
               </div>
             </>
           ) : (
@@ -207,6 +217,7 @@ export default function BookCard({
               />
             </div>
           )}
+
         </div>
 
         {readStatus && (

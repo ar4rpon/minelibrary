@@ -12,13 +12,13 @@ import { EditBookShelfDialog } from '@/Dialog/BookShelf/EditBookShelfDialog';
 import { DeleteBookShelfDialog } from '@/Dialog/BookShelf/DeleteBookShelfDialog';
 import { useState } from 'react';
 
-type StackedImageCardProps = {
-  image: string;
+type ShelfCardProps = {
+  image?: string;
   title: string;
   description: string;
 };
 
-function BookShelfCard({ image, title, description }: StackedImageCardProps) {
+function BookShelfCard({ image, title, description }: ShelfCardProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
@@ -80,7 +80,7 @@ function BookShelfCard({ image, title, description }: StackedImageCardProps) {
             <CardDescription className="text-sm text-gray-600">
               {description}
             </CardDescription>
-            <Link href="/bookshelfdetail"><Button className='mt-4 text-sm'>詳細を見る</Button></Link>
+            <Link href="/book-shelf/detail"><Button className='mt-4 text-sm'>詳細を見る</Button></Link>
           </div>
         </div>
         <DeleteBookShelfDialog

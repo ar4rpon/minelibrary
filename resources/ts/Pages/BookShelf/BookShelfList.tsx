@@ -38,27 +38,10 @@ export default function BookShelfList() {
           title={testData.title}
           description={testData.description}
         />
-        <BookShelfCard
-          image={testData.image}
-          title={testData.title}
-          description={testData.description}
-        />
-        <BookShelfCard
-          image={testData.image}
-          title={testData.title}
-          description={testData.description}
-        />
-        <BookShelfCard
-          image={testData.image}
-          title={testData.title}
-          description={testData.description}
-        />
-        <BookShelfCard
-          image={testData.image}
-          title={testData.title}
-          description={testData.description}
-        />
+
       </div>
+
+
       <CreateBookShelfDialog
         isOpen={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
