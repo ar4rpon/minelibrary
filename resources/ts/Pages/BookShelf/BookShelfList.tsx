@@ -5,21 +5,33 @@ import { Head } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 import { CreateBookShelfDialog } from '@/Dialog/BookShelf/CreateBookShelf';
 import { useState } from 'react';
+import axios from 'axios';
 
 export default function BookShelfList() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const handleCreate = () => {
     setCreateDialogOpen(true);
   };
-  const confirmCreate = () => {
-    console.log('Create');
+
+  const confirmBookShelfCreate = async (
+    BookShelfName: string,
+    Discription: string,
+  ) => {
+    const req = await axios.post(`/book-shelf/create`, {
+      book_shelf_name: BookShelfName,
+      description: Discription,
+    });
+    console.log(req);
     setCreateDialogOpen(false);
-  };
+  }
+
   const testData = {
     image: 'https://shop.r10s.jp/book/cabinet/0285/9784798070285_1_4.jpg',
     title: 'テストタイトル',
     description: 'これはテストの説明です。',
   };
+
+
 
 
   return (
@@ -45,7 +57,7 @@ export default function BookShelfList() {
       <CreateBookShelfDialog
         isOpen={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
-        onConfirm={confirmCreate}
+        onCreateBookShelfConfirm={confirmBookShelfCreate}
       />
     </DefaultLayout>
   );

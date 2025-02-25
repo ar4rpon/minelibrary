@@ -64,6 +64,18 @@ export default function BookCard({
     });
   };
 
+  const confirmBookShelfCreate = async (
+    BookShelfName: string,
+    Discription: string,
+  ) => {
+    const req = await axios.post(`/book-shelf/create`, {
+      book_shelf_name: BookShelfName,
+      description: Discription,
+    });
+    console.log(req);
+    setCreateDialogOpen(false);
+  }
+
   const confirmCreate = async (
     memo: string,
     chapter?: number,
@@ -275,7 +287,9 @@ export default function BookCard({
         />
         <CreateBookShelfDialog
           isOpen={createBookShelfDialogOpen}
-          onClose={() => setCreateBookShelfDialogOpen(false)} />
+          onClose={() => setCreateBookShelfDialogOpen(false)}
+          onCreateBookShelfConfirm={confirmBookShelfCreate}
+        />
       </div>
     </Card>
   );

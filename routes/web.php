@@ -6,6 +6,8 @@ use Inertia\Inertia;
 use App\Http\Controllers\BookSearchController;
 use App\Http\Controllers\FavoriteBookController;
 use App\Http\Controllers\MemoController;
+use App\Models\BookShelf;
+use App\Http\Controllers\BookShelfController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -41,6 +43,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/create', [MemoController::class, 'store'])->name('memo.store');
         Route::put('/{memo_id}', [MemoController::class, 'update'])->name('memo.update');
         Route::delete('/{memo_id}', [MemoController::class, 'destroy'])->name('memo.destroy');
+    });
+
+    // 本棚処理
+    Route::prefix('book-shelf')->group(function () {
+        Route::post('/create', [BookShelfController::class, 'store'])->name('book-shelf.store');
     });
 
     // プロフィール処理
