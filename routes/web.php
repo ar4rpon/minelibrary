@@ -51,9 +51,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/create', [BookShelfController::class, 'store'])->name('book-shelf.store');
         Route::get('/get/mylist', [BookShelfController::class, 'getMyAll'])->name('book-shelf.get.mylist');
         Route::get('/get/books', [BookShelfController::class, 'getBooks'])->name('book-shelf.get.books');
+        Route::get('/get/favorite-books', [FavoriteBookController::class, 'getFavorites'])->name('book-shelf.get.favorite.books');
         Route::post('/add/books', [BookShelfController::class, 'addBooks'])->name('book-shelf.add.books');
+        Route::put('/update/{id}', [BookShelfController::class, 'update'])->name('book-shelf.update.book');
         Route::post('/{isbn}', [BookShelfController::class, 'removeBook'])->name('book-shelf.remove.book');
+        Route::delete('/delete/{id}', [BookShelfController::class, 'destroy'])->name('book-shelf.destroy');
     });
+
 
     // プロフィール処理
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

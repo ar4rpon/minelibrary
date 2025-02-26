@@ -12,9 +12,9 @@ export function DeleteBookDialog({ isOpen, onClose, onDeleteBookConfirm }: Creat
     <BaseDialog isOpen={isOpen} onClose={onClose}>
       <DialogHeader>
         <DialogTitle>書籍の削除</DialogTitle>
-        <DialogDescription>
-          この書籍を本棚から削除してもよろしいですか？この操作は取り消せません。
-          （お気に入り書籍には残ります）
+        <DialogDescription >
+          この書籍を本棚から削除してもよろしいですか？<br />
+          この操作は取り消せません。（お気に入り書籍には残ります）
         </DialogDescription>
       </DialogHeader>
       <DialogFooter>

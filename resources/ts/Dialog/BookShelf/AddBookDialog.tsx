@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/Components/ui/button";
 import {
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/Components/ui/dialog";
 import { BaseDialog } from '@/Dialog/BaseDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/Components/ui/table";
 import { Checkbox } from "@/Components/ui/checkbox";
-import { ReadStatus } from '@/types';
+import { DialogProps, ReadStatus } from '@/types';
+import axios from 'axios';
 
 type Book = {
   isbn: string;
   title: string;
   author: string;
-  publish_date: string;
+  sales_date: string;
   read_status: ReadStatus;
 };
 
@@ -29,39 +31,16 @@ const statusConfig = {
   },
 };
 
-const data: Book[] = [
-  {
-    isbn: "9784123456789",
-    title: "React入門",
-    author: "山田太郎",
-    publish_date: "2023-01-01",
-    read_status: "done_read",
-  },
-  {
-    isbn: "9784987654321",
-    title: "TypeScript実践ガイド",
-    author: "鈴木花子",
-    publish_date: "2023-02-15",
-    read_status: "done_read",
-  },
-  {
-    isbn: "9784567890123",
-    title: "Next.js開発入門",
-    author: "佐藤次郎",
-    publish_date: "2023-03-30",
-    read_status: "reading",
-  },
-];
-
 function DataTable({ data, onSelect }: { data: Book[], onSelect: (isbn: string, isChecked: boolean) => void }) {
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border overflow-hidden w-full">
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[50px]"></TableHead>
-            <TableHead>書籍タイトル</TableHead>
-            <TableHead>読書ステータス</TableHead>
+            <TableHead className='w-4/6'>書籍タイトル</TableHead>
+            <TableHead className='px-1 w-1/6'>著者</TableHead>
+            <TableHead className='px-1 w-1/6'>読書ステータス</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -72,8 +51,9 @@ function DataTable({ data, onSelect }: { data: Book[], onSelect: (isbn: string, 
                   onCheckedChange={(checked) => onSelect(book.isbn, checked as boolean)}
                 />
               </TableCell>
-              <TableCell>{book.title}</TableCell>
-              <TableCell>{statusConfig[book.read_status].text}</TableCell>
+              <TableCell className=' w-4/6'>{book.title}</TableCell>
+              <TableCell className='px-1 w-1/6'>{book.author}</TableCell>
+              <TableCell className='px-1 w-1/6'>{statusConfig[book.read_status].text}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -81,12 +61,37 @@ function DataTable({ data, onSelect }: { data: Book[], onSelect: (isbn: string, 
     </div>
   );
 }
+interface AddBookDialogProps extends DialogProps {
+  AddBooksConfirm: any;
+}
 
-export function AddBookDialog() {
-  const [isOpen, setIsOpen] = useState(false);
+export function AddBookDialog({ isOpen, onClose, AddBooksConfirm }: AddBookDialogProps) {
+
   const [selectedBooks, setSelectedBooks] = useState<string[]>([]);
+  const [favoriteBooks, setFavoriteBooks] = useState<Book[]>([]);
 
-  const handleClose = () => setIsOpen(false);
+  useEffect(() => {
+    if (isOpen) {
+      fetchFavoriteBooks();
+    }
+  }, [isOpen]);
+
+  const fetchFavoriteBooks = async () => {
+    try {
+      const response = await axios.get('/book-shelf/get/favorite-books');
+      setFavoriteBooks(response.data.map((favorite: any) => ({
+        isbn: favorite.isbn,
+        title: favorite.book.title,
+        author: favorite.book.author,
+        sales_date: favorite.book.sales_date,
+        read_status: favorite.read_status,
+      })));
+    } catch (error) {
+      console.error('Failed to fetch favorite books:', error);
+    }
+  };
+
+
 
   const handleSelect = (isbn: string, isChecked: boolean) => {
     setSelectedBooks(prev =>
@@ -97,24 +102,27 @@ export function AddBookDialog() {
   };
 
   const handleAddBooks = () => {
-    console.log('Selected books:', selectedBooks);
-    handleClose();
+    AddBooksConfirm(selectedBooks);
+    // 値を初期化
+    setSelectedBooks([]);
   };
 
   return (
-    <>
-      <Button variant="outline" onClick={() => setIsOpen(true)}>本棚に追加</Button>
-      <BaseDialog isOpen={isOpen} onClose={handleClose}>
-        <DialogHeader>
-          <DialogTitle>本棚に書籍を追加</DialogTitle>
-        </DialogHeader>
-        <div className="py-4">
-          <DataTable data={data} onSelect={handleSelect} />
-        </div>
-        <div className="flex justify-end mt-4">
-          <Button onClick={handleAddBooks}>選択した本を追加</Button>
-        </div>
-      </BaseDialog>
-    </>
+
+    <BaseDialog isOpen={isOpen} onClose={onClose}>
+      <DialogHeader>
+        <DialogTitle>本棚に書籍を追加</DialogTitle>
+      </DialogHeader>
+      <div className="py-4 h-[90vh] w-full overflow-auto hidden-scrollbar ">
+        <DataTable data={favoriteBooks} onSelect={handleSelect} />
+      </div>
+      <DialogFooter className="sm:justify-end">
+        <Button variant="outline" onClick={onClose}>
+          キャンセル
+        </Button>
+        <Button onClick={handleAddBooks}>選択した本を追加</Button>
+      </DialogFooter>
+    </BaseDialog>
+
   );
 }

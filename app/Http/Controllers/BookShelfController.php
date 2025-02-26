@@ -62,6 +62,19 @@ class BookShelfController extends Controller
         return $bookShelf;
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'book_shelf_name' => 'required|string',
+            'description' => 'required|string',
+            'is_public' => 'required|boolean',
+        ]);
+        $bookShelf = BookShelf::findOrFail($id);
+        $bookShelf->updateName($request->book_shelf_name);
+        $bookShelf->updateDescription($request->description);
+        $bookShelf->updateIsPublic($request->is_public);
+    }
+
     public function getMyAll()
     {
         $user = Auth::user();
@@ -123,6 +136,18 @@ class BookShelfController extends Controller
         });
 
         return response()->json($books);
+    }
+
+    public function destroy($id)
+    {
+        $user = Auth::user();
+        $bookShelf = BookShelf::where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        $bookShelf->delete();
+
+        return response()->json(['message' => 'Book shelf deleted successfully'], 200);
     }
 
     public function removeBook(Request $request)

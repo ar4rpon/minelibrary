@@ -22,7 +22,8 @@ export default function BookShelfDetail({ bookShelf, books }: BookShelfDetailPro
       <BookShelfDescription
         name={bookShelf.book_shelf_name}
         description={bookShelf.description}
-      // isPublic={bookShelf.is_public}
+        bookShelfId={bookShelf.id}
+        isPublic={bookShelf.is_public}
       />
       <div className="mt-8 grid grid-cols-1 gap-y-4">
         {books && books.length > 0 ? (
