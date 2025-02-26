@@ -108,6 +108,18 @@ class BookShelf extends Model
     }
 
     /**
+     * 指定されたブックリストIDの全ての書籍データを取得する
+     *
+     * @param int $bookShelfId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getBooks(int $bookShelfId): \Illuminate\Database\Eloquent\Collection
+    {
+        $bookShelf = self::findOrFail($bookShelfId);
+        return $bookShelf->books()->get();
+    }
+
+    /**
      * 本を削除する
      *
      * @param string $isbn

@@ -11,7 +11,7 @@ import { EditBookShelfDialog } from '@/Dialog/BookShelf/EditBookShelfDialog';
 import { DeleteBookShelfDialog } from '@/Dialog/BookShelf/DeleteBookShelfDialog';
 import { useState } from 'react';
 
-export default function BookShelfDescription() {
+export default function BookShelfDescription({ name, description }: any) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -36,7 +36,7 @@ export default function BookShelfDescription() {
   return (
     <div className="rounded-sm border border-green-600 bg-white shadow-md min-h-40 mt-4 px-4 py-2  md:py-4">
       <div className="flex items-center justify-between">
-        <p className="font-bold text-2xl">本棚名</p>
+        <p className="font-bold text-2xl">{name}</p>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -57,7 +57,7 @@ export default function BookShelfDescription() {
         </DropdownMenu>
 
       </div>
-      <p className="text-md mt-1 text-gray-700">本棚説明本棚説明本棚説明本棚説明本棚説明本棚説明本棚説明本棚説明本棚説明本棚説明本棚説明</p>
+      <p className="text-md mt-1 text-gray-700">{description}</p>
       <Separator className="my-4" />
 
       <div className="flex items-center">

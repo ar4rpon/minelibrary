@@ -12,9 +12,12 @@ import { useEffect, useState } from 'react';
 import { ReadStatusBadge } from './ReadStatusBadge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/Components/ui/dropdown-menu';
 import { CreateBookShelfDialog } from '@/Dialog/BookShelf/CreateBookShelf';
+import { DeleteBookShelfDialog } from '@/Dialog/BookShelf/DeleteBookShelfDialog';
+import { DeleteBookDialog } from '@/Dialog/BookShelf/DeleteBookDialog';
 
 interface UnifiedBookCardProps extends BookProps {
   variant?: 'favorite' | 'default' | 'book-shelf';
+  book_shelf_id?: number;
 }
 
 export default function BookCard({
@@ -28,11 +31,13 @@ export default function BookCard({
   item_caption,
   variant = 'default',
   readStatus,
+  book_shelf_id
 }: UnifiedBookCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [detailBookDialogOpen, setDetailBookDialogOpen] = useState(false);
   const [readStatusDialogOpen, setReadStatusDialogOpen] = useState(false);
   const [createBookShelfDialogOpen, setCreateBookShelfDialogOpen] = useState(false);
+  const [deleteBookDialogOpen, setDeleteBookDialogOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<ReadStatus>(
     readStatus ?? 'want_read',
   );
@@ -87,6 +92,18 @@ export default function BookCard({
     setCreateDialogOpen(false);
     getBookShelves(); // 本棚リストを再取得
   }
+
+  const confirmBookDelete = async () => {
+    try {
+      await axios.post('/book-shelf/remove-book', {
+        book_shelf_id: book_shelf_id,
+        isbn: isbn
+      });
+      router.reload();
+    } catch (error) {
+      console.error('Failed to remove book from shelf:', error);
+    }
+  };
 
   const confirmCreate = async (
     memo: string,
@@ -260,7 +277,7 @@ export default function BookCard({
                   </DropdownMenu>
                 )}
                 {variant !== 'favorite' && (
-                  <Button variant="secondary" size="sm" className="flex-1">
+                  <Button variant="secondary" size="sm" className="flex-1" onClick={() => setDeleteBookDialogOpen(true)}>
                     <Library className="mr-2 h-4 w-4" />
                     <span className="hidden sm:inline">本棚から削除する</span>
                     <span className="sm:hidden">削除</span>
@@ -315,6 +332,12 @@ export default function BookCard({
           isOpen={createBookShelfDialogOpen}
           onClose={() => setCreateBookShelfDialogOpen(false)}
           onCreateBookShelfConfirm={confirmBookShelfCreate}
+        />
+
+        <DeleteBookDialog
+          isOpen={deleteBookDialogOpen}
+          onClose={() => setDeleteBookDialogOpen(false)}
+          onDeleteBookConfirm={confirmBookDelete}
         />
       </div>
     </Card>

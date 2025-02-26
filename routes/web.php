@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/book-shelf/detail', function () {
         return Inertia::render('BookShelf/BookShelfDetail');
     })->name('book-shelf.detail');
+    Route::get('/book-shelf/{book_shelf_id}', [BookShelfController::class, 'show'])->name('book-shelf.detail');
 
     // 書籍処理
     Route::prefix('books')->group(function () {
@@ -48,8 +49,10 @@ Route::middleware('auth')->group(function () {
     // 本棚処理
     Route::prefix('book-shelf')->group(function () {
         Route::post('/create', [BookShelfController::class, 'store'])->name('book-shelf.store');
-        Route::get('/get/mylist', [BookShelfController::class, 'getMyBookShelf'])->name('book-shelf.get.mylist');
+        Route::get('/get/mylist', [BookShelfController::class, 'getMyAll'])->name('book-shelf.get.mylist');
+        Route::get('/get/books', [BookShelfController::class, 'getBooks'])->name('book-shelf.get.books');
         Route::post('/add/books', [BookShelfController::class, 'addBooks'])->name('book-shelf.add.books');
+        Route::post('/{isbn}', [BookShelfController::class, 'removeBook'])->name('book-shelf.remove.book');
     });
 
     // プロフィール処理
