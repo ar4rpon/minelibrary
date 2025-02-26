@@ -37,9 +37,20 @@ export default function BookCard({
     readStatus ?? 'want_read',
   );
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [bookshelves, setBookshelves] = useState<{ id: number; book_shelf_name: string }[]>([]);
 
-  // 動作確認用変数
-  const bookshelves = ["本棚1本棚1本棚1本棚1本棚1本棚1本棚1本棚1本棚1本棚1", "本棚2", "本棚3"];
+  const getBookShelves = () => {
+    axios.get('/book-shelf/get/mylist')
+      .then(response => {
+        setBookshelves(response.data);
+      })
+      .catch(error => {
+        console.error('Failed to fetch bookshelves:', error);
+      });
+  }
+  useEffect(() => {
+    getBookShelves();
+  }, []);
 
   const handleDetailBook = () => setDetailBookDialogOpen(true);
   const confirmDetailBook = () => setDetailBookDialogOpen(false);
@@ -74,6 +85,7 @@ export default function BookCard({
     });
     console.log(req);
     setCreateDialogOpen(false);
+    getBookShelves(); // 本棚リストを再取得
   }
 
   const confirmCreate = async (
@@ -220,19 +232,27 @@ export default function BookCard({
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
-                      {bookshelves.map((shelf, index) => (
-                        <DropdownMenuItem key={index} className="truncate items-center flex"
+                      {bookshelves.map((shelf) => (
+                        <DropdownMenuItem
+                          key={shelf.id}
+                          className="truncate items-center flex"
                           onClick={() => {
                             axios.post('/book-shelf/add/books', {
-                              book_shelf_id: 1, // test用で固定１
-                              isbns: [isbn] // 現在のISBNのみの配列
+                              book_shelf_id: shelf.id,
+                              isbns: [isbn]
                             });
-                          }}>
+                          }}
+                        >
                           <Library />
-                          {shelf.length > 6 ? shelf.slice(0, 12) + '...' : shelf}
+                          {shelf.book_shelf_name.length > 12
+                            ? shelf.book_shelf_name.slice(0, 12) + '...'
+                            : shelf.book_shelf_name}
                         </DropdownMenuItem>
                       ))}
-                      <DropdownMenuItem className='items-center flex' onClick={() => setCreateBookShelfDialogOpen(true)}>
+                      <DropdownMenuItem
+                        className='items-center flex'
+                        onClick={() => setCreateBookShelfDialogOpen(true)}
+                      >
                         <Plus />
                         本棚を作成
                       </DropdownMenuItem>

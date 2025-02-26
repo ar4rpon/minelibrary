@@ -28,6 +28,21 @@ class BookShelfController extends Controller
         return $bookShelf;
     }
 
+    public function getMyBookShelf(Request $request)
+    {
+        $user = Auth::user();
+
+        $bookshelves = BookShelf::where('user_id', $user->id)
+            ->select(
+                'id',
+                'book_shelf_name'
+                // , 'description', 'is_public'
+            )
+            ->get();
+
+        return response()->json($bookshelves);
+    }
+
     public function addBooks(Request $request)
     {
         $request->validate([
