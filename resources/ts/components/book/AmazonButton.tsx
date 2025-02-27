@@ -1,6 +1,6 @@
+import { Button } from '@/components/common/ui/button';
+import AmazonLogo from '@/components/Icon/Amazon';
 import { LabelHTMLAttributes } from 'react';
-import { Button } from '@/Components/ui/button';
-import AmazonLogo from '@/Components/Icon/Amazon';
 
 export default function AmazonButton({
   url,
@@ -12,9 +12,14 @@ export default function AmazonButton({
     window.open(url, '_blank', 'noopener,noreferrer');
   };
   return (
-    <Button className={className} style={{ backgroundColor: "#febd69" }} onClick={openLink} variant="outline" size="icon">
+    <Button
+      className={className}
+      style={{ backgroundColor: '#febd69' }}
+      onClick={openLink}
+      variant="outline"
+      size="icon"
+    >
       <AmazonLogo />
     </Button>
   );
-
 }

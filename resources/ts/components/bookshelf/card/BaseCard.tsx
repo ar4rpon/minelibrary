@@ -1,4 +1,4 @@
-import { Card } from '@/Components/ui/card';
+import { Card } from '@/components/common/ui/card';
 import { BookShelfBase } from '@/types/bookShelf';
 import React from 'react';
 

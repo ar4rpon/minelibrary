@@ -1,11 +1,15 @@
-import ApplicationLogo from '@/Components/Icon/ApplicationLogo';
-import { Button } from '@/Components/ui/button';
+import ApplicationLogo from '@/components/Icon/ApplicationLogo';
+import { Button } from '@/components/common/ui/button';
 import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/Components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetTrigger } from '@/Components/ui/sheet';
+} from '@/components/common/ui/dropdown-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '@/components/common/ui/sheet';
 import { Link, usePage } from '@inertiajs/react';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import {
@@ -20,7 +24,7 @@ import {
 } from 'lucide-react';
 import { lazy, memo, Suspense, useCallback, useState } from 'react';
 const DropdownMenu = lazy(() =>
-  import('@/Components/ui/dropdown-menu').then((module) => ({
+  import('@/components/common/ui/dropdown-menu').then((module) => ({
     default: module.DropdownMenu,
   })),
 );

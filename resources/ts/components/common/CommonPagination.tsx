@@ -1,4 +1,12 @@
-import { Pagination, PaginationContent, PaginationFirst, PaginationItem, PaginationLast, PaginationNext, PaginationPrevious } from "@/Components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationFirst,
+  PaginationItem,
+  PaginationLast,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/common/ui/pagination';
 
 interface PaginationProps {
   totalPages: number;
@@ -7,7 +15,12 @@ interface PaginationProps {
   handlePageChange: (value: number) => void;
 }
 
-export default function CommonPagination({ totalPages, totalItems, currentPage, handlePageChange }: PaginationProps) {
+export default function CommonPagination({
+  totalPages,
+  totalItems,
+  currentPage,
+  handlePageChange,
+}: PaginationProps) {
   return (
     totalItems > 0 && (
       <Pagination className="mt-8">

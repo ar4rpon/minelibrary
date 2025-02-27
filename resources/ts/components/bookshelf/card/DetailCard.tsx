@@ -1,4 +1,4 @@
-import { Separator } from '@/Components/ui/separator';
+import { Separator } from '@/components/common/ui/separator';
 import { BookShelfDialogs } from '@/features/bookshelf/components/dialogs/BookShelfDialogs';
 import { useBookShelfState } from '@/features/bookshelf/hooks/useBookShelfState';
 import { BookShelfBase } from '@/types/bookShelf';

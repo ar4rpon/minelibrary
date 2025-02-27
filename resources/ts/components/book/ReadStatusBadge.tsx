@@ -1,4 +1,4 @@
-import { cn } from '@/Lib/utils';
+import { cn } from '@/lib/utils';
 import { ReadStatus } from '@/types/';
 import { BookOpen, CheckCircle, Clock } from 'lucide-react';
 

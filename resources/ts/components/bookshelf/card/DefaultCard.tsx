@@ -1,4 +1,4 @@
-import { Button } from '@/Components/ui/button';
+import { Button } from '@/components/common/ui/button';
 import { BookShelfDialogs } from '@/features/bookshelf/components/dialogs/BookShelfDialogs';
 import { useBookShelfState } from '@/features/bookshelf/hooks/useBookShelfState';
 import { BookShelfBase } from '@/types/bookShelf';

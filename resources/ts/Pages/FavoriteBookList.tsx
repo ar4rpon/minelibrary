@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/Components/ui/select';
+} from '@/components/common/ui/select';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { ReadStatus } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';

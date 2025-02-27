@@ -65,7 +65,7 @@ resources/ts/
 
 ```tsx
 import React from 'react';
-import { Card } from '@/Components/ui/card';
+import { Card } from '@/components/common/ui/card';
 
 interface BaseCardProps {
     variant?: 'card' | 'description';
@@ -108,7 +108,7 @@ export function BaseCard({
 
 ```tsx
 import React from 'react';
-import { CardTitle, CardDescription } from '@/Components/ui/card';
+import { CardTitle, CardDescription } from '@/components/common/ui/card';
 import { BookShelfActions, ExtendedBookShelfActions } from './Actions';
 
 interface HeaderProps {
@@ -174,7 +174,7 @@ export function Header({
 ```tsx
 import React from 'react';
 import { Link } from '@inertiajs/react';
-import { Button } from '@/Components/ui/button';
+import { Button } from '@/components/common/ui/button';
 import { BookShelfBase } from '@/types/bookShelf';
 import { BaseCard } from './BaseCard';
 import { Image } from '../elements/Image';

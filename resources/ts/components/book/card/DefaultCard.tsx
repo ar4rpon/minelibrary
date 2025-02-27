@@ -1,5 +1,5 @@
-import FavoriteIcon from '@/Components/Icon/FavoriteIcon';
-import { Button } from '@/Components/ui/button';
+import { Button } from '@/components/common/ui/button';
+import FavoriteIcon from '@/components/Icon/FavoriteIcon';
 import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
 import { useBookCardState } from '@/features/book/hooks/useBookCardState';
 import { useFavoriteBook } from '@/features/book/hooks/useFavoriteBook';

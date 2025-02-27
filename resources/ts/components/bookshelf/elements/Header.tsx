@@ -1,11 +1,11 @@
-import { Button } from '@/Components/ui/button';
-import { CardDescription, CardTitle } from '@/Components/ui/card';
+import { Button } from '@/components/common/ui/button';
+import { CardDescription, CardTitle } from '@/components/common/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/Components/ui/dropdown-menu';
+} from '@/components/common/ui/dropdown-menu';
 import {
   BookShelfActionsProps,
   ExtendedBookShelfActionsProps,

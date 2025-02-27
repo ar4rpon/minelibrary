@@ -1,7 +1,7 @@
 import BookShelf from '@/components/bookshelf';
-import CommonPagination from '@/Components/Common/CommonPagination';
-import { Button } from '@/Components/ui/button';
-import { Input } from '@/Components/ui/input';
+import CommonPagination from '@/components/common/CommonPagination';
+import { Button } from '@/components/common/ui/button';
+import { Input } from '@/components/common/ui/input';
 import { CreateBookShelfDialog } from '@/features/bookshelf/components/dialogs/CreateBookShelfDialog';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { BookShelfBase } from '@/types/bookShelf';

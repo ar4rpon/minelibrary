@@ -1,12 +1,12 @@
-import { Button } from '@/Components/ui/button';
-import { Card, CardContent } from '@/Components/ui/card';
+import { Button } from '@/components/common/ui/button';
+import { Card, CardContent } from '@/components/common/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/Components/ui/dropdown-menu';
-import { Separator } from '@/Components/ui/separator';
+} from '@/components/common/ui/dropdown-menu';
+import { Separator } from '@/components/common/ui/separator';
 import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
 import { DeleteMemoDialog } from '@/Dialog/Memo/DeleteMemoDialog';
 import { EditMemoDialog } from '@/Dialog/Memo/EditMemoDialog';

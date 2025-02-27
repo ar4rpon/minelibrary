@@ -1,12 +1,12 @@
-import { Button } from '@/Components/ui/button';
+import { Button } from '@/components/common/ui/button';
 import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
-import { Textarea } from '@/Components/ui/textarea';
+} from '@/components/common/ui/dialog';
+import { Input } from '@/components/common/ui/input';
+import { Label } from '@/components/common/ui/label';
+import { Textarea } from '@/components/common/ui/textarea';
 import { BaseDialog } from '@/Dialog/BaseDialog';
 import { DialogProps } from '@/types';
 import { Loader2 } from 'lucide-react';

@@ -1,8 +1,8 @@
-import InputError from '@/Components/Common/InputError';
-import { Button } from '@/Components/ui/button';
-import { Checkbox } from '@/Components/ui/checkbox';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
+import InputError from '@/components/common/InputError';
+import { Button } from '@/components/common/ui/button';
+import { Checkbox } from '@/components/common/ui/checkbox';
+import { Input } from '@/components/common/ui/input';
+import { Label } from '@/components/common/ui/label';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';

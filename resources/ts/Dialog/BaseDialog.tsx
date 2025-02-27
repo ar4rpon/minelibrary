@@ -1,14 +1,12 @@
-import { Dialog } from '@/Components/ui/dialog';
-import { lazy, Suspense } from 'react';
+import { Dialog } from '@/components/common/ui/dialog';
 import { DialogProps } from '@/types';
+import { lazy, Suspense } from 'react';
 
 const DialogContent = lazy(() =>
-  import('@/Components/ui/dialog').then((module) => ({
+  import('@/components/common/ui/dialog').then((module) => ({
     default: module.DialogContent,
   })),
 );
-
-
 
 export function BaseDialog({ isOpen, onClose, children }: DialogProps) {
   return (

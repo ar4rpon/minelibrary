@@ -1,11 +1,20 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../Components/ui/select';
 
 interface BookGenreProps {
   value: string;
   onValueChange: (value: string) => void;
 }
 
-export default function BookGenreSelect({ onValueChange, value }: BookGenreProps) {
+export default function BookGenreSelect({
+  onValueChange,
+  value,
+}: BookGenreProps) {
   return (
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger className="w-full sm:w-[180px]">

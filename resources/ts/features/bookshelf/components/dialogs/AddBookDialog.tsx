@@ -1,10 +1,10 @@
-import { Button } from '@/Components/ui/button';
-import { Checkbox } from '@/Components/ui/checkbox';
+import { Button } from '@/components/common/ui/button';
+import { Checkbox } from '@/components/common/ui/checkbox';
 import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog';
+} from '@/components/common/ui/dialog';
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/Components/ui/table';
+} from '@/components/common/ui/table';
 import { BaseDialog } from '@/Dialog/BaseDialog';
 import { getFavoriteBooks } from '@/Services/bookShelfService';
 import { DialogProps, ReadStatus } from '@/types';

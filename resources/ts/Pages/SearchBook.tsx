@@ -1,15 +1,15 @@
-import BookGenreSelect from '@/Components/Book/BookGenreSelect';
+import BookGenreSelect from '@/components/book/BookGenreSelect';
 import BookCard from '@/components/book/card';
-import CommonPagination from '@/Components/Common/CommonPagination';
-import { Button } from '@/Components/ui/button';
-import { Input } from '@/Components/ui/input';
+import CommonPagination from '@/components/common/CommonPagination';
+import { Button } from '@/components/common/ui/button';
+import { Input } from '@/components/common/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/Components/ui/select';
+} from '@/components/common/ui/select';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { BookData } from '@/Services/bookService';
 import { Head, router, usePage } from '@inertiajs/react';

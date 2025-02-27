@@ -1,9 +1,9 @@
+import ApplicationLogo from '@/components/Icon/ApplicationLogo';
 import { Link } from '@inertiajs/react';
-import ApplicationLogo from '@/Components/Icon/ApplicationLogo';
 
 export default function Footer() {
   return (
-    <footer className="mx-auto max-w-7xl px-4 ">
+    <footer className="mx-auto max-w-7xl px-4">
       <div className="flex flex-col pt-4 text-sm">
         <ApplicationLogo />
         <div className="pt-4">

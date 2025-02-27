@@ -1,10 +1,10 @@
-import { Button } from '@/Components/ui/button';
+import { Button } from '@/components/common/ui/button';
 import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog';
+} from '@/components/common/ui/dialog';
 import { DialogProps } from '@/types';
 import { BaseDialog } from '../BaseDialog';
 

@@ -1,5 +1,5 @@
-import { ReadStatusBadge } from '@/Components/Book/ReadStatusBadge';
-import { Button } from '@/Components/ui/button';
+import { ReadStatusBadge } from '@/components/book/ReadStatusBadge';
+import { Button } from '@/components/common/ui/button';
 import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
 import { UpdateReadStatusDialog } from '@/Dialog/Book/UpdateReadStatusDialog';
 import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';

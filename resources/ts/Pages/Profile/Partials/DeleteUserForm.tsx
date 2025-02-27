@@ -1,12 +1,12 @@
-import InputError from '@/Components/Common/InputError';
-import { Button } from '@/Components/ui/button';
+import InputError from '@/components/common/InputError';
+import { Button } from '@/components/common/ui/button';
 import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/Components/ui/dialog';
-import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
+} from '@/components/common/ui/dialog';
+import { Input } from '@/components/common/ui/input';
+import { Label } from '@/components/common/ui/label';
 import { BaseDialog } from '@/Dialog/BaseDialog';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef, useState } from 'react';

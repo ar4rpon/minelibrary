@@ -1,4 +1,4 @@
-import { Card } from '@/Components/ui/card';
+import { Card } from '@/components/common/ui/card';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
