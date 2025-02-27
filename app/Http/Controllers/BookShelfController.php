@@ -37,7 +37,7 @@ class BookShelfController extends Controller
             ];
         });
 
-        return Inertia::render('BookShelf/BookShelfDetail', [
+        return Inertia::render('features/bookshelf/pages/BookShelfDetail', [
             'bookShelf' => $bookShelf,
             'books' => $books,
         ]);

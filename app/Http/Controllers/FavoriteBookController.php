@@ -47,7 +47,7 @@ class FavoriteBookController extends Controller
             ];
         });
 
-        return Inertia::render('FavoriteBookList', [
+        return Inertia::render('features/book/pages/FavoriteBookList', [
             'favorites' => $favorites,
             'sortBy' => $sortBy,
         ]);
