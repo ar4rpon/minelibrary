@@ -1,3 +1,4 @@
+import { BaseDialog } from '@/components/common/dialog/BaseDialog';
 import { Button } from '@/components/common/ui/button';
 import { Checkbox } from '@/components/common/ui/checkbox';
 import {
@@ -13,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/common/ui/table';
-import { BaseDialog } from '@/Dialog/BaseDialog';
 import { getFavoriteBooks } from '@/Services/bookShelfService';
 import { DialogProps, ReadStatus } from '@/types';
 import { useEffect, useState } from 'react';

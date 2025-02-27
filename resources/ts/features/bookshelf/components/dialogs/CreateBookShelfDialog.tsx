@@ -1,3 +1,4 @@
+import { BaseDialog } from '@/components/common/dialog/BaseDialog';
 import { Button } from '@/components/common/ui/button';
 import {
   DialogDescription,
@@ -7,7 +8,6 @@ import {
 import { Input } from '@/components/common/ui/input';
 import { Label } from '@/components/common/ui/label';
 import { Textarea } from '@/components/common/ui/textarea';
-import { BaseDialog } from '@/Dialog/BaseDialog';
 import { DialogProps } from '@/types';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';

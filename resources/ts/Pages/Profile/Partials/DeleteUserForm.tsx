@@ -1,3 +1,4 @@
+import { BaseDialog } from '@/components/common/dialog/BaseDialog';
 import InputError from '@/components/common/InputError';
 import { Button } from '@/components/common/ui/button';
 import {
@@ -7,7 +8,6 @@ import {
 } from '@/components/common/ui/dialog';
 import { Input } from '@/components/common/ui/input';
 import { Label } from '@/components/common/ui/label';
-import { BaseDialog } from '@/Dialog/BaseDialog';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef, useState } from 'react';
 

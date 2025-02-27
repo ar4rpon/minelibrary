@@ -4,7 +4,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../Components/ui/select';
+} from '../../components/common/ui/select';
 
 interface BookGenreProps {
   value: string;

@@ -1,4 +1,3 @@
-import MemoCard from '@/Components/Memo/MemoCard';
 import DefaultLayout from '@/components/layout';
 import { Head } from '@inertiajs/react';
 
@@ -18,18 +17,7 @@ export default function Dashboard() {
           最近書いたメモ
         </h2>
       </div>
-      <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-4">
-        <MemoCard
-          id="3"
-          contents={[
-            'サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7サンプルコンテンツ7',
-            'サンプルコンテンツ8サンプルコンテンツ8サンプルコンテンツ8サンプルコンテンツ8サンプルコンテンツ8サンプルコンテンツ8サンプルコンテンツ8サンプルコンテンツ8サンプルコンテンツ8サンプルコンテンツ8サンプルコンテンツ8サンプルコンテンツ8サンプルコンテンツ8',
-            'サンプルコンテンツ9サンプルコンテンツ9サンプルコンテンツ9サンプルコンテンツ9サンプルコンテンツ9サンプルコンテンツ9サンプルコンテンツ9サンプルコンテンツ9サンプルコンテンツ9サンプルコンテンツ9サンプルコンテンツ9サンプルコンテンツ9',
-          ]}
-          createdAt="2024-02-02T10:00:00Z"
-          book={sampleBook}
-        />
-      </div>
+      <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-4"></div>
     </DefaultLayout>
   );
 }

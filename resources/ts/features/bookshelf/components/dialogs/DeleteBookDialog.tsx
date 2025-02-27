@@ -1,3 +1,4 @@
+import { BaseDialog } from '@/components/common/dialog/BaseDialog';
 import { Button } from '@/components/common/ui/button';
 import {
   DialogDescription,
@@ -5,7 +6,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/common/ui/dialog';
-import { BaseDialog } from '@/Dialog/BaseDialog';
 import { DialogProps } from '@/types';
 
 interface DeleteBookDialogProps extends DialogProps {
