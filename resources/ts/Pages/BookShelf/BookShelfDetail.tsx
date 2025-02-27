@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import BookCard from '@/Components/Book/BookCard/index';
-import BookShelfDescription from '@/Components/BookShelf/BookShelfDescription';
+import BookShelf from '@/Components/BookShelf/index';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
 import { ReadStatus } from '@/types';
@@ -33,7 +33,8 @@ export default function BookShelfDetail({ bookShelf, books }: BookShelfDetailPro
   return (
     <DefaultLayout header="本棚詳細">
       <Head title={bookShelf.book_shelf_name} />
-      <BookShelfDescription
+      <BookShelf
+        variant="description"
         name={bookShelf.book_shelf_name}
         description={bookShelf.description}
         bookShelfId={bookShelf.id}

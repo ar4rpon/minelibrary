@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { EditBookShelfDialog } from '@/Dialog/BookShelf/EditBookShelfDialog';
 import { DeleteBookShelfDialog } from '@/Dialog/BookShelf/DeleteBookShelfDialog';
 import { AddBookDialog } from '@/Dialog/BookShelf/AddBookDialog';
@@ -14,6 +13,9 @@ interface BookShelfDialogsProps {
   onDialogStateChange: (dialogKey: keyof BookShelfDialogStates, isOpen: boolean) => void;
 }
 
+/**
+ * 本棚関連のダイアログをまとめて管理するコンポーネント
+ */
 export function BookShelfDialogs({
   bookShelfId,
   initialName,
@@ -69,24 +71,4 @@ export function BookShelfDialogs({
       )}
     </>
   );
-}
-
-// ダイアログ状態管理用のカスタムフック
-export function useBookShelfDialogs(includeAddBook = false): [
-  BookShelfDialogStates,
-  (dialogKey: keyof BookShelfDialogStates, isOpen: boolean) => void
-] {
-  const initialState: BookShelfDialogStates = {
-    edit: false,
-    delete: false,
-    ...(includeAddBook ? { addBook: false } : {}),
-  };
-
-  const [dialogStates, setDialogStates] = useState<BookShelfDialogStates>(initialState);
-
-  const handleDialogState = (dialogKey: keyof BookShelfDialogStates, isOpen: boolean) => {
-    setDialogStates(prev => ({ ...prev, [dialogKey]: isOpen }));
-  };
-
-  return [dialogStates, handleDialogState];
 }

@@ -8,7 +8,7 @@ import axios from 'axios';
 import CommonPagination from '@/Components/Common/CommonPagination';
 import { Input } from '@/Components/ui/input';
 import { BookShelfBase } from '@/types/bookShelf';
-import { BookShelfVariant, createBookShelf } from '@/Components/BookShelf/BookShelfFactory';
+import BookShelf from '@/Components/BookShelf/index';
 
 // 本棚の型定義
 type BookShelf = BookShelfBase & { image?: string };
@@ -205,14 +205,14 @@ export default function BookShelfList() {
         <div className="grid grid-cols-1 gap-x-8 gap-y-6">
           {paginatedBookShelves.map((bookShelf) => (
             <div key={bookShelf.bookShelfId} className="transition-all duration-200 hover:translate-x-1">
-              {createBookShelf({
-                variant: BookShelfVariant.CARD,
-                bookShelfId: bookShelf.bookShelfId,
-                name: bookShelf.name,
-                description: bookShelf.description,
-                isPublic: bookShelf.isPublic,
-                image: bookShelf.image,
-              })}
+              <BookShelf
+                variant="card"
+                bookShelfId={bookShelf.bookShelfId}
+                name={bookShelf.name}
+                description={bookShelf.description}
+                isPublic={bookShelf.isPublic}
+                image={bookShelf.image}
+              />
             </div>
           ))}
         </div>

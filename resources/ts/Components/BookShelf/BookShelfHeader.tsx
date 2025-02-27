@@ -1,3 +1,5 @@
+import React from 'react';
+import { CardTitle, CardDescription } from '@/Components/ui/card';
 import { Button } from '@/Components/ui/button';
 import {
   DropdownMenu,
@@ -67,5 +69,59 @@ export function ExtendedBookShelfActions({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+interface BookShelfHeaderProps {
+  name: string;
+  description: string;
+  variant?: 'card' | 'description';
+  onEdit: () => void;
+  onDelete: () => void;
+  onAddBook?: () => void;
+}
+
+/**
+ * 本棚のタイトルと説明を表示するコンポーネント
+ */
+export function BookShelfHeader({
+  name,
+  description,
+  variant = 'card',
+  onEdit,
+  onDelete,
+  onAddBook,
+}: BookShelfHeaderProps) {
+  return (
+    <div className="space-y-2">
+      <div className="flex justify-between">
+        <CardTitle className={`${variant === 'description'
+          ? 'text-2xl font-bold'
+          : 'text-xl font-bold'
+          }`}>
+          {name}
+        </CardTitle>
+
+        {variant === 'description' && onAddBook ? (
+          <ExtendedBookShelfActions
+            onAddBook={onAddBook}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        ) : (
+          <BookShelfActions
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        )}
+      </div>
+
+      <CardDescription className={`${variant === 'description'
+        ? 'text-md mt-1 text-gray-700'
+        : 'text-sm text-gray-600'
+        }`}>
+        {description}
+      </CardDescription>
+    </div>
   );
 }
