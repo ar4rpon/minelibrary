@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/common/ui/select';
-import MemoCard from '@/Components/Memo/MemoCard';
+import MemoCard from '@/components/memo/card';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { BookProps, MemoContent } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
