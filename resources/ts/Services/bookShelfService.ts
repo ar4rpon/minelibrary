@@ -1,17 +1,20 @@
-import axios, { AxiosError } from 'axios';
 import { router } from '@inertiajs/react';
+import axios, { AxiosError } from 'axios';
 
 // API エンドポイント定義
 const API_ENDPOINTS = {
   UPDATE: (id: number) => `/book-shelf/update/${id}`,
   DELETE: (id: number) => `/book-shelf/delete/${id}`,
   ADD_BOOKS: '/book-shelf/add/books',
+  GET_FAVORITE_BOOKS: '/book-shelf/get/favorite-books',
 } as const;
 
 // エラーハンドリング用の共通関数
 export const handleApiError = (error: unknown, errorMessage: string): void => {
   if (error instanceof AxiosError) {
-    console.error(`${errorMessage}: ${error.response?.data?.message || error.message}`);
+    console.error(
+      `${errorMessage}: ${error.response?.data?.message || error.message}`,
+    );
   } else {
     console.error(`${errorMessage}: 予期せぬエラーが発生しました`);
   }
@@ -22,7 +25,7 @@ export const updateBookShelf = async (
   bookShelfId: number,
   name: string,
   description: string,
-  isPublic: boolean
+  isPublic: boolean,
 ): Promise<boolean> => {
   try {
     await axios.put(API_ENDPOINTS.UPDATE(bookShelfId), {
@@ -39,7 +42,9 @@ export const updateBookShelf = async (
 };
 
 // BookShelf 削除
-export const deleteBookShelf = async (bookShelfId: number): Promise<boolean> => {
+export const deleteBookShelf = async (
+  bookShelfId: number,
+): Promise<boolean> => {
   try {
     await axios.delete(API_ENDPOINTS.DELETE(bookShelfId));
     router.visit('/');
@@ -53,7 +58,7 @@ export const deleteBookShelf = async (bookShelfId: number): Promise<boolean> => 
 // 本の追加
 export const addBooksToShelf = async (
   bookShelfId: number,
-  isbns: string[]
+  isbns: string[],
 ): Promise<boolean> => {
   try {
     await axios.post(API_ENDPOINTS.ADD_BOOKS, {
@@ -65,5 +70,22 @@ export const addBooksToShelf = async (
   } catch (error) {
     handleApiError(error, '本の追加に失敗しました');
     return false;
+  }
+};
+
+// お気に入りの本を取得
+export const getFavoriteBooks = async () => {
+  try {
+    const response = await axios.get(API_ENDPOINTS.GET_FAVORITE_BOOKS);
+    return response.data.map((favorite: any) => ({
+      isbn: favorite.isbn,
+      title: favorite.book.title,
+      author: favorite.book.author,
+      sales_date: favorite.book.sales_date,
+      read_status: favorite.read_status,
+    }));
+  } catch (error) {
+    handleApiError(error, 'お気に入りの本の取得に失敗しました');
+    return [];
   }
 };
