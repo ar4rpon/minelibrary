@@ -7,6 +7,7 @@ const API_ENDPOINTS = {
   DELETE: (id: number) => `/book-shelf/delete/${id}`,
   ADD_BOOKS: '/book-shelf/add/books',
   GET_FAVORITE_BOOKS: '/book-shelf/get/favorite-books',
+  GET_MY_BOOKSHELVES: '/book-shelf/get/mylist',
 } as const;
 
 // エラーハンドリング用の共通関数
@@ -86,6 +87,17 @@ export const getFavoriteBooks = async () => {
     }));
   } catch (error) {
     handleApiError(error, 'お気に入りの本の取得に失敗しました');
+    return [];
+  }
+};
+
+// 自分の本棚一覧を取得
+export const getAllBookShelves = async () => {
+  try {
+    const response = await axios.get(API_ENDPOINTS.GET_MY_BOOKSHELVES);
+    return response.data;
+  } catch (error) {
+    handleApiError(error, '本棚一覧の取得に失敗しました');
     return [];
   }
 };

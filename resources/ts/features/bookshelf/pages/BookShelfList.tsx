@@ -4,52 +4,26 @@ import DefaultLayout from '@/components/common/layout';
 import { Button } from '@/components/common/ui/button';
 import { Input } from '@/components/common/ui/input';
 import { CreateBookShelfDialog } from '@/features/bookshelf/components/dialogs/CreateBookShelfDialog';
+import { getAllBookShelves } from '@/Services/bookShelfService';
 import { BookShelfBase } from '@/types/bookShelf';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
 import { Plus, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // 本棚の型定義
 type BookShelf = BookShelfBase & { image?: string };
 
-// 初期モックデータ（APIが実装されるまでの仮データ）
-const initialBookShelves: BookShelf[] = [
-  {
-    bookShelfId: 11,
-    name: '技術書コレクション',
-    description: 'プログラミングや技術関連の本をまとめた本棚です。',
-    isPublic: true,
-    image: 'https://shop.r10s.jp/book/cabinet/0285/9784798070285_1_4.jpg',
-  },
-  {
-    bookShelfId: 2,
-    name: '小説コレクション',
-    description: '好きな小説をまとめた本棚です。',
-    isPublic: true,
-    image: 'https://placehold.jp/150x200.png',
-  },
-  {
-    bookShelfId: 3,
-    name: '勉強用資料',
-    description: '資格取得のための参考書や勉強資料をまとめた本棚です。',
-    isPublic: false,
-    image: 'https://placehold.jp/150x200.png',
-  },
-  {
-    bookShelfId: 4,
-    name: 'お気に入りの漫画',
-    description: 'お気に入りの漫画シリーズをまとめた本棚です。',
-    isPublic: true,
-    image: 'https://placehold.jp/150x200.png',
-  },
-];
+// プロパティの型定義
+interface Props {
+  initialBookShelves?: BookShelf[];
+}
 
 /**
  * 本棚一覧ページ
  * ユーザーの本棚一覧を表示し、検索や作成機能を提供する
  */
-export default function BookShelfList() {
+export default function BookShelfList({ initialBookShelves = [] }: Props) {
   // 状態管理
   const [bookShelves, setBookShelves] =
     useState<BookShelf[]>(initialBookShelves);
@@ -61,18 +35,14 @@ export default function BookShelfList() {
   const [error, setError] = useState<string | null>(null);
   const itemsPerPage = 5; // 1ページあたりの表示数
 
-  // 本棚一覧を取得する関数（APIが実装されたら有効化）
+  // 本棚一覧を取得する関数
   const fetchBookShelves = async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // APIが実装されたら以下のコメントを解除
-      // const response = await axios.get('/api/book-shelves');
-      // setBookShelves(response.data);
-      // モック用のタイムアウト（APIが実装されたら削除）
-      // await new Promise(resolve => setTimeout(resolve, 1000));
-      // setBookShelves(initialBookShelves);
+      const data = await getAllBookShelves();
+      setBookShelves(data);
     } catch (error) {
       console.error('本棚一覧の取得に失敗しました:', error);
       setError('本棚一覧の取得に失敗しました。再読み込みしてください。');
@@ -81,10 +51,13 @@ export default function BookShelfList() {
     }
   };
 
-  // コンポーネントマウント時にデータを取得（APIが実装されたら有効化）
-  // useEffect(() => {
-  //   fetchBookShelves();
-  // }, []);
+  // コンポーネントマウント時にデータを取得
+  useEffect(() => {
+    // 初期データが空の場合のみAPIから取得
+    if (initialBookShelves.length === 0) {
+      fetchBookShelves();
+    }
+  }, [initialBookShelves.length]);
 
   // 検索フィルター
   const filteredBookShelves = bookShelves.filter(
@@ -122,23 +95,10 @@ export default function BookShelfList() {
         book_shelf_name: bookShelfName,
         description: description,
       });
-
       console.log('本棚作成成功:', response.data);
 
-      // 成功したらページをリロード（APIが実装されたら有効化）
-      // router.reload();
-
-      // 新しい本棚を追加（APIが実装されるまでの仮実装）
-      const newBookShelf: BookShelf = {
-        bookShelfId: Math.max(...bookShelves.map((b) => b.bookShelfId)) + 1,
-        name: bookShelfName,
-        description: description,
-        isPublic: true,
-        image: 'https://placehold.jp/150x200.png',
-      };
-
-      // 状態を更新して新しい本棚を追加
-      setBookShelves([newBookShelf, ...bookShelves]);
+      // 成功したらページをリロード
+      router.reload();
 
       // 1ページ目に戻す
       setCurrentPage(1);

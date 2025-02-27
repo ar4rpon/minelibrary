@@ -11,6 +11,24 @@ use Illuminate\Http\Request;
 
 class BookShelfController extends Controller
 {
+    public function index()
+    {
+        $user = Auth::user();
+
+        $bookshelves = BookShelf::where('user_id', $user->id)
+            ->select(
+                'id as bookShelfId',
+                'book_shelf_name as name',
+                'description',
+                'is_public as isPublic'
+            )
+            ->get();
+
+        return Inertia::render('features/bookshelf/pages/BookShelfList', [
+            'initialBookShelves' => $bookshelves
+        ]);
+    }
+
     public function show($book_shelf_id)
     {
         $user = Auth::user();

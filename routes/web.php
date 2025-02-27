@@ -20,9 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/memo/list',  [MemoController::class, 'index'])->name('memos.index');
     Route::get('/book/search', [BookSearchController::class, 'index'])->name('book.search');
 
-    Route::get('/book-shelf/list', function () {
-        return Inertia::render('features/bookshelf/pages/BookShelfList');
-    })->name('book-shelf.list');
+    Route::get('/book-shelf/list', [BookShelfController::class, 'index'])->name('book-shelf.list');
     Route::get('/book-shelf/detail', function () {
         return Inertia::render('features/bookshelf/pages/BookShelfDetail');
     })->name('book-shelf.detail');
