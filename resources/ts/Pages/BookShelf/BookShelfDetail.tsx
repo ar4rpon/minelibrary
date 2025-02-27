@@ -1,4 +1,4 @@
-import BookCard from '@/Components/Book/BookCard/index';
+import BookCard from '@/components/book/card';
 import BookShelf from '@/components/bookshelf';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { ReadStatus } from '@/types';

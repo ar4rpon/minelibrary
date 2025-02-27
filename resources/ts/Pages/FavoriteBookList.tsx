@@ -1,5 +1,4 @@
-import BookCard from '@/Components/Book/BookCard';
-import { ReadStatus } from '@/types';
+import BookCard from '@/components/book/card';
 import {
   Select,
   SelectContent,
@@ -8,6 +7,7 @@ import {
   SelectValue,
 } from '@/Components/ui/select';
 import DefaultLayout from '@/Layouts/DefaultLayout';
+import { ReadStatus } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
@@ -32,7 +32,8 @@ interface FavoritePageProps {
 
 export default function FavoriteBookList() {
   const [sortBy, setSortBy] = useState('newDate');
-  const { favorites, sortBy: initialSortBy } = usePage().props as unknown as FavoritePageProps;
+  const { favorites, sortBy: initialSortBy } = usePage()
+    .props as unknown as FavoritePageProps;
 
   useEffect(() => {
     if (sortBy !== initialSortBy) {

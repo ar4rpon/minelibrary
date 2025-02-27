@@ -1,5 +1,5 @@
-import BookCard from '@/Components/Book/BookCard';
 import BookGenreSelect from '@/Components/Book/BookGenreSelect';
+import BookCard from '@/components/book/card';
 import CommonPagination from '@/Components/Common/CommonPagination';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
