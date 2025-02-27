@@ -1,5 +1,5 @@
-import { Footer } from '@/components/layout/Footer';
-import { Navigation } from '@/components/layout/Navigation';
+import { Footer } from '@/components/common/layout/Footer';
+import { Navigation } from '@/components/common/layout/Navigation';
 import { PropsWithChildren, ReactNode } from 'react';
 
 /**

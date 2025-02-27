@@ -1,4 +1,4 @@
-import DefaultLayout from '@/components/layout';
+import DefaultLayout from '@/components/common/layout';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 

@@ -1,7 +1,7 @@
 import InputError from '@/components/common/InputError';
+import DefaultLayout from '@/components/common/layout';
 import { Button } from '@/components/common/ui/button';
 import { Input } from '@/components/common/ui/input';
-import DefaultLayout from '@/components/layout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 

@@ -1,4 +1,4 @@
-import ApplicationLogo from '@/components/Icon/ApplicationLogo';
+import ApplicationLogo from '@/components/common/Icon/ApplicationLogo';
 import { Button } from '@/components/common/ui/button';
 import {
   DropdownMenuContent,

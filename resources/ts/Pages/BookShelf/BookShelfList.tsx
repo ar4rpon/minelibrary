@@ -1,9 +1,9 @@
 import BookShelf from '@/components/bookshelf';
 import CommonPagination from '@/components/common/CommonPagination';
+import DefaultLayout from '@/components/common/layout';
 import { Button } from '@/components/common/ui/button';
 import { Input } from '@/components/common/ui/input';
 import { CreateBookShelfDialog } from '@/features/bookshelf/components/dialogs/CreateBookShelfDialog';
-import DefaultLayout from '@/components/layout';
 import { BookShelfBase } from '@/types/bookShelf';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
