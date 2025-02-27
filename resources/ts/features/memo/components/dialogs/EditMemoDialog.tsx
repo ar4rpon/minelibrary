@@ -1,8 +1,8 @@
+import { BaseDialog } from '@/components/common/dialog/BaseDialog';
 import { Button } from '@/components/common/ui/button';
 import { DialogHeader, DialogTitle } from '@/components/common/ui/dialog';
 import { Input } from '@/components/common/ui/input';
 import { Textarea } from '@/components/common/ui/textarea';
-import { BaseDialog } from '@/Dialog/BaseDialog';
 import { DialogProps } from '@/types';
 import { useEffect, useState } from 'react';
 
