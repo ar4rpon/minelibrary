@@ -6,14 +6,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/common/ui/dropdown-menu';
-import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
-import { UpdateReadStatusDialog } from '@/Dialog/Book/UpdateReadStatusDialog';
-import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
+import { BookDetailDialog } from '@/features/book/components/dialogs/BookDetailDialog';
+import { UpdateReadStatusDialog } from '@/features/book/components/dialogs/UpdateReadStatusDialog';
 import { useBookCardState } from '@/features/book/hooks/useBookCardState';
 import { useBookMemo } from '@/features/book/hooks/useBookMemo';
 import { useBookShelf } from '@/features/book/hooks/useBookShelf';
 import { useFavoriteBook } from '@/features/book/hooks/useFavoriteBook';
 import { CreateBookShelfDialog } from '@/features/bookshelf/components/dialogs/CreateBookShelfDialog';
+import { CreateMemoDialog } from '@/features/memo/components/dialogs/CreateMemoDialog';
 import { BookData, BookService } from '@/Services/bookService';
 import { ReadStatus } from '@/types';
 import { Book, BookOpen, Edit, Heart, Library, Plus } from 'lucide-react';

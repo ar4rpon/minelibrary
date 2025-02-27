@@ -1,13 +1,13 @@
 import { ReadStatusBadge } from '@/components/book/ReadStatusBadge';
 import { Button } from '@/components/common/ui/button';
-import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
-import { UpdateReadStatusDialog } from '@/Dialog/Book/UpdateReadStatusDialog';
-import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
+import { BookDetailDialog } from '@/features/book/components/dialogs/BookDetailDialog';
+import { UpdateReadStatusDialog } from '@/features/book/components/dialogs/UpdateReadStatusDialog';
 import { useBookCardState } from '@/features/book/hooks/useBookCardState';
 import { useBookMemo } from '@/features/book/hooks/useBookMemo';
 import { useBookShelf } from '@/features/book/hooks/useBookShelf';
 import { useFavoriteBook } from '@/features/book/hooks/useFavoriteBook';
 import { DeleteBookDialog } from '@/features/bookshelf/components/dialogs/DeleteBookDialog';
+import { CreateMemoDialog } from '@/features/memo/components/dialogs/CreateMemoDialog';
 import { BookData, BookService } from '@/Services/bookService';
 import { ReadStatus } from '@/types';
 import { Book, BookOpen, Edit, Heart, Library } from 'lucide-react';
