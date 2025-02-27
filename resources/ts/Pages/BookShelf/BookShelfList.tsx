@@ -1,14 +1,14 @@
-import { Button } from '@/Components/ui/button';
-import DefaultLayout from '@/Layouts/DefaultLayout';
-import { Head, router } from '@inertiajs/react';
-import { Plus, Search, RefreshCw } from 'lucide-react';
-import { CreateBookShelfDialog } from '@/Dialog/BookShelf/CreateBookShelf';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import BookShelf from '@/components/bookshelf';
 import CommonPagination from '@/Components/Common/CommonPagination';
+import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
+import { CreateBookShelfDialog } from '@/features/bookshelf/components/dialogs/CreateBookShelfDialog';
+import DefaultLayout from '@/Layouts/DefaultLayout';
 import { BookShelfBase } from '@/types/bookShelf';
-import BookShelf from '@/Components/BookShelf/index';
+import { Head } from '@inertiajs/react';
+import axios from 'axios';
+import { Plus, Search } from 'lucide-react';
+import { useState } from 'react';
 
 // 本棚の型定義
 type BookShelf = BookShelfBase & { image?: string };
@@ -47,7 +47,8 @@ const initialBookShelves: BookShelf[] = [
 
 export default function BookShelfList() {
   // 状態管理
-  const [bookShelves, setBookShelves] = useState<BookShelf[]>(initialBookShelves);
+  const [bookShelves, setBookShelves] =
+    useState<BookShelf[]>(initialBookShelves);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,7 +66,6 @@ export default function BookShelfList() {
       // APIが実装されたら以下のコメントを解除
       // const response = await axios.get('/api/book-shelves');
       // setBookShelves(response.data);
-
       // モック用のタイムアウト（APIが実装されたら削除）
       // await new Promise(resolve => setTimeout(resolve, 1000));
       // setBookShelves(initialBookShelves);
@@ -86,14 +86,14 @@ export default function BookShelfList() {
   const filteredBookShelves = bookShelves.filter(
     (bookShelf) =>
       bookShelf.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      bookShelf.description.toLowerCase().includes(searchQuery.toLowerCase())
+      bookShelf.description.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   // ページネーション
   const totalPages = Math.ceil(filteredBookShelves.length / itemsPerPage);
   const paginatedBookShelves = filteredBookShelves.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   // 新しい本棚作成ダイアログを開く
@@ -126,7 +126,7 @@ export default function BookShelfList() {
 
       // 新しい本棚を追加（APIが実装されるまでの仮実装）
       const newBookShelf: BookShelf = {
-        bookShelfId: Math.max(...bookShelves.map(b => b.bookShelfId)) + 1,
+        bookShelfId: Math.max(...bookShelves.map((b) => b.bookShelfId)) + 1,
         name: bookShelfName,
         description: description,
         isPublic: true,
@@ -164,10 +164,7 @@ export default function BookShelfList() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <Button
-          className="w-full md:w-auto"
-          onClick={handleCreate}
-        >
+        <Button className="w-full md:w-auto" onClick={handleCreate}>
           <Plus className="mr-2 h-4 w-4" />
           新しい本棚を作成する
         </Button>
@@ -178,15 +175,23 @@ export default function BookShelfList() {
         // エラー状態
         <div className="mt-12 flex flex-col items-center justify-center rounded-lg border border-dashed border-red-300 bg-red-50 p-12 text-center">
           <div className="mb-4 rounded-full bg-red-100 p-3">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-10 w-10 text-red-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
             </svg>
           </div>
           <h3 className="mb-2 text-lg font-medium text-red-900">{error}</h3>
-          <Button
-            onClick={() => fetchBookShelves()}
-            className="mt-4"
-          >
+          <Button onClick={() => fetchBookShelves()} className="mt-4">
             再読み込み
           </Button>
         </div>
@@ -194,17 +199,38 @@ export default function BookShelfList() {
         // ローディング状態
         <div className="mt-12 flex flex-col items-center justify-center p-12 text-center">
           <div className="mb-4 rounded-full bg-gray-100 p-3">
-            <svg className="h-10 w-10 animate-spin text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <svg
+              className="h-10 w-10 animate-spin text-green-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-900">本棚を読み込み中...</h3>
+          <h3 className="text-lg font-medium text-gray-900">
+            本棚を読み込み中...
+          </h3>
         </div>
       ) : paginatedBookShelves.length > 0 ? (
         <div className="grid grid-cols-1 gap-x-8 gap-y-6">
           {paginatedBookShelves.map((bookShelf) => (
-            <div key={bookShelf.bookShelfId} className="transition-all duration-200 hover:translate-x-1">
+            <div
+              key={bookShelf.bookShelfId}
+              className="transition-all duration-200 hover:translate-x-1"
+            >
               <BookShelf
                 variant="card"
                 bookShelfId={bookShelf.bookShelfId}
@@ -219,12 +245,25 @@ export default function BookShelfList() {
       ) : (
         <div className="mt-12 flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 p-12 text-center">
           <div className="mb-4 rounded-full bg-gray-100 p-3">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-10 w-10 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              />
             </svg>
           </div>
           <h3 className="mb-2 text-lg font-medium text-gray-900">
-            {searchQuery ? '検索条件に一致する本棚が見つかりませんでした' : '本棚がまだありません'}
+            {searchQuery
+              ? '検索条件に一致する本棚が見つかりませんでした'
+              : '本棚がまだありません'}
           </h3>
           <p className="mb-6 text-sm text-gray-500">
             {searchQuery

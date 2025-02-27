@@ -1,20 +1,24 @@
-import React from 'react';
 import { Button } from '@/Components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/Components/ui/dropdown-menu';
 import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
 import { UpdateReadStatusDialog } from '@/Dialog/Book/UpdateReadStatusDialog';
 import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
 import { BookData } from '@/Services/bookService';
 import { ReadStatus } from '@/types';
-import { BaseBookCard } from './BaseBookCard';
-import { BookCardImage } from './BookCardImage';
-import { BookCardHeader } from './BookCardHeader';
-import { useBookCardState } from './hooks/useBookCardState';
-import { useFavoriteBook } from './hooks/useFavoriteBook';
-import { useBookShelf } from './hooks/useBookShelf';
-import { useBookMemo } from './hooks/useBookMemo';
-import { ReadStatusBadge } from '../ReadStatusBadge';
 import { Book, BookOpen, Edit, Heart, Library, Plus } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/Components/ui/dropdown-menu';
+import { ReadStatusBadge } from '../ReadStatusBadge';
+import { BaseBookCard } from './BaseBookCard';
+import { BookCardHeader } from './BookCardHeader';
+import { BookCardImage } from './BookCardImage';
+import { useBookCardState } from './hooks/useBookCardState';
+import { useBookMemo } from './hooks/useBookMemo';
+import { useBookShelf } from './hooks/useBookShelf';
+import { useFavoriteBook } from './hooks/useFavoriteBook';
 
 interface FavoriteBookCardProps extends BookData {
   readStatus: ReadStatus;
@@ -41,12 +45,19 @@ export function FavoriteBookCard(props: FavoriteBookCardProps) {
   const { bookshelves, addToBookshelf, createBookshelf } = useBookShelf();
   const { createMemo } = useBookMemo();
 
-  const handleCreateMemo = async (memo: string, chapter?: number, page?: number) => {
+  const handleCreateMemo = async (
+    memo: string,
+    chapter?: number,
+    page?: number,
+  ) => {
     await createMemo(isbn, memo, chapter, page);
     dialogs.createMemo.close();
   };
 
-  const handleCreateBookshelf = async (bookShelfName: string, description: string) => {
+  const handleCreateBookshelf = async (
+    bookShelfName: string,
+    description: string,
+  ) => {
     await createBookshelf(bookShelfName, description);
     dialogs.createBookShelf.close();
   };
@@ -60,11 +71,7 @@ export function FavoriteBookCard(props: FavoriteBookCardProps) {
     <BaseBookCard variant="favorite" {...props}>
       <ReadStatusBadge status={readStatusState.status} />
 
-      <BookCardImage
-        imageUrl={image_url}
-        title={title}
-        variant="favorite"
-      />
+      <BookCardImage imageUrl={image_url} title={title} variant="favorite" />
 
       <div className="flex flex-col justify-between space-y-4">
         <BookCardHeader
@@ -116,7 +123,9 @@ export function FavoriteBookCard(props: FavoriteBookCardProps) {
             <Heart
               className={`mr-2 h-4 w-4 ${isFavorite ? 'fill-current' : ''}`}
             />
-            <p className="hidden sm:inline">{isFavorite ? 'お気に入り解除' : 'お気に入り'}</p>
+            <p className="hidden sm:inline">
+              {isFavorite ? 'お気に入り解除' : 'お気に入り'}
+            </p>
             <p className="sm:hidden">{isFavorite ? '解除' : '追加'}</p>
           </Button>
 
@@ -132,7 +141,7 @@ export function FavoriteBookCard(props: FavoriteBookCardProps) {
               {bookshelves.map((shelf) => (
                 <DropdownMenuItem
                   key={shelf.id}
-                  className="truncate items-center flex"
+                  className="flex items-center truncate"
                   onClick={() => addToBookshelf(shelf.id, isbn)}
                 >
                   <Library className="mr-2 h-4 w-4" />
@@ -142,7 +151,7 @@ export function FavoriteBookCard(props: FavoriteBookCardProps) {
                 </DropdownMenuItem>
               ))}
               <DropdownMenuItem
-                className='items-center flex'
+                className="flex items-center"
                 onClick={dialogs.createBookShelf.open}
               >
                 <Plus className="mr-2 h-4 w-4" />
@@ -193,4 +202,4 @@ export function FavoriteBookCard(props: FavoriteBookCardProps) {
 
 // BookServiceとCreateBookShelfDialogをインポート
 import { BookService } from '@/Services/bookService';
-import { CreateBookShelfDialog } from '@/Dialog/BookShelf/CreateBookShelf';
+import { CreateBookShelfDialog } from '@/features/bookshelf/components/dialogs/CreateBookShelfDialog';

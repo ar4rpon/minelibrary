@@ -1,21 +1,19 @@
-import React from 'react';
 import { Button } from '@/Components/ui/button';
 import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
 import { UpdateReadStatusDialog } from '@/Dialog/Book/UpdateReadStatusDialog';
 import { CreateMemoDialog } from '@/Dialog/Memo/CreateMemoDialog';
-import { DeleteBookDialog } from '@/Dialog/BookShelf/DeleteBookDialog';
-import { BookData } from '@/Services/bookService';
+import { DeleteBookDialog } from '@/features/bookshelf/components/dialogs/DeleteBookDialog';
+import { BookData, BookService } from '@/Services/bookService';
 import { ReadStatus } from '@/types';
-import { BaseBookCard } from './BaseBookCard';
-import { BookCardImage } from './BookCardImage';
-import { BookCardHeader } from './BookCardHeader';
-import { useBookCardState } from './hooks/useBookCardState';
-import { useFavoriteBook } from './hooks/useFavoriteBook';
-import { useBookShelf } from './hooks/useBookShelf';
-import { useBookMemo } from './hooks/useBookMemo';
-import { ReadStatusBadge } from '../ReadStatusBadge';
 import { Book, BookOpen, Edit, Heart, Library } from 'lucide-react';
-import { BookService } from '@/Services/bookService';
+import { ReadStatusBadge } from '../ReadStatusBadge';
+import { BaseBookCard } from './BaseBookCard';
+import { BookCardHeader } from './BookCardHeader';
+import { BookCardImage } from './BookCardImage';
+import { useBookCardState } from './hooks/useBookCardState';
+import { useBookMemo } from './hooks/useBookMemo';
+import { useBookShelf } from './hooks/useBookShelf';
+import { useFavoriteBook } from './hooks/useFavoriteBook';
 
 interface BookShelfBookCardProps extends BookData {
   readStatus: ReadStatus;
@@ -44,7 +42,11 @@ export function BookShelfBookCard(props: BookShelfBookCardProps) {
   const { removeFromBookshelf } = useBookShelf();
   const { createMemo } = useBookMemo();
 
-  const handleCreateMemo = async (memo: string, chapter?: number, page?: number) => {
+  const handleCreateMemo = async (
+    memo: string,
+    chapter?: number,
+    page?: number,
+  ) => {
     await createMemo(isbn, memo, chapter, page);
     dialogs.createMemo.close();
   };
@@ -63,11 +65,7 @@ export function BookShelfBookCard(props: BookShelfBookCardProps) {
     <BaseBookCard variant="book-shelf" {...props}>
       <ReadStatusBadge status={readStatusState.status} />
 
-      <BookCardImage
-        imageUrl={image_url}
-        title={title}
-        variant="book-shelf"
-      />
+      <BookCardImage imageUrl={image_url} title={title} variant="book-shelf" />
 
       <div className="flex flex-col justify-between space-y-4">
         <BookCardHeader
@@ -119,7 +117,9 @@ export function BookShelfBookCard(props: BookShelfBookCardProps) {
             <Heart
               className={`mr-2 h-4 w-4 ${isFavorite ? 'fill-current' : ''}`}
             />
-            <p className="hidden sm:inline">{isFavorite ? 'お気に入り解除' : 'お気に入り'}</p>
+            <p className="hidden sm:inline">
+              {isFavorite ? 'お気に入り解除' : 'お気に入り'}
+            </p>
             <p className="sm:hidden">{isFavorite ? '解除' : '追加'}</p>
           </Button>
           <Button

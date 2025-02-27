@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
 import BookCard from '@/Components/Book/BookCard/index';
-import BookShelf from '@/Components/BookShelf/index';
+import BookShelf from '@/components/bookshelf';
 import DefaultLayout from '@/Layouts/DefaultLayout';
-import { Head } from '@inertiajs/react';
 import { ReadStatus } from '@/types';
+import { Head } from '@inertiajs/react';
 
 interface BookShelfBook {
   isbn: string;
@@ -29,7 +28,10 @@ interface BookShelfDetailProps {
   books: BookShelfBook[];
 }
 
-export default function BookShelfDetail({ bookShelf, books }: BookShelfDetailProps) {
+export default function BookShelfDetail({
+  bookShelf,
+  books,
+}: BookShelfDetailProps) {
   return (
     <DefaultLayout header="本棚詳細">
       <Head title={bookShelf.book_shelf_name} />
