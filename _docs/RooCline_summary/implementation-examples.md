@@ -1,541 +1,711 @@
-# BookCardUI リファクタリング実装例
+# リファクタリング実装例
 
-リファクタリング計画に基づいた主要コンポーネントとフックの実装例です。
+このドキュメントでは、リファクタリング計画に基づいた実装例を提供します。これらの例は、新しいディレクトリ構造とコーディングガイドに従って実装されています。
 
-## 1. APIコールの整理 (bookService.ts)
+## 1. ディレクトリ構造の例
 
-```typescript
-// resources/ts/Services/bookService.ts
-import axios from 'axios';
-import { BookBaseProps, ReadStatus } from '@/types';
-
-export const BookService = {
-    // 既存のメソッド
-    getFavoriteStatus: (isbn: string) =>
-        axios.get<{ isFavorite: boolean }>('/books/favorite-status', {
-            params: { isbn },
-        }),
-
-    toggleFavorite: (bookData: BookBaseProps) =>
-        axios.post('/books/toggle-favorite', bookData),
-
-    updateReadStatus: (isbn: string, readStatus: ReadStatus) =>
-        axios.post('/books/update-status', { isbn, readStatus }),
-
-    fetchBookshelves: () =>
-        axios.get<{ id: number; book_shelf_name: string }[]>(
-            '/book-shelf/get/mylist',
-        ),
-
-    addToBookshelf: (shelfId: number, isbn: string) =>
-        axios.post('/book-shelf/add/books', {
-            book_shelf_id: shelfId,
-            isbns: [isbn],
-        }),
-
-    createBookshelf: (name: string, description: string) =>
-        axios.post('/book-shelf/create', {
-            book_shelf_name: name,
-            description,
-        }),
-
-    removeFromBookshelf: (shelfId: number, isbn: string) =>
-        axios.post('/book-shelf/remove-book', { book_shelf_id: shelfId, isbn }),
-
-    // 新しく追加するメソッド
-    createMemo: (data: {
-        isbn: string;
-        memo: string;
-        memo_chapter?: number;
-        memo_page?: number;
-    }) => axios.post('/memo/create', data),
-};
+```
+resources/ts/
+├── components/
+│   ├── ui/
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   └── ...
+│   ├── book/
+│   │   └── card/
+│   │       ├── BaseCard.tsx
+│   │       ├── DefaultCard.tsx
+│   │       └── index.tsx
+│   └── bookshelf/
+│       ├── card/
+│       │   ├── BaseCard.tsx
+│       │   ├── DefaultCard.tsx
+│       │   ├── DetailCard.tsx
+│       │   └── index.tsx
+│       ├── elements/
+│       │   ├── Header.tsx
+│       │   ├── Image.tsx
+│       │   └── UserInfo.tsx
+│       └── index.tsx
+├── features/
+│   ├── book/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   └── pages/
+│   └── bookshelf/
+│       ├── components/
+│       │   └── dialogs/
+│       │       ├── AddBookDialog.tsx
+│       │       ├── CreateDialog.tsx
+│       │       ├── DeleteDialog.tsx
+│       │       ├── EditDialog.tsx
+│       │       └── index.tsx
+│       ├── hooks/
+│       │   ├── useBookShelfDialogs.ts
+│       │   ├── useBookShelfMutation.ts
+│       │   └── useBookShelfQuery.ts
+│       └── pages/
+│           ├── BookShelfDetailPage.tsx
+│           └── BookShelfListPage.tsx
+├── services/
+│   ├── apiClient.ts
+│   ├── bookService.ts
+│   └── bookShelfService.ts
+├── hooks/
+│   ├── useDialog.ts
+│   └── usePagination.ts
+└── types/
+    ├── book.ts
+    └── bookShelf.ts
 ```
 
-## 2. 型定義の改善
+## 2. UIコンポーネントの実装例
 
-```typescript
-// resources/ts/types/book.ts
-export type ReadStatus = 'want_read' | 'reading' | 'read';
+### BaseCard.tsx
 
-export interface BookBaseProps {
-    isbn: string;
-    title: string;
-    author: string;
-    publisher_name: string;
-    sales_date: string;
-    item_price: number;
-    image_url: string;
-    item_caption: string;
+```tsx
+import React from 'react';
+import { Card } from '@/components/common/ui/card';
+
+interface BaseCardProps {
+    variant?: 'card' | 'description';
+    children: React.ReactNode;
+    className?: string;
 }
 
-export interface BookCardBaseProps extends BookBaseProps {
-    children?: React.ReactNode;
-}
-
-export interface DefaultBookCardProps extends BookBaseProps {}
-
-export interface FavoriteBookCardProps extends BookBaseProps {
-    readStatus: ReadStatus;
-}
-
-export interface BookShelfBookCardProps extends BookBaseProps {
-    readStatus: ReadStatus;
-    book_shelf_id: number;
-}
-```
-
-## 3. カスタムフックの実装
-
-### useBookCardState.ts
-
-```typescript
-// resources/ts/Components/Book/BookCard/hooks/useBookCardState.ts
-import { useState } from 'react';
-import { ReadStatus } from '@/types/book';
-
-export function useBookCardState(initialReadStatus?: ReadStatus) {
-    const [detailBookDialogOpen, setDetailBookDialogOpen] = useState(false);
-    const [readStatusDialogOpen, setReadStatusDialogOpen] = useState(false);
-    const [createBookShelfDialogOpen, setCreateBookShelfDialogOpen] =
-        useState(false);
-    const [deleteBookDialogOpen, setDeleteBookDialogOpen] = useState(false);
-    const [createMemoDialogOpen, setCreateMemoDialogOpen] = useState(false);
-    const [selectedStatus, setSelectedStatus] = useState<ReadStatus>(
-        initialReadStatus ?? 'want_read',
+/**
+ * 基本的なカードレイアウトを提供するコンポーネント
+ * 子コンポーネントをスロットとして受け取る設計
+ */
+export function BaseCard({
+    variant = 'card',
+    children,
+    className = '',
+}: BaseCardProps) {
+    return (
+        <Card
+            className={`mx-auto w-full ${
+                variant === 'description'
+                    ? 'mt-4 min-h-40 border border-green-600 px-4 py-2 shadow-md md:py-4'
+                    : 'overflow-hidden'
+            } ${className}`}
+        >
+            <div
+                className={
+                    variant === 'description'
+                        ? 'flex flex-col gap-4'
+                        : 'p-4 md:p-6'
+                }
+            >
+                {children}
+            </div>
+        </Card>
     );
+}
+```
+
+### Header.tsx
+
+```tsx
+import React from 'react';
+import { CardTitle, CardDescription } from '@/components/common/ui/card';
+import { BookShelfActions, ExtendedBookShelfActions } from './Actions';
+
+interface HeaderProps {
+    name: string;
+    description: string;
+    variant?: 'card' | 'description';
+    onEdit: () => void;
+    onDelete: () => void;
+    onAddBook?: () => void;
+}
+
+/**
+ * 本棚のタイトルと説明を表示するコンポーネント
+ */
+export function Header({
+    name,
+    description,
+    variant = 'card',
+    onEdit,
+    onDelete,
+    onAddBook,
+}: HeaderProps) {
+    return (
+        <div className="space-y-2">
+            <div className="flex justify-between">
+                <CardTitle
+                    className={`${
+                        variant === 'description'
+                            ? 'text-2xl font-bold'
+                            : 'text-xl font-bold'
+                    }`}
+                >
+                    {name}
+                </CardTitle>
+
+                {variant === 'description' && onAddBook ? (
+                    <ExtendedBookShelfActions
+                        onAddBook={onAddBook}
+                        onEdit={onEdit}
+                        onDelete={onDelete}
+                    />
+                ) : (
+                    <BookShelfActions onEdit={onEdit} onDelete={onDelete} />
+                )}
+            </div>
+
+            <CardDescription
+                className={`${
+                    variant === 'description'
+                        ? 'text-md mt-1 text-gray-700'
+                        : 'text-sm text-gray-600'
+                }`}
+            >
+                {description}
+            </CardDescription>
+        </div>
+    );
+}
+```
+
+### DefaultCard.tsx
+
+```tsx
+import React from 'react';
+import { Link } from '@inertiajs/react';
+import { Button } from '@/components/common/ui/button';
+import { BookShelfBase } from '@/types/bookShelf';
+import { BaseCard } from './BaseCard';
+import { Image } from '../elements/Image';
+import { Header } from '../elements/Header';
+
+interface DefaultCardProps extends BookShelfBase {
+    image?: string;
+    onEdit: () => void;
+    onDelete: () => void;
+}
+
+/**
+ * デフォルトバリアントの本棚カードコンポーネント
+ */
+export function DefaultCard({
+    bookShelfId,
+    name,
+    description,
+    isPublic,
+    image,
+    onEdit,
+    onDelete,
+}: DefaultCardProps) {
+    return (
+        <BaseCard variant="card">
+            <div className="flex flex-row gap-4">
+                <Image imageUrl={image || ''} name={name} variant="card" />
+
+                <div className="flex flex-1 flex-col">
+                    <Header
+                        name={name}
+                        description={description}
+                        variant="card"
+                        onEdit={onEdit}
+                        onDelete={onDelete}
+                    />
+
+                    <Link href={`/book-shelf/${bookShelfId}`}>
+                        <Button className="mt-4 text-sm">詳細を見る</Button>
+                    </Link>
+                </div>
+            </div>
+        </BaseCard>
+    );
+}
+```
+
+## 3. カスタムフックの実装例
+
+### useBookShelfDialogs.ts
+
+```tsx
+import { useState } from 'react';
+import { useBookShelfMutation } from './useBookShelfMutation';
+
+/**
+ * 本棚関連のダイアログ状態を管理するカスタムフック
+ */
+export function useBookShelfDialogs(
+    bookShelfId: number,
+    includeAddBook = false,
+) {
+    // ダイアログの開閉状態
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isAddBookOpen, setIsAddBookOpen] = useState(false);
+
+    const { updateBookShelf, deleteBookShelf, addBooksToShelf } =
+        useBookShelfMutation();
+
+    const handleEdit = async (
+        name: string,
+        description: string,
+        isPublic: boolean,
+    ) => {
+        const success = await updateBookShelf(bookShelfId, {
+            name,
+            description,
+            isPublic,
+        });
+
+        if (success) {
+            setIsEditOpen(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        const success = await deleteBookShelf(bookShelfId);
+
+        if (success) {
+            setIsDeleteOpen(false);
+        }
+    };
+
+    const handleAddBook = async (selectedIsbns: string[]) => {
+        if (!includeAddBook) return;
+
+        const success = await addBooksToShelf(bookShelfId, selectedIsbns);
+
+        if (success) {
+            setIsAddBookOpen(false);
+        }
+    };
 
     return {
         dialogs: {
-            detailBook: {
-                isOpen: detailBookDialogOpen,
-                open: () => setDetailBookDialogOpen(true),
-                close: () => setDetailBookDialogOpen(false),
+            edit: {
+                isOpen: isEditOpen,
+                open: () => setIsEditOpen(true),
+                close: () => setIsEditOpen(false),
+                handle: handleEdit,
             },
-            readStatus: {
-                isOpen: readStatusDialogOpen,
-                open: () => setReadStatusDialogOpen(true),
-                close: () => setReadStatusDialogOpen(false),
+            delete: {
+                isOpen: isDeleteOpen,
+                open: () => setIsDeleteOpen(true),
+                close: () => setIsDeleteOpen(false),
+                handle: handleDelete,
             },
-            createBookShelf: {
-                isOpen: createBookShelfDialogOpen,
-                open: () => setCreateBookShelfDialogOpen(true),
-                close: () => setCreateBookShelfDialogOpen(false),
-            },
-            deleteBook: {
-                isOpen: deleteBookDialogOpen,
-                open: () => setDeleteBookDialogOpen(true),
-                close: () => setDeleteBookDialogOpen(false),
-            },
-            createMemo: {
-                isOpen: createMemoDialogOpen,
-                open: () => setCreateMemoDialogOpen(true),
-                close: () => setCreateMemoDialogOpen(false),
-            },
-        },
-        readStatus: {
-            status: selectedStatus,
-            setStatus: setSelectedStatus,
+            ...(includeAddBook
+                ? {
+                      addBook: {
+                          isOpen: isAddBookOpen,
+                          open: () => setIsAddBookOpen(true),
+                          close: () => setIsAddBookOpen(false),
+                          handle: handleAddBook,
+                      },
+                  }
+                : {}),
         },
     };
 }
 ```
 
-### useFavoriteBook.ts
+### useBookShelfMutation.ts
 
-```typescript
-// resources/ts/Components/Book/BookCard/hooks/useFavoriteBook.ts
-import { useEffect, useState } from 'react';
-import { BookService } from '@/Services/bookService';
-import { BookBaseProps } from '@/types/book';
+```tsx
+import { useState } from 'react';
+import { bookShelfService } from '@/services/bookShelfService';
+import { UpdateBookShelfData } from '@/types/bookShelf';
 
-export function useFavoriteBook(book: BookBaseProps) {
-    const [isFavorite, setIsFavorite] = useState(false);
+/**
+ * 本棚の変更操作を管理するカスタムフック
+ */
+export function useBookShelfMutation() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        BookService.getFavoriteStatus(book.isbn)
-            .then((response) => setIsFavorite(response.data.isFavorite))
-            .catch((error) =>
-                console.error('Failed to get favorite status:', error),
-            );
-    }, [book.isbn]);
+    const updateBookShelf = async (
+        bookShelfId: number,
+        data: UpdateBookShelfData,
+    ): Promise<boolean> => {
+        setIsLoading(true);
+        setError(null);
 
-    const toggleFavorite = () => {
-        setIsFavorite(!isFavorite);
-        BookService.toggleFavorite(book).catch((error) => {
-            console.error('Failed to toggle favorite:', error);
-            setIsFavorite(isFavorite); // Revert on error
-        });
+        const result = await bookShelfService.update(bookShelfId, data);
+
+        setIsLoading(false);
+
+        if (!result.success) {
+            setError(result.error);
+            return false;
+        }
+
+        return true;
+    };
+
+    const deleteBookShelf = async (bookShelfId: number): Promise<boolean> => {
+        setIsLoading(true);
+        setError(null);
+
+        const result = await bookShelfService.delete(bookShelfId);
+
+        setIsLoading(false);
+
+        if (!result.success) {
+            setError(result.error);
+            return false;
+        }
+
+        return true;
+    };
+
+    const addBooksToShelf = async (
+        bookShelfId: number,
+        isbns: string[],
+    ): Promise<boolean> => {
+        setIsLoading(true);
+        setError(null);
+
+        const result = await bookShelfService.addBooks(bookShelfId, isbns);
+
+        setIsLoading(false);
+
+        if (!result.success) {
+            setError(result.error);
+            return false;
+        }
+
+        return true;
     };
 
     return {
-        isFavorite,
-        toggleFavorite,
+        updateBookShelf,
+        deleteBookShelf,
+        addBooksToShelf,
+        isLoading,
+        error,
     };
 }
 ```
 
-### useBookShelf.ts
+## 4. コンテナコンポーネントの実装例
 
-```typescript
-// resources/ts/Components/Book/BookCard/hooks/useBookShelf.ts
-import { useEffect, useState } from 'react';
-import { BookService } from '@/Services/bookService';
-import { router } from '@inertiajs/react';
+### BookShelfContainer.tsx
 
-export function useBookShelf() {
-    const [bookshelves, setBookshelves] = useState<
-        { id: number; book_shelf_name: string }[]
-    >([]);
+```tsx
+import React from 'react';
+import { BookShelfBase } from '@/types/bookShelf';
+import { DefaultCard } from '@/components/bookshelf/card/DefaultCard';
+import { DetailCard } from '@/components/bookshelf/card/DetailCard';
+import { useBookShelfDialogs } from '../hooks/useBookShelfDialogs';
+import { BookShelfDialogs } from './dialogs';
 
-    const fetchBookshelves = () => {
-        BookService.fetchBookshelves()
-            .then((response) => setBookshelves(response.data))
-            .catch((error) =>
-                console.error('Failed to fetch bookshelves:', error),
-            );
-    };
+interface BookShelfContainerProps extends BookShelfBase {
+    variant?: 'card' | 'description';
+    image?: string;
+    userName?: string;
+    userImage?: string;
+}
 
-    useEffect(() => {
-        fetchBookshelves();
-    }, []);
+/**
+ * 本棚コンポーネントのコンテナ
+ * 状態管理とロジックを担当
+ */
+export function BookShelfContainer(props: BookShelfContainerProps) {
+    const { bookShelfId, variant = 'card' } = props;
+    const includeAddBook = variant === 'description';
+    const { dialogs } = useBookShelfDialogs(bookShelfId, includeAddBook);
 
-    const addToBookshelf = (shelfId: number, isbn: string) => {
-        BookService.addToBookshelf(shelfId, isbn).catch((error) =>
-            console.error('Failed to add book to shelf:', error),
+    // 詳細バリアント
+    if (variant === 'description') {
+        return (
+            <>
+                <DetailCard
+                    {...props}
+                    onEdit={dialogs.edit.open}
+                    onDelete={dialogs.delete.open}
+                    onAddBook={dialogs.addBook?.open}
+                />
+
+                <BookShelfDialogs
+                    bookShelfId={bookShelfId}
+                    initialName={props.name}
+                    initialDescription={props.description}
+                    initialIsPublic={props.isPublic}
+                    dialogStates={{
+                        edit: dialogs.edit.isOpen,
+                        delete: dialogs.delete.isOpen,
+                        addBook: dialogs.addBook?.isOpen,
+                    }}
+                    onDialogStateChange={(dialogKey, isOpen) => {
+                        if (dialogKey === 'edit') {
+                            isOpen ? dialogs.edit.open() : dialogs.edit.close();
+                        } else if (dialogKey === 'delete') {
+                            isOpen
+                                ? dialogs.delete.open()
+                                : dialogs.delete.close();
+                        } else if (dialogKey === 'addBook' && dialogs.addBook) {
+                            isOpen
+                                ? dialogs.addBook.open()
+                                : dialogs.addBook.close();
+                        }
+                    }}
+                    onEditConfirm={dialogs.edit.handle}
+                    onDeleteConfirm={dialogs.delete.handle}
+                    onAddBookConfirm={dialogs.addBook?.handle}
+                />
+            </>
         );
-    };
-
-    const createBookshelf = async (name: string, description: string) => {
-        try {
-            await BookService.createBookshelf(name, description);
-            fetchBookshelves(); // 本棚リストを再取得
-            return true;
-        } catch (error) {
-            console.error('Failed to create bookshelf:', error);
-            return false;
-        }
-    };
-
-    const removeFromBookshelf = async (shelfId: number, isbn: string) => {
-        try {
-            await BookService.removeFromBookshelf(shelfId, isbn);
-            router.reload();
-            return true;
-        } catch (error) {
-            console.error('Failed to remove book from shelf:', error);
-            return false;
-        }
-    };
-
-    return {
-        bookshelves,
-        addToBookshelf,
-        createBookshelf,
-        removeFromBookshelf,
-    };
-}
-```
-
-### useBookMemo.ts
-
-```typescript
-// resources/ts/Components/Book/BookCard/hooks/useBookMemo.ts
-import { BookService } from '@/Services/bookService';
-import { router } from '@inertiajs/react';
-
-export function useBookMemo() {
-    const createMemo = async (
-        isbn: string,
-        memo: string,
-        chapter?: number,
-        page?: number,
-    ) => {
-        try {
-            await BookService.createMemo({
-                isbn,
-                memo,
-                memo_chapter: chapter,
-                memo_page: page,
-            });
-            router.reload();
-            return true;
-        } catch (error) {
-            console.error('Failed to create memo:', error);
-            return false;
-        }
-    };
-
-    return {
-        createMemo,
-    };
-}
-```
-
-## 4. 共通UIコンポーネント
-
-### BookCardImage.tsx
-
-```typescript
-// resources/ts/Components/Book/BookCard/BookCardImage.tsx
-import React from 'react';
-
-interface BookCardImageProps {
-  imageUrl: string;
-  title: string;
-  variant?: 'favorite' | 'default' | 'book-shelf';
-}
-
-export function BookCardImage({ imageUrl, title, variant = 'default' }: BookCardImageProps) {
-  return (
-    <div
-      className={`mx-auto aspect-[3/4] w-full max-w-[200px] overflow-hidden rounded-md border-2 border-gray-200 shadow-lg ${
-        variant === 'favorite' || variant === 'book-shelf' ? '' : 'shrink-0'
-      }`}
-    >
-      <img
-        src={imageUrl || '/placeholder.svg'}
-        alt={title}
-        className="h-full w-full object-cover"
-      />
-    </div>
-  );
-}
-```
-
-### BookCardHeader.tsx
-
-```typescript
-// resources/ts/Components/Book/BookCard/BookCardHeader.tsx
-import React from 'react';
-
-interface BookCardHeaderProps {
-  title: string;
-  author: string;
-  publisherName: string;
-  salesDate: string;
-  itemPrice?: number;
-  variant?: 'favorite' | 'default' | 'book-shelf';
-}
-
-export function BookCardHeader({
-  title,
-  author,
-  publisherName,
-  salesDate,
-  itemPrice,
-  variant = 'default',
-}: BookCardHeaderProps) {
-  return (
-    <div className="space-y-2">
-      <div className="flex">
-        <h2
-          className={`${
-            variant === 'favorite' || variant === 'book-shelf'
-              ? 'text-xl font-bold sm:text-2xl'
-              : 'w-full truncate text-xl font-bold sm:text-left sm:text-2xl'
-          }`}
-        >
-          {title}
-        </h2>
-        <div
-          className={`${
-            variant === 'favorite' || variant === 'book-shelf' ? 'hidden md:block md:w-28' : ''
-          }`}
-        ></div>
-      </div>
-      <div
-        className={`text-sm text-muted-foreground ${
-          variant === 'favorite' || variant === 'book-shelf'
-            ? 'space-y-1'
-            : 'space-y-1 sm:text-left'
-        }`}
-      >
-        <p className={variant === 'default' ? 'w-full truncate' : ''}>
-          {`${salesDate} / ${author} / ${publisherName}`}
-        </p>
-        {variant === 'default' && itemPrice && (
-          <p className="text-lg font-semibold text-red-600">
-            ¥{itemPrice.toLocaleString()}
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}
-```
-
-## 5. バリアント別コンポーネント
-
-### BaseBookCard.tsx
-
-```typescript
-// resources/ts/Components/Book/BookCard/BaseBookCard.tsx
-import React from 'react';
-import { Card } from '@/Components/ui/card';
-import { BookCardBaseProps } from '@/types/book';
-
-interface BaseBookCardProps extends BookCardBaseProps {
-  variant?: 'favorite' | 'default' | 'book-shelf';
-  children: React.ReactNode;
-}
-
-export function BaseBookCard({
-  variant = 'default',
-  children,
-}: BaseBookCardProps) {
-  return (
-    <Card
-      className={`mx-auto w-full ${
-        variant === 'favorite' || variant === 'book-shelf'
-          ? 'p-4'
-          : 'max-w-4xl overflow-hidden p-4 md:p-6'
-      }`}
-    >
-      <div
-        className={
-          variant === 'favorite' || variant === 'book-shelf'
-            ? 'relative grid gap-4 sm:grid-cols-[200px_1fr]'
-            : 'flex flex-col gap-4 md:flex-row lg:flex-col'
-        }
-      >
-        {children}
-      </div>
-    </Card>
-  );
-}
-```
-
-### DefaultBookCard.tsx (例)
-
-```typescript
-// resources/ts/Components/Book/BookCard/DefaultBookCard.tsx
-import React from 'react';
-import { Button } from '@/Components/ui/button';
-import { BookDetailDialog } from '@/Dialog/Book/BookDetailDialog';
-import { DefaultBookCardProps } from '@/types/book';
-import { BaseBookCard } from './BaseBookCard';
-import { BookCardImage } from './BookCardImage';
-import { BookCardHeader } from './BookCardHeader';
-import { useBookCardState } from './hooks/useBookCardState';
-import { useFavoriteBook } from './hooks/useFavoriteBook';
-import FavoriteIcon from '@/Components/Icon/FavoriteIcon';
-
-export function DefaultBookCard(props: DefaultBookCardProps) {
-  const {
-    title,
-    author,
-    publisher_name,
-    sales_date,
-    item_price,
-    isbn,
-    image_url,
-    item_caption,
-  } = props;
-
-  const { dialogs } = useBookCardState();
-  const { isFavorite, toggleFavorite } = useFavoriteBook(props);
-
-  return (
-    <BaseBookCard variant="default" {...props}>
-      <BookCardImage
-        imageUrl={image_url}
-        title={title}
-        variant="default"
-      />
-
-      <div className="flex flex-col justify-between flex-1 space-y-4">
-        <BookCardHeader
-          title={title}
-          author={author}
-          publisherName={publisher_name}
-          salesDate={sales_date}
-          itemPrice={item_price}
-          variant="default"
-        />
-
-        <div className="flex items-center gap-2">
-          <Button onClick={dialogs.detailBook.open} className="w-full">
-            詳細を見る
-          </Button>
-          <FavoriteIcon
-            isFavorite={isFavorite}
-            onClick={toggleFavorite}
-          />
-        </div>
-      </div>
-
-      <BookDetailDialog
-        title={title}
-        author={author}
-        publisher_name={publisher_name}
-        sales_date={sales_date}
-        item_price={item_price}
-        isbn={isbn}
-        image_url={image_url}
-        isOpen={dialogs.detailBook.isOpen}
-        onClose={dialogs.detailBook.close}
-        onConfirm={dialogs.detailBook.close}
-        item_caption={item_caption}
-      />
-    </BaseBookCard>
-  );
-}
-```
-
-## 6. エントリーポイント
-
-```typescript
-// resources/ts/Components/Book/BookCard/index.tsx
-import React from 'react';
-import { DefaultBookCard } from './DefaultBookCard';
-import { FavoriteBookCard } from './FavoriteBookCard';
-import { BookShelfBookCard } from './BookShelfBookCard';
-import { BookBaseProps, BookShelfBookCardProps, FavoriteBookCardProps } from '@/types/book';
-
-interface BookCardProps extends BookBaseProps {
-  variant?: 'favorite' | 'default' | 'book-shelf';
-  readStatus?: FavoriteBookCardProps['readStatus'];
-  book_shelf_id?: BookShelfBookCardProps['book_shelf_id'];
-}
-
-export default function BookCard(props: BookCardProps) {
-  const { variant = 'default' } = props;
-
-  if (variant === 'favorite') {
-    if (!props.readStatus) {
-      console.error('readStatus is required for favorite variant');
-      return null;
     }
-    return <FavoriteBookCard {...props} readStatus={props.readStatus} />;
-  }
 
-  if (variant === 'book-shelf') {
-    if (!props.readStatus || !props.book_shelf_id) {
-      console.error('readStatus and book_shelf_id are required for book-shelf variant');
-      return null;
-    }
+    // デフォルトバリアント（カード）
     return (
-      <BookShelfBookCard
-        {...props}
-        readStatus={props.readStatus}
-        book_shelf_id={props.book_shelf_id}
-      />
-    );
-  }
+        <>
+            <DefaultCard
+                {...props}
+                onEdit={dialogs.edit.open}
+                onDelete={dialogs.delete.open}
+            />
 
-  return <DefaultBookCard {...props} />;
+            <BookShelfDialogs
+                bookShelfId={bookShelfId}
+                initialName={props.name}
+                initialDescription={props.description}
+                initialIsPublic={props.isPublic}
+                dialogStates={{
+                    edit: dialogs.edit.isOpen,
+                    delete: dialogs.delete.isOpen,
+                }}
+                onDialogStateChange={(dialogKey, isOpen) => {
+                    if (dialogKey === 'edit') {
+                        isOpen ? dialogs.edit.open() : dialogs.edit.close();
+                    } else if (dialogKey === 'delete') {
+                        isOpen ? dialogs.delete.open() : dialogs.delete.close();
+                    }
+                }}
+                onEditConfirm={dialogs.edit.handle}
+                onDeleteConfirm={dialogs.delete.handle}
+            />
+        </>
+    );
 }
 ```
 
-## 実装の注意点
+## 5. サービスの実装例
 
-1. 上記は主要なコンポーネントとフックの実装例です。実際の実装では、他のバリアント（`FavoriteBookCard.tsx`、`BookShelfBookCard.tsx`）も同様に実装する必要があります。
+### bookShelfService.ts
 
-2. 型定義は`@/types/book.ts`などに分離することで、型の再利用性を高めています。
+```tsx
+import axios, { AxiosError } from 'axios';
+import { router } from '@inertiajs/react';
+import { BookShelf, UpdateBookShelfData, Result } from '@/types/bookShelf';
 
-3. 各コンポーネントは単一責任の原則に従い、明確な役割を持っています。
+// API エンドポイント定義
+const API_ENDPOINTS = {
+    UPDATE: (id: number) => `/book-shelf/update/${id}`,
+    DELETE: (id: number) => `/book-shelf/delete/${id}`,
+    ADD_BOOKS: '/book-shelf/add/books',
+} as const;
 
-4. カスタムフックによって状態管理とビジネスロジックをUIから分離しています。
+// エラーハンドリング用の共通関数
+const handleApiError = (error: unknown, errorMessage: string): string => {
+    if (error instanceof AxiosError) {
+        return `${errorMessage}: ${error.response?.data?.message || error.message}`;
+    }
+    return `${errorMessage}: 予期せぬエラーが発生しました`;
+};
 
-5. エントリーポイントとなる`index.tsx`では、適切なバリアントを選択するロジックを実装しています。
+// BookShelf サービス
+export const bookShelfService = {
+    // BookShelf 更新
+    update: async (
+        bookShelfId: number,
+        data: UpdateBookShelfData,
+    ): Promise<Result<BookShelf>> => {
+        try {
+            const response = await axios.put(
+                API_ENDPOINTS.UPDATE(bookShelfId),
+                {
+                    book_shelf_name: data.name,
+                    description: data.description,
+                    is_public: data.isPublic,
+                },
+            );
+
+            router.reload();
+
+            return {
+                success: true,
+                data: response.data,
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: handleApiError(error, '本棚の更新に失敗しました'),
+            };
+        }
+    },
+
+    // BookShelf 削除
+    delete: async (bookShelfId: number): Promise<Result<void>> => {
+        try {
+            await axios.delete(API_ENDPOINTS.DELETE(bookShelfId));
+
+            router.visit('/');
+
+            return {
+                success: true,
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: handleApiError(error, '本棚の削除に失敗しました'),
+            };
+        }
+    },
+
+    // 本の追加
+    addBooks: async (
+        bookShelfId: number,
+        isbns: string[],
+    ): Promise<Result<void>> => {
+        try {
+            await axios.post(API_ENDPOINTS.ADD_BOOKS, {
+                book_shelf_id: bookShelfId,
+                isbns,
+            });
+
+            router.reload();
+
+            return {
+                success: true,
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: handleApiError(error, '本の追加に失敗しました'),
+            };
+        }
+    },
+};
+```
+
+## 6. 型定義の実装例
+
+### bookShelf.ts
+
+```tsx
+// 基本的な結果型
+export interface Result<T = void> {
+    success: boolean;
+    data?: T;
+    error?: string;
+}
+
+// 本棚の基本情報
+export interface BookShelfBase {
+    bookShelfId: number;
+    name: string;
+    description: string;
+    isPublic: boolean;
+}
+
+// 更新用データ型
+export interface UpdateBookShelfData {
+    name: string;
+    description: string;
+    isPublic: boolean;
+}
+
+// 本棚の完全な情報
+export interface BookShelf extends BookShelfBase {
+    image?: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: number;
+}
+
+// ダイアログの状態管理用
+export interface BookShelfDialogStates {
+    edit: boolean;
+    delete: boolean;
+    addBook?: boolean; // 本の追加ダイアログは一部のコンポーネントでのみ使用
+}
+
+// ユーザー情報
+export interface UserInfo {
+    userName: string;
+    userImage: string;
+}
+
+// 本棚カード用のプロパティ
+export interface BookShelfCardProps extends BookShelfBase {
+    image?: string;
+    onEdit: () => void;
+    onDelete: () => void;
+}
+
+// 本棚詳細用のプロパティ
+export interface BookShelfDetailCardProps
+    extends BookShelfBase,
+        Partial<UserInfo> {
+    onEdit: () => void;
+    onDelete: () => void;
+    onAddBook?: () => void;
+}
+
+// ドロップダウンメニューのアクション用
+export interface BookShelfActionsProps {
+    onEdit: () => void;
+    onDelete: () => void;
+}
+
+// 拡張アクション（本の追加などを含む）
+export interface ExtendedBookShelfActionsProps extends BookShelfActionsProps {
+    onAddBook: () => void;
+    onShare?: () => void;
+}
+```
+
+## 7. エントリーポイントの実装例
+
+### index.tsx
+
+````tsx
+import React from 'react';
+import { BookShelfBase } from '@/types/bookShelf';
+import { BookShelfContainer } from '@/features/bookshelf/components/BookShelfContainer';
+
+interface BookShelfProps extends BookShelfBase {
+    variant?: 'card' | 'description';
+    image?: string;
+    userName?: string;
+    userImage?: string;
+}
+
+/**
+ * 本棚コンポーネントのエントリーポイント
+ *
+ * 使用例:
+ * ```tsx
+ * <BookShelf
+ *   bookShelfId={1}
+ *   name="技術書コレクション"
+ *   description="プログラミングや技術関連の本をまとめた本棚です。"
+ *   isPublic={true}
+ *   image="https://example.com/image.jpg"
+ *   variant="card"
+ * />
+ * ```
+ */
+export default function BookShelf(props: BookShelfProps) {
+    return <BookShelfContainer {...props} />;
+}
+
+// 各コンポーネントをエクスポート（必要に応じて）
+export { BaseCard } from './card/BaseCard';
+export { DefaultCard } from './card/DefaultCard';
+export { DetailCard } from './card/DetailCard';
+export { Header } from './elements/Header';
+export { Image } from './elements/Image';
+````
+
+これらの実装例は、リファクタリング計画に基づいて作成されています。実際の実装では、プロジェクトの要件や既存のコードベースに合わせて調整が必要になる場合があります。

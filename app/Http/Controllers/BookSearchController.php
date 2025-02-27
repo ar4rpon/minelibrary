@@ -55,7 +55,7 @@ class BookSearchController extends Controller
             return $item;
         }, $results);
 
-        return Inertia::render('SearchBook', [
+        return Inertia::render('features/book/pages/SearchBook', [
             'results' => $results,
             'totalItems' => $totalItems,
             'filters' => $validated,

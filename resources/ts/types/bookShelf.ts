@@ -27,7 +27,9 @@ export interface BookShelfCardProps extends BookShelfBase {
 }
 
 // 本棚詳細用のプロパティ
-export interface BookShelfDescriptionProps extends BookShelfBase, Partial<UserInfo> { }
+export interface BookShelfDescriptionProps
+  extends BookShelfBase,
+    Partial<UserInfo> {}
 
 // ドロップダウンメニューのアクション用
 export interface BookShelfActionsProps {
@@ -39,4 +41,20 @@ export interface BookShelfActionsProps {
 export interface ExtendedBookShelfActionsProps extends BookShelfActionsProps {
   onAddBook: () => void;
   onShare?: () => void;
+}
+
+// 本の基本情報
+export interface Book {
+  isbn: string;
+  title: string;
+  author: string;
+  sales_date: string;
+  read_status: string;
+}
+
+// APIレスポンス型
+export interface ApiResponse<T> {
+  data: T;
+  message?: string;
+  status: number;
 }

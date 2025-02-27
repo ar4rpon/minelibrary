@@ -10,7 +10,7 @@ use App\Models\BookShelf;
 use App\Http\Controllers\BookShelfController;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    return Inertia::render('features/welcome/pages/Welcome');
 });
 
 Route::middleware('auth')->group(function () {
@@ -20,11 +20,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/memo/list',  [MemoController::class, 'index'])->name('memos.index');
     Route::get('/book/search', [BookSearchController::class, 'index'])->name('book.search');
 
-    Route::get('/book-shelf/list', function () {
-        return Inertia::render('BookShelf/BookShelfList');
-    })->name('book-shelf.list');
+    Route::get('/book-shelf/list', [BookShelfController::class, 'index'])->name('book-shelf.list');
     Route::get('/book-shelf/detail', function () {
-        return Inertia::render('BookShelf/BookShelfDetail');
+        return Inertia::render('features/bookshelf/pages/BookShelfDetail');
     })->name('book-shelf.detail');
     Route::get('/book-shelf/{book_shelf_id}', [BookShelfController::class, 'show'])->name('book-shelf.detail');
 
@@ -32,9 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('books')->group(function () {
         // お気に入り処理
         Route::post('/toggle-favorite', [FavoriteBookController::class, 'toggleFavorite'])->name('favorite.toggle');
-        Route::get('/favorite-status', [FavoriteBookController::class, 'getFavoriteStatus'])->name('favorite.stauts');
+        Route::get('/favorite-status', [FavoriteBookController::class, 'getFavoriteStatus'])->name('favorite.status');
         // 書籍ステータス処理
-        Route::post('/update-status', [FavoriteBookController::class, 'updateReadStatus'])->name('books.stauts');
+        Route::post('/update-status', [FavoriteBookController::class, 'updateReadStatus'])->name('books.status');
     });
     // 書籍のメモを取得
     Route::get('/book/{isbn}/memos', [MemoController::class, 'getBookMemos'])->name('book.memos');
@@ -66,7 +64,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/privacy', function () {
-    return Inertia::render('PrivacyPolicy');
+    return Inertia::render('features/privacy/pages/PrivacyPolicy');
 })->name('privacy');
 
 require __DIR__ . '/auth.php';

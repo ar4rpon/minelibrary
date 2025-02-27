@@ -1,154 +1,122 @@
-# BookCardUIリファクタリング計画
+# 本棚コンポーネントリファクタリング計画
 
-現在の`BookCard.tsx`を分析した結果、以下の問題点が見つかりました：
+## 現状の分析
 
-## 現状の問題点
+### 良い点
 
-1. **APIコールとUIの混在**
+1. **コンポーネントの分割**: BaseBookShelfCard、DefaultBookShelfCard、BookShelfDescriptionCardなど、役割ごとにコンポーネントが分割されている
+2. **カスタムフックの使用**: useBookShelfStateでダイアログの状態管理を行っている
+3. **型定義の整備**: bookShelf.tsで型定義が整理されている
 
-    - 一部のAPIコールは直接コンポーネント内で`axios`を使用
-    - 一部のAPIコールは`BookService`を使用
-    - 一貫性がなく、メンテナンスが難しい状態
+### 改善点
 
-2. **UIのバリエーション処理が複雑**
+1. **関心の分離が不十分**:
 
-    - `variant`プロパティによる条件分岐が多数あり、コードの可読性が低下
-    - 共通部分と可変部分の分離が不十分
+    - UIコンポーネントにビジネスロジックが混在している
+    - ダイアログの状態管理とAPIリクエストが密結合している
 
-3. **状態管理が複雑**
-    - 多数の`useState`が使われており、関連する状態の管理が分散
+2. **ディレクトリ構造の問題**:
+
+    - 機能とUIの分離が不明確
+    - 関連するコンポーネントが散在している（DialogとComponentsの分離など）
+
+3. **再利用性の低さ**:
+    - コンポーネント間の依存関係が強い
+    - 共通の処理が複数の場所に重複している
 
 ## リファクタリング計画
 
-### 1. ディレクトリ構造の整理
+### 1. ディレクトリ構造の再編成
 
 ```
-resources/ts/Components/Book/
-├── BookCard/
-│   ├── index.tsx                 # エントリーポイント
-│   ├── BaseBookCard.tsx          # 基本となる共通コンポーネント
-│   ├── DefaultBookCard.tsx       # デフォルトバリアント
-│   ├── FavoriteBookCard.tsx      # お気に入りバリアント
-│   ├── BookShelfBookCard.tsx     # 本棚バリアント
-│   ├── BookCardImage.tsx         # 書籍画像コンポーネント
-│   ├── BookCardHeader.tsx        # 書籍タイトル・情報コンポーネント
-│   └── hooks/
-│       ├── useBookCardState.ts   # 共通の状態管理
-│       ├── useFavoriteBook.ts    # お気に入り関連の状態と処理
-│       ├── useBookShelf.ts       # 本棚関連の状態と処理
-│       └── useBookMemo.ts        # メモ関連の状態と処理
+resources/ts/
+├── components/                  # 純粋なUIコンポーネント
+│   ├── ui/                      # 基本UIコンポーネント
+│   ├── book/                    # 書籍関連のUIコンポーネント
+│   └── bookshelf/               # 本棚関連のUIコンポーネント
+│       ├── card/                # カード関連のコンポーネント
+│       │   ├── BaseCard.tsx     # 基本カードコンポーネント
+│       │   ├── DefaultCard.tsx  # デフォルトカード
+│       │   └── DetailCard.tsx   # 詳細カード
+│       ├── elements/            # カードの構成要素
+│       │   ├── Header.tsx       # ヘッダー
+│       │   ├── Image.tsx        # 画像
+│       │   └── UserInfo.tsx     # ユーザー情報
+│       └── index.tsx            # エントリーポイント
+├── features/                    # 機能単位のコンテナコンポーネント
+│   ├── book/                    # 書籍機能
+│   └── bookshelf/               # 本棚機能
+│       ├── components/          # 本棚機能固有のコンポーネント
+│       │   └── dialogs/         # ダイアログコンポーネント
+│       ├── hooks/               # 本棚機能のカスタムフック
+│       └── pages/               # 本棚機能のページコンポーネント
+├── services/                    # APIサービス
+├── hooks/                       # 共通カスタムフック
+└── types/                       # 型定義
 ```
 
-### 2. APIコールの整理
+### 2. 関心の分離
 
-`bookService.ts`を拡張して、現在`BookCard.tsx`内にある全てのAPIコールを移動します。
+#### UIコンポーネント（Presentational Components）
 
-```typescript
-// bookService.ts の拡張
-export const BookService = {
-    // 既存のメソッド...
+- 見た目のみに責任を持つ
+- propsを通じてデータと振る舞いを受け取る
+- 状態管理やAPIリクエストを行わない
 
-    // 新しく追加するメソッド
-    createMemo: (data: {
-        isbn: string;
-        memo: string;
-        memo_chapter?: number;
-        memo_page?: number;
-    }) => axios.post('/memo/create', data),
+#### 機能コンポーネント（Container Components）
 
-    // その他必要なメソッド...
-};
-```
+- 状態管理とロジックに責任を持つ
+- UIコンポーネントにデータと振る舞いを提供する
+- APIリクエストやイベントハンドリングを行う
 
-### 3. コンポーネントの分割
+#### サービス
 
-#### BaseBookCard.tsx
+- APIリクエストなどの外部通信に責任を持つ
+- ビジネスロジックを含まない
+- 再利用可能なAPIクライアント
 
-- 基本的なカードレイアウトと共通のプロパティを持つ
-- 子コンポーネントをスロットとして受け取る設計
+#### カスタムフック
 
-#### バリアント別コンポーネント
+- 再利用可能なロジックをカプセル化する
+- 状態管理や副作用を扱う
+- UIから独立している
 
-- それぞれのバリアント（Default, Favorite, BookShelf）に特化したコンポーネント
-- 共通の`BaseBookCard`を使用し、特有のUIと機能を追加
+## 実行手順
 
-#### 共通UIコンポーネント
+### ステップ1: ディレクトリ構造の再編成
 
-- `BookCardImage`：書籍の画像表示を担当
-- `BookCardHeader`：タイトルと基本情報の表示を担当
+1. 新しいディレクトリ構造を作成する
+2. 既存のファイルを適切な場所に移動する
+3. インポートパスを更新する
 
-### 4. カスタムフックによる状態管理
+### ステップ2: UIコンポーネントのリファクタリング
 
-#### useBookCardState.ts
+1. BookShelfCardコンポーネントをUIと機能に分離する
 
-- ダイアログの開閉状態など、共通の状態を管理
+    - `BaseCard.tsx`、`DefaultCard.tsx`、`DetailCard.tsx`に分割
+    - propsインターフェースを整理する
 
-#### useFavoriteBook.ts
+2. 共通要素を抽出する
+    - `Header.tsx`、`Image.tsx`、`UserInfo.tsx`などに分割
 
-- お気に入り状態の取得と更新を管理
+### ステップ3: 機能コンポーネントの作成
 
-#### useBookShelf.ts
+1. ダイアログ関連のコンポーネントを整理する
 
-- 本棚関連の状態と処理を管理
+    - `features/bookshelf/components/dialogs/`に移動
 
-#### useBookMemo.ts
+2. カスタムフックを整理する
+    - `useBookShelfState`を`features/bookshelf/hooks/`に移動
+    - 必要に応じて機能を分割する
 
-- メモ関連の状態と処理を管理
+### ステップ4: サービスの整理
 
-### 5. 型定義の改善
+1. APIリクエスト関連のコードを整理する
+    - `services/bookShelfService.ts`を改善
+    - エラーハンドリングを強化
 
-```typescript
-// 共通の書籍プロパティ
-export interface BookBaseProps {
-    isbn: string;
-    title: string;
-    author: string;
-    publisher_name: string;
-    sales_date: string;
-    item_price: number;
-    image_url: string;
-    item_caption: string;
-}
+### ステップ5: 型定義の整理
 
-// バリアント別のプロパティ
-export interface DefaultBookCardProps extends BookBaseProps {}
-
-export interface FavoriteBookCardProps extends BookBaseProps {
-    readStatus: ReadStatus;
-}
-
-export interface BookShelfBookCardProps extends BookBaseProps {
-    readStatus: ReadStatus;
-    book_shelf_id: number;
-}
-```
-
-## 実装手順
-
-1. まず`bookService.ts`を拡張して、全てのAPIコールを移動
-2. 基本となる`BaseBookCard`コンポーネントを作成
-3. 共通UIコンポーネント（`BookCardImage`、`BookCardHeader`）を作成
-4. カスタムフックを実装して状態管理を分離
-5. バリアント別コンポーネントを実装
-6. エントリーポイントとなる`index.tsx`を作成して、適切なバリアントを選択するロジックを実装
-
-## 期待される効果
-
-1. **コードの可読性向上**
-
-    - 責務が明確に分離され、各ファイルの役割が明確になる
-    - ファイルサイズが小さくなり、理解しやすくなる
-
-2. **メンテナンス性の向上**
-
-    - APIの変更があった場合、`bookService.ts`のみを修正すれば良い
-    - UIの変更があった場合、関連するコンポーネントのみを修正すれば良い
-
-3. **再利用性の向上**
-
-    - 共通コンポーネントを他の場所でも使用できる
-    - カスタムフックを他のコンポーネントでも使用できる
-
-4. **テスト容易性の向上**
-    - 小さなコンポーネントとフックは単体テストが容易
-    - モックが必要な部分（API呼び出し）が明確に分離される
+1. 型定義を整理する
+    - `types/bookShelf.ts`を改善
+    - 必要に応じて型を分割

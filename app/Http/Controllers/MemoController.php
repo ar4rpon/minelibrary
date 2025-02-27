@@ -55,7 +55,7 @@ class MemoController extends Controller
             ];
         })->values();
 
-        return Inertia::render('MemoList', [
+        return Inertia::render('features/memo/pages/MemoList', [
             'memos' => $memos,
             'sortBy' => $sortBy,
         ]);
