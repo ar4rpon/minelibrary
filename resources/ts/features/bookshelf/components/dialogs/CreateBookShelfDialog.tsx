@@ -13,10 +13,10 @@ import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface CreateBookShelfDialogProps extends DialogProps {
-  bookShelfDiscription?: string;
+  bookShelfDescription?: string;
   onCreateBookShelfConfirm: (
     book_shelf_name: string,
-    discription: string,
+    description: string,
   ) => void;
   isLoading?: boolean;
 }
@@ -28,14 +28,14 @@ export function CreateBookShelfDialog({
   isLoading = false,
 }: CreateBookShelfDialogProps) {
   const [bookShelfName, setBookShelfName] = useState('');
-  const [bookShelfDiscription, setBookShelfDiscription] = useState('');
+  const [bookShelfDescription, setBookShelfDescription] = useState('');
 
   const handleConfirm = () => {
     if (!bookShelfName.trim()) {
       return;
     }
 
-    onCreateBookShelfConfirm(bookShelfName, bookShelfDiscription);
+    onCreateBookShelfConfirm(bookShelfName, bookShelfDescription);
 
     // onCloseはBookShelfList.tsxで処理するため、ここでは呼び出さない
   };
@@ -44,7 +44,7 @@ export function CreateBookShelfDialog({
   const handleClose = () => {
     if (!isLoading) {
       setBookShelfName('');
-      setBookShelfDiscription('');
+      setBookShelfDescription('');
       onClose();
     }
   };
@@ -70,14 +70,14 @@ export function CreateBookShelfDialog({
             />
           </div>
           <div className="mt-4 grid items-center gap-1.5 text-left">
-            <Label className="mb-1" htmlFor="bookshelfdiscription">
+            <Label className="mb-1" htmlFor="bookshelfdescription">
               本棚の説明
             </Label>
             <Textarea
-              id="Discription"
+              id="Description"
               placeholder="本棚の概要や説明など"
-              value={bookShelfDiscription}
-              onChange={(e) => setBookShelfDiscription(e.target.value)}
+              value={bookShelfDescription}
+              onChange={(e) => setBookShelfDescription(e.target.value)}
               disabled={isLoading}
             />
           </div>

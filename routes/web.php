@@ -32,9 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('books')->group(function () {
         // お気に入り処理
         Route::post('/toggle-favorite', [FavoriteBookController::class, 'toggleFavorite'])->name('favorite.toggle');
-        Route::get('/favorite-status', [FavoriteBookController::class, 'getFavoriteStatus'])->name('favorite.stauts');
+        Route::get('/favorite-status', [FavoriteBookController::class, 'getFavoriteStatus'])->name('favorite.status');
         // 書籍ステータス処理
-        Route::post('/update-status', [FavoriteBookController::class, 'updateReadStatus'])->name('books.stauts');
+        Route::post('/update-status', [FavoriteBookController::class, 'updateReadStatus'])->name('books.status');
     });
     // 書籍のメモを取得
     Route::get('/book/{isbn}/memos', [MemoController::class, 'getBookMemos'])->name('book.memos');
