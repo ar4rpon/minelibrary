@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import BookCard from '@/Components/Book/BookCard';
+import BookCard from '@/Components/Book/BookCard/index';
 import BookShelfDescription from '@/Components/BookShelf/BookShelfDescription';
-import { AddBookDialog } from '@/Dialog/BookShelf/AddBookDialog';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
 import { ReadStatus } from '@/types';

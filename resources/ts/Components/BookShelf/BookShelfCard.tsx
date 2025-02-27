@@ -93,7 +93,7 @@ function BookContent({
         {description}
       </CardDescription>
 
-      <Link href={`/book-shelf/detail/${bookShelfId}`}>
+      <Link href={`/book-shelf/${bookShelfId}`}>
         <Button className="mt-4 text-sm">詳細を見る</Button>
       </Link>
     </div>
