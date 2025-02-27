@@ -4,6 +4,21 @@ import BookShelfDescription from '@/Components/BookShelf/BookShelfDescription';
 import { AddBookDialog } from '@/Dialog/BookShelf/AddBookDialog';
 import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head } from '@inertiajs/react';
+import { ReadStatus } from '@/types';
+
+interface BookShelfBook {
+  isbn: string;
+  read_status: ReadStatus;
+  book: {
+    title: string;
+    author: string;
+    publisher_name: string;
+    sales_date: string;
+    image_url: string;
+    item_price: number;
+    item_caption: string;
+  };
+}
 
 interface BookShelfDetailProps {
   bookShelf: {
@@ -12,7 +27,7 @@ interface BookShelfDetailProps {
     description: string;
     is_public: boolean;
   };
-  books: any[];
+  books: BookShelfBook[];
 }
 
 export default function BookShelfDetail({ bookShelf, books }: BookShelfDetailProps) {
@@ -27,7 +42,7 @@ export default function BookShelfDetail({ bookShelf, books }: BookShelfDetailPro
       />
       <div className="mt-8 grid grid-cols-1 gap-y-4">
         {books && books.length > 0 ? (
-          books.map((item: any) => (
+          books.map((item: BookShelfBook) => (
             <BookCard
               key={item.isbn}
               title={item.book.title}
