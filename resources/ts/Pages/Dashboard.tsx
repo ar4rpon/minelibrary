@@ -1,5 +1,5 @@
 import MemoCard from '@/Components/Memo/MemoCard';
-import DefaultLayout from '@/Layouts/DefaultLayout';
+import DefaultLayout from '@/components/layout';
 import { Head } from '@inertiajs/react';
 
 export default function Dashboard() {

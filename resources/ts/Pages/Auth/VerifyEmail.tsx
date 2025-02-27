@@ -1,5 +1,5 @@
 import { Button } from '@/components/common/ui/button';
-import DefaultLayout from '@/Layouts/DefaultLayout';
+import DefaultLayout from '@/components/layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 

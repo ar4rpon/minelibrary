@@ -3,7 +3,7 @@ import CommonPagination from '@/components/common/CommonPagination';
 import { Button } from '@/components/common/ui/button';
 import { Input } from '@/components/common/ui/input';
 import { CreateBookShelfDialog } from '@/features/bookshelf/components/dialogs/CreateBookShelfDialog';
-import DefaultLayout from '@/Layouts/DefaultLayout';
+import DefaultLayout from '@/components/layout';
 import { BookShelfBase } from '@/types/bookShelf';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
