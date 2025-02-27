@@ -11,13 +11,13 @@ import {
   SelectValue,
 } from '@/Components/ui/select';
 import DefaultLayout from '@/Layouts/DefaultLayout';
-import { BookProps } from '@/types';
+import { BookData } from '@/Services/bookService';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
 // 楽天APIのレスポンス構造に合わせてインターフェースを修正
 interface Book {
-  Item: BookProps;
+  Item: BookData;
 }
 
 // ページプロパティの型定義

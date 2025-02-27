@@ -11,13 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('book_lists', function (Blueprint $table) {
+        Schema::create('book_shelf_book', function (Blueprint $table) {
             $table->id();
-            $table->string('book_list_name');
-            $table->text('description');
-            $table->foreignId('user_id')->constrained();
-            $table->boolean('is_public');
+            $table->foreignId('book_shelf_id')
+                ->constrained()
+                ->onDelete('cascade');
+            $table->string('isbn');
             $table->timestamps();
+
+            $table->foreign('isbn')
+                ->references('isbn')
+                ->on('books')
+                ->onDelete('cascade');
         });
     }
 
@@ -26,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('book_lists');
+        Schema::dropIfExists('book_shelf_book');
     }
 };

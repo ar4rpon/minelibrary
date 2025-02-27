@@ -53,6 +53,32 @@ class FavoriteBookController extends Controller
         ]);
     }
 
+    public function getFavorites()
+    {
+        $user = Auth::user();
+
+        $query = FavoriteBook::where('user_id', $user->id)->with('book');
+
+        $favorites = $query->get()->map(function ($favorite) {
+            return [
+                'isbn' => $favorite->isbn,
+                'read_status' => $favorite->read_status,
+                'created_at' => $favorite->created_at,
+                'book' => [
+                    'title' => $favorite->book->title,
+                    'author' => $favorite->book->author,
+                    'publisher_name' => $favorite->book->publisher_name,
+                    'sales_date' => $favorite->book->sales_date,
+                    'image_url' => $favorite->book->image_url,
+                    'item_caption' => $favorite->book->item_caption,
+                    'item_price' => $favorite->book->item_price,
+                ],
+            ];
+        });
+
+        return response()->json($favorites);
+    }
+
     public function updateReadStatus(Request $request)
     {
         $user = Auth::user();

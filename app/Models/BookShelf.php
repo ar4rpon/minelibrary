@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class BookList extends Model
+class BookShelf extends Model
 {
     use HasFactory;
 
@@ -16,7 +16,7 @@ class BookList extends Model
      * @var array<string>
      */
     protected $fillable = [
-        'book_list_name',
+        'book_shelf_name',
         'description',
         'user_id',
         'is_public',
@@ -38,7 +38,7 @@ class BookList extends Model
      */
     public function books(): BelongsToMany
     {
-        return $this->belongsToMany(Book::class, 'book_list_book', 'book_list_id', 'isbn');
+        return $this->belongsToMany(Book::class, 'book_shelf_book', 'book_shelf_id', 'isbn');
     }
 
     /**
@@ -60,7 +60,7 @@ class BookList extends Model
      */
     public function updateName(string $name): bool
     {
-        return $this->update(['book_list_name' => $name]);
+        return $this->update(['book_shelf_name' => $name]);
     }
 
     /**
@@ -104,7 +104,19 @@ class BookList extends Model
      */
     public function addBook(string $isbn): void
     {
-        $this->books()->attach($isbn);
+        $this->books()->attach($isbn, ['created_at' => now()]);
+    }
+
+    /**
+     * 指定されたブックリストIDの全ての書籍データを取得する
+     *
+     * @param int $bookShelfId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getBooks(int $bookShelfId): \Illuminate\Database\Eloquent\Collection
+    {
+        $bookShelf = self::findOrFail($bookShelfId);
+        return $bookShelf->books()->get();
     }
 
     /**

@@ -1,4 +1,5 @@
 import BookCard from '@/Components/Book/BookCard';
+import { ReadStatus } from '@/types';
 import {
   Select,
   SelectContent,
@@ -10,9 +11,28 @@ import DefaultLayout from '@/Layouts/DefaultLayout';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
+interface FavoriteBook {
+  isbn: string;
+  read_status: ReadStatus;
+  book: {
+    title: string;
+    author: string;
+    publisher_name: string;
+    sales_date: string;
+    image_url: string;
+    item_price: number;
+    item_caption: string;
+  };
+}
+
+interface FavoritePageProps {
+  favorites: FavoriteBook[];
+  sortBy: string;
+}
+
 export default function FavoriteBookList() {
   const [sortBy, setSortBy] = useState('newDate');
-  const { favorites, sortBy: initialSortBy } = usePage().props as any;
+  const { favorites, sortBy: initialSortBy } = usePage().props as unknown as FavoritePageProps;
 
   useEffect(() => {
     if (sortBy !== initialSortBy) {
@@ -37,7 +57,7 @@ export default function FavoriteBookList() {
 
       <div className="mt-8 grid grid-cols-1 gap-y-4">
         {favorites && favorites.length > 0 ? (
-          favorites.map((item: any) => (
+          favorites.map((item: FavoriteBook) => (
             <BookCard
               key={item.isbn}
               title={item.book.title}

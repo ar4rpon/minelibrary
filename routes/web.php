@@ -6,6 +6,8 @@ use Inertia\Inertia;
 use App\Http\Controllers\BookSearchController;
 use App\Http\Controllers\FavoriteBookController;
 use App\Http\Controllers\MemoController;
+use App\Models\BookShelf;
+use App\Http\Controllers\BookShelfController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -24,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/book-shelf/detail', function () {
         return Inertia::render('BookShelf/BookShelfDetail');
     })->name('book-shelf.detail');
+    Route::get('/book-shelf/{book_shelf_id}', [BookShelfController::class, 'show'])->name('book-shelf.detail');
 
     // 書籍処理
     Route::prefix('books')->group(function () {
@@ -42,6 +45,19 @@ Route::middleware('auth')->group(function () {
         Route::put('/{memo_id}', [MemoController::class, 'update'])->name('memo.update');
         Route::delete('/{memo_id}', [MemoController::class, 'destroy'])->name('memo.destroy');
     });
+
+    // 本棚処理
+    Route::prefix('book-shelf')->group(function () {
+        Route::post('/create', [BookShelfController::class, 'store'])->name('book-shelf.store');
+        Route::get('/get/mylist', [BookShelfController::class, 'getMyAll'])->name('book-shelf.get.mylist');
+        Route::get('/get/books', [BookShelfController::class, 'getBooks'])->name('book-shelf.get.books');
+        Route::get('/get/favorite-books', [FavoriteBookController::class, 'getFavorites'])->name('book-shelf.get.favorite.books');
+        Route::post('/add/books', [BookShelfController::class, 'addBooks'])->name('book-shelf.add.books');
+        Route::put('/update/{id}', [BookShelfController::class, 'update'])->name('book-shelf.update.book');
+        Route::post('/{isbn}', [BookShelfController::class, 'removeBook'])->name('book-shelf.remove.book');
+        Route::delete('/delete/{id}', [BookShelfController::class, 'destroy'])->name('book-shelf.destroy');
+    });
+
 
     // プロフィール処理
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

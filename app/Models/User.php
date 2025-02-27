@@ -67,7 +67,7 @@ class User extends Authenticatable
      */
     public function favoriteBookLists(): HasMany
     {
-        return $this->hasMany(FavoriteBookList::class);
+        return $this->hasMany(FavoriteBookShelf::class);
     }
 
     /**

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('share_links', function (Blueprint $table) {
             $table->id();
             $table->string('share_token');
-            $table->foreignId('book_list_id')
+            $table->foreignId('book_shelf_id')
                 ->constrained()
                 ->onDelete('cascade');
             $table->date('expiry_date');
