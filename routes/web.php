@@ -10,7 +10,7 @@ use App\Models\BookShelf;
 use App\Http\Controllers\BookShelfController;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    return Inertia::render('features/welcome/pages/Welcome');
 });
 
 Route::middleware('auth')->group(function () {
@@ -21,10 +21,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/book/search', [BookSearchController::class, 'index'])->name('book.search');
 
     Route::get('/book-shelf/list', function () {
-        return Inertia::render('BookShelf/BookShelfList');
+        return Inertia::render('features/bookshelf/pages/BookShelfList');
     })->name('book-shelf.list');
     Route::get('/book-shelf/detail', function () {
-        return Inertia::render('BookShelf/BookShelfDetail');
+        return Inertia::render('features/bookshelf/pages/BookShelfDetail');
     })->name('book-shelf.detail');
     Route::get('/book-shelf/{book_shelf_id}', [BookShelfController::class, 'show'])->name('book-shelf.detail');
 
@@ -66,7 +66,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/privacy', function () {
-    return Inertia::render('PrivacyPolicy');
+    return Inertia::render('features/privacy/pages/PrivacyPolicy');
 })->name('privacy');
 
 require __DIR__ . '/auth.php';
