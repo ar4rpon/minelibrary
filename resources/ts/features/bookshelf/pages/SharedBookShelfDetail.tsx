@@ -1,14 +1,14 @@
 import BookCard from '@/components/book/card';
 import BookShelf from '@/components/bookshelf';
 import DefaultLayout from '@/components/common/layout';
-import { ShareLinkDialog } from '@/features/bookshelf/components/dialogs/ShareLinkDialog';
 import { ReadStatus } from '@/types';
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { format } from 'date-fns';
+import { ja } from 'date-fns/locale';
 
 interface BookShelfBook {
   isbn: string;
-  read_status: ReadStatus;
+  read_status: ReadStatus | null;
   book: {
     title: string;
     author: string;
@@ -20,7 +20,7 @@ interface BookShelfBook {
   };
 }
 
-interface BookShelfDetailProps {
+interface SharedBookShelfDetailProps {
   bookShelf: {
     id: number;
     book_shelf_name: string;
@@ -29,25 +29,34 @@ interface BookShelfDetailProps {
     user_name: string;
   };
   books: BookShelfBook[];
+  isShared: boolean;
+  expiryDate: string;
 }
 
 /**
- * 本棚詳細ページ
- * 特定の本棚の詳細情報と登録されている書籍を表示する
+ * 共有本棚詳細ページ
+ * 共有リンクを通じて閲覧できる本棚の詳細情報と登録されている書籍を表示する
  */
-export default function BookShelfDetail({
+export default function SharedBookShelfDetail({
   bookShelf,
   books,
-}: BookShelfDetailProps) {
-  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-
-  const handleShareClick = () => {
-    setIsShareDialogOpen(true);
-  };
+  isShared,
+  expiryDate,
+}: SharedBookShelfDetailProps) {
+  const formattedExpiryDate = expiryDate
+    ? format(new Date(expiryDate), 'yyyy年MM月dd日', { locale: ja })
+    : '';
 
   return (
-    <DefaultLayout header="本棚詳細">
-      <Head title={bookShelf.book_shelf_name} />
+    <DefaultLayout header="共有本棚">
+      <Head title={`${bookShelf.book_shelf_name} (共有)`} />
+
+      <div className="mb-4 rounded-md border border-yellow-200 bg-yellow-50 p-4">
+        <p className="text-sm text-yellow-700">
+          これは共有リンクを通じて閲覧している本棚です。有効期限:{' '}
+          {formattedExpiryDate}
+        </p>
+      </div>
 
       <BookShelf
         variant="description"
@@ -56,15 +65,9 @@ export default function BookShelfDetail({
         bookShelfId={bookShelf.id}
         isPublic={bookShelf.is_public}
         userName={bookShelf.user_name}
-        onShare={handleShareClick}
+        isShared={isShared}
       />
 
-      {/* 共有ダイアログ */}
-      <ShareLinkDialog
-        isOpen={isShareDialogOpen}
-        onClose={() => setIsShareDialogOpen(false)}
-        bookShelfId={bookShelf.id}
-      />
       <div className="mt-8 grid grid-cols-1 gap-y-4">
         {books && books.length > 0 ? (
           books.map((item: BookShelfBook) => (
@@ -78,7 +81,7 @@ export default function BookShelfDetail({
               item_price={item.book.item_price}
               isbn={item.isbn}
               item_caption={item.book.item_caption || '説明はありません。'}
-              variant="book-shelf"
+              variant="shared"
               readStatus={item.read_status}
               book_shelf_id={bookShelf.id}
             />

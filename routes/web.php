@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/update/{id}', [BookShelfController::class, 'update'])->name('book-shelf.update.book');
         Route::post('/{isbn}', [BookShelfController::class, 'removeBook'])->name('book-shelf.remove.book');
         Route::delete('/delete/{id}', [BookShelfController::class, 'destroy'])->name('book-shelf.destroy');
+        Route::post('/generate-share-link', [App\Http\Controllers\ShareLinkController::class, 'generateShareLink'])->name('book-shelf.generate-share-link');
     });
 
 
@@ -62,6 +63,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// 共有リンク
+Route::get('/shared-booklist/{token}', [App\Http\Controllers\ShareLinkController::class, 'showSharedBookShelf'])
+    ->name('shared-booklist');
 
 Route::get('/privacy', function () {
     return Inertia::render('features/privacy/pages/PrivacyPolicy');

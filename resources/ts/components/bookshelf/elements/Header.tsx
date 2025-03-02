@@ -81,6 +81,8 @@ interface HeaderProps {
   onEdit: () => void;
   onDelete: () => void;
   onAddBook?: () => void;
+  onShare?: () => void;
+  isShared?: boolean;
 }
 
 /**
@@ -93,6 +95,8 @@ export function Header({
   onEdit,
   onDelete,
   onAddBook,
+  onShare,
+  isShared = false,
 }: HeaderProps) {
   return (
     <div className="space-y-2">
@@ -107,11 +111,16 @@ export function Header({
           {name}
         </CardTitle>
 
-        {variant === 'description' && onAddBook ? (
+        {isShared ? (
+          <div className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
+            共有中
+          </div>
+        ) : variant === 'description' && onAddBook ? (
           <ExtendedBookShelfActions
             onAddBook={onAddBook}
             onEdit={onEdit}
             onDelete={onDelete}
+            onShare={onShare}
           />
         ) : (
           <BookShelfActions onEdit={onEdit} onDelete={onDelete} />

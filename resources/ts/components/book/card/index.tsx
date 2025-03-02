@@ -5,8 +5,8 @@ import { DefaultCard } from './DefaultCard';
 import { FavoriteCard } from './FavoriteCard';
 
 interface BookCardProps extends BookData {
-  variant?: 'favorite' | 'default' | 'book-shelf';
-  readStatus?: ReadStatus;
+  variant?: 'favorite' | 'default' | 'book-shelf' | 'shared';
+  readStatus?: ReadStatus | null;
   book_shelf_id?: number;
 }
 
@@ -41,6 +41,16 @@ export default function BookCard(props: BookCardProps) {
         book_shelf_id={props.book_shelf_id}
       />
     );
+  }
+
+  // 共有本棚バリアント
+  if (variant === 'shared') {
+    if (!props.book_shelf_id) {
+      console.error('book_shelf_id is required for shared variant');
+      return null;
+    }
+    // 共有バリアントでは読み取り専用の表示を行う
+    return <DefaultCard {...props} />;
   }
 
   // デフォルトバリアント

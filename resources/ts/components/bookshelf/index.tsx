@@ -7,6 +7,8 @@ interface BookShelfProps extends BookShelfBase {
   image?: string;
   userName?: string;
   userImage?: string;
+  isShared?: boolean;
+  onShare?: () => void;
 }
 
 /**

@@ -8,6 +8,7 @@ const API_ENDPOINTS = {
   ADD_BOOKS: '/book-shelf/add/books',
   GET_FAVORITE_BOOKS: '/book-shelf/get/favorite-books',
   GET_MY_BOOKSHELVES: '/book-shelf/get/mylist',
+  GENERATE_SHARE_LINK: '/book-shelf/generate-share-link',
 } as const;
 
 // エラーハンドリング用の共通関数
@@ -99,5 +100,39 @@ export const getAllBookShelves = async () => {
   } catch (error) {
     handleApiError(error, '本棚一覧の取得に失敗しました');
     return [];
+  }
+};
+
+// 共有リンクを生成
+export interface ShareLinkResponse {
+  share_url: string;
+  expiry_date: string;
+}
+
+export const generateShareLink = async (
+  bookShelfId: number,
+): Promise<ShareLinkResponse | null> => {
+  try {
+    const response = await axios.post(API_ENDPOINTS.GENERATE_SHARE_LINK, {
+      book_shelf_id: bookShelfId,
+    });
+
+    console.log('API応答:', response.data);
+
+    if (!response.data.share_url || !response.data.expiry_date) {
+      console.error('API応答が不完全です:', response.data);
+      return null;
+    }
+
+    return {
+      share_url: response.data.share_url,
+      expiry_date: response.data.expiry_date,
+    };
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      console.error('API エラー詳細:', error.response?.data);
+    }
+    handleApiError(error, '共有リンクの生成に失敗しました');
+    return null;
   }
 };

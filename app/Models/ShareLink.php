@@ -14,8 +14,9 @@ class ShareLink extends Model
      * @var array<string>
      */
     protected $fillable = [
-        'share_link_url',
+        'share_token',
         'book_shelf_id',
+        'expiry_date',
     ];
 
     /**
@@ -39,6 +40,16 @@ class ShareLink extends Model
     }
 
     /**
+     * この共有リンクに関連する本棚を取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function bookShelf()
+    {
+        return $this->belongsTo(BookShelf::class);
+    }
+
+    /**
      * ブックリストから未ログインユーザーが閲覧できるURLを生成する
      *
      * @param int $book_shelf_id
@@ -54,6 +65,11 @@ class ShareLink extends Model
             'book_shelf_id' => $book_shelf_id,
             'expiry_date' => $expiryDate,
         ]);
+
+        // 元のインスタンスのプロパティを更新
+        $this->share_token = $shareLink->share_token;
+        $this->book_shelf_id = $shareLink->book_shelf_id;
+        $this->expiry_date = $shareLink->expiry_date;
 
         return url("/shared-booklist/{$shareLink->share_token}");
     }
