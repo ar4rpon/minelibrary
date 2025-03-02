@@ -36,6 +36,8 @@ class BookShelfController extends Controller
             ->where('user_id', $user->id)
             ->firstOrFail();
 
+        $userName = $bookShelf->user->name;
+
         $books = BookShelf::getBooks($book_shelf_id)->map(function ($book) use ($user) {
             $favoriteBook = FavoriteBook::where('isbn', $book->isbn)
                 ->where('user_id', $user->id)
@@ -54,6 +56,8 @@ class BookShelfController extends Controller
                 ],
             ];
         });
+
+        $bookShelf->user_name = $userName;
 
         return Inertia::render('features/bookshelf/pages/BookShelfDetail', [
             'bookShelf' => $bookShelf,

@@ -24,6 +24,7 @@ interface BookShelfDetailProps {
     book_shelf_name: string;
     description: string;
     is_public: boolean;
+    user_name: string;
   };
   books: BookShelfBook[];
 }
@@ -45,6 +46,7 @@ export default function BookShelfDetail({
         description={bookShelf.description}
         bookShelfId={bookShelf.id}
         isPublic={bookShelf.is_public}
+        userName={bookShelf.user_name}
       />
       <div className="mt-8 grid grid-cols-1 gap-y-4">
         {books && books.length > 0 ? (

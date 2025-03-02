@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class BookShelf extends Model
@@ -30,6 +31,16 @@ class BookShelf extends Model
     protected $casts = [
         'is_public' => 'boolean',
     ];
+
+    /**
+     * 本棚の所有者を取得する
+     *
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * 本のリストを取得する

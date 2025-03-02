@@ -20,7 +20,6 @@ export function DetailCard({
   description,
   isPublic,
   userName,
-  userImage,
 }: DetailCardProps) {
   const { dialogs } = useBookShelfState(true);
 
@@ -43,7 +42,7 @@ export function DetailCard({
 
       <Separator className="my-4" />
 
-      <UserInfo userName={userName} userImage={userImage} />
+      <UserInfo userName={userName} />
 
       <BookShelfDialogs
         bookShelfId={bookShelfId}
