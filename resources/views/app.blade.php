@@ -13,6 +13,25 @@
 
     <!-- Scripts -->
     @routes
+    <script> 
+    // 設定が反映されないので暫定対応
+    // Ziggyオブジェクトが存在する場合、absoluteプロパティをfalseに設定
+    if (typeof Ziggy !== 'undefined') {
+        Ziggy.absolute = false;
+        
+        // 元のroute関数を保存
+        const originalRoute = route;
+        
+        // route関数をオーバーライド
+        window.route = function(name, params, absolute) {
+            // 第3引数が明示的に指定されていない場合は常にfalseを使用
+            if (absolute === undefined) {
+                absolute = false;
+            }
+            return originalRoute(name, params, absolute);
+        };
+    }
+    </script>
     @viteReactRefresh
     @vite(['resources/ts/app.tsx', "resources/ts/{$page['component']}.tsx"])
     @inertiaHead

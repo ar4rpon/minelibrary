@@ -140,7 +140,7 @@ export default function BookShelfList({ initialBookShelves = [] }: Props) {
         <div className="mt-12 flex flex-col items-center justify-center rounded-lg border border-dashed border-red-300 bg-red-50 p-12 text-center">
           <div className="mb-4 rounded-full bg-red-100 p-3">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              xmlns="https://www.w3.org/2000/svg"
               className="h-10 w-10 text-red-500"
               fill="none"
               viewBox="0 0 24 24"
@@ -165,7 +165,7 @@ export default function BookShelfList({ initialBookShelves = [] }: Props) {
           <div className="mb-4 rounded-full bg-gray-100 p-3">
             <svg
               className="h-10 w-10 animate-spin text-green-600"
-              xmlns="http://www.w3.org/2000/svg"
+              xmlns="https://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -210,7 +210,7 @@ export default function BookShelfList({ initialBookShelves = [] }: Props) {
         <div className="mt-12 flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 p-12 text-center">
           <div className="mb-4 rounded-full bg-gray-100 p-3">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              xmlns="https://www.w3.org/2000/svg"
               className="h-10 w-10 text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
