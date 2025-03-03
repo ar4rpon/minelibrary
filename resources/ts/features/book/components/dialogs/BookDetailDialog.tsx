@@ -102,25 +102,30 @@ export function BookDetailDialog({
           <div className="space-y-4">
             <h3 className="text-lg font-bold">ユーザーのメモ・感想</h3>
             <div className="hidden-scrollbar max-h-[300px] overflow-y-auto">
-              {memos.map((memo) => (
-                <div
-                  key={memo.id}
-                  className={`mb-2 rounded p-2 ${memo.is_current_user ? 'bg-blue-100' : 'bg-gray-100'}`}
-                >
-                  <p className="text-sm font-bold">
-                    {memo.is_current_user ? 'あなたのメモ' : memo.user_name}
-                  </p>
-                  <p className="text-gray-600">{memo.memo}</p>
-                  {(memo.memo_chapter || memo.memo_page) && (
-                    <p className="text-xs text-gray-500">
-                      {memo.memo_chapter && `章: ${memo.memo_chapter}`}
-                      {memo.memo_chapter && memo.memo_page && ' | '}
-                      {memo.memo_page && `ページ: ${memo.memo_page}`}
-                    </p>
-                  )}
-                  <p className="text-xs text-gray-400">{memo.created_at}</p>
-                </div>
-              ))}
+              {memos.length == 0 ? (<p className="font-bold">まだメモがありません。</p>)
+                :
+                <>
+                  {memos.map((memo) => (
+                    <div
+                      key={memo.id}
+                      className={`mb-2 rounded p-2 ${memo.is_current_user ? 'bg-blue-100' : 'bg-gray-100'}`}
+                    >
+                      <p className="text-sm font-bold">
+                        {memo.is_current_user ? 'あなたのメモ' : memo.user_name}
+                      </p>
+                      <p className="text-gray-600">{memo.memo}</p>
+                      {(memo.memo_chapter || memo.memo_page) && (
+                        <p className="text-xs text-gray-500">
+                          {memo.memo_chapter && `章: ${memo.memo_chapter}`}
+                          {memo.memo_chapter && memo.memo_page && ' | '}
+                          {memo.memo_page && `ページ: ${memo.memo_page}`}
+                        </p>
+                      )}
+                      <p className="text-xs text-gray-400">{memo.created_at}</p>
+                    </div>
+                  ))}
+                </>
+              }
             </div>
           </div>
         </div>

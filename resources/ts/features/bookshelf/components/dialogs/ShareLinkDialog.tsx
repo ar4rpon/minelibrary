@@ -84,7 +84,7 @@ export function ShareLinkDialog({
           <div className="py-4">
             <p className="mb-4 text-sm text-gray-600">
               共有リンクを生成すると、リンクを知っている人なら誰でもこの本棚を閲覧できるようになります。
-              リンクの有効期限は7日間です。
+              リンクの閲覧期限は7日間です。
             </p>
             <Button
               onClick={handleGenerateShareLink}

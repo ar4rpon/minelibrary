@@ -53,7 +53,7 @@ export default function SharedBookShelfDetail({
 
       <div className="mb-4 rounded-md border border-yellow-200 bg-yellow-50 p-4">
         <p className="text-sm text-yellow-700">
-          これは共有リンクを通じて閲覧している本棚です。有効期限:{' '}
+          これは共有リンクを通じて閲覧している本棚です。閲覧期限:{' '}
           {formattedExpiryDate}
         </p>
       </div>
