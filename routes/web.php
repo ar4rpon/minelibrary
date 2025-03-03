@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Http\Controllers\BookSearchController;
 use App\Http\Controllers\FavoriteBookController;
+use App\Http\Controllers\FavoriteBookShelfController;
 use App\Http\Controllers\MemoController;
 use App\Models\BookShelf;
 use App\Http\Controllers\BookShelfController;
@@ -32,6 +33,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/book-shelf/list', [BookShelfController::class, 'index'])->name('book-shelf.list');
     Route::get('/book-shelf/{book_shelf_id}', [BookShelfController::class, 'show'])->name('book-shelf.detail');
+    Route::get('/favorite-book-shelf/list', [FavoriteBookShelfController::class, 'index'])->name('favorite-book-shelf.index');
 
     // 書籍処理
     Route::prefix('books')->group(function () {
@@ -40,6 +42,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/favorite-status', [FavoriteBookController::class, 'getFavoriteStatus'])->name('favorite.status');
         // 書籍ステータス処理
         Route::post('/update-status', [FavoriteBookController::class, 'updateReadStatus'])->name('books.status');
+    });
+
+    // 本棚お気に入り処理
+    Route::prefix('book-shelf-favorite')->group(function () {
+        Route::post('/toggle', [FavoriteBookShelfController::class, 'toggleFavorite'])->name('book-shelf-favorite.toggle');
+        Route::get('/status', [FavoriteBookShelfController::class, 'getFavoriteStatus'])->name('book-shelf-favorite.status');
     });
 
 

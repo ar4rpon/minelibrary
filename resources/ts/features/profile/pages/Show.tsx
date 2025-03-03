@@ -2,8 +2,10 @@ import DefaultLayout from '@/components/common/layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/ui/card';
 import { ReadStatusBadge } from '@/components/book/ReadStatusBadge';
 import { PageProps, ReadStatus } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { BookOpen, Bookmark, User } from 'lucide-react';
+import { Head, Link, router } from '@inertiajs/react';
+import { BookOpen, Bookmark, Heart, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 interface UserProfile {
   id: number;
@@ -45,6 +47,8 @@ interface BookShelf {
   is_public: boolean;
   created_at: string;
   book_count: number;
+  is_favorited?: boolean;
+  user_id: number;
 }
 
 /**
@@ -72,6 +76,40 @@ export default function Show({
   auth,
 }: PageProps<ShowProps>) {
   const pageTitle = isOwnProfile ? "マイプロフィール" : `${user.name}さんのプロフィール`;
+  const [favoriteStates, setFavoriteStates] = useState<Record<number, boolean>>({});
+  const [isProcessing, setIsProcessing] = useState<Record<number, boolean>>({});
+
+  // 初期化時にbookShelvesからお気に入り状態を設定
+  useEffect(() => {
+    const initialStates: Record<number, boolean> = {};
+    bookShelves.forEach(shelf => {
+      initialStates[shelf.id] = shelf.is_favorited || false;
+    });
+    setFavoriteStates(initialStates);
+  }, [bookShelves]);
+
+  // お気に入り状態を切り替える
+  const toggleFavorite = async (bookShelfId: number) => {
+    if (isProcessing[bookShelfId]) return;
+
+    setIsProcessing(prev => ({ ...prev, [bookShelfId]: true }));
+
+    try {
+      const response = await axios.post(route('book-shelf-favorite.toggle'), {
+        book_shelf_id: bookShelfId
+      });
+
+      setFavoriteStates(prev => ({
+        ...prev,
+        [bookShelfId]: response.data.is_favorited
+      }));
+
+    } catch (error) {
+      console.error('お気に入り処理に失敗しました', error);
+    } finally {
+      setIsProcessing(prev => ({ ...prev, [bookShelfId]: false }));
+    }
+  };
 
   return (
     <DefaultLayout header={pageTitle}>
@@ -241,12 +279,29 @@ export default function Show({
                       <span className="text-xs text-gray-500">
                         {bookShelf.created_at}
                       </span>
-                      <Link
-                        href={route('book-shelf.detail', { book_shelf_id: bookShelf.id })}
-                        className="text-sm font-medium text-green-600 hover:text-green-700"
-                      >
-                        詳細を見る
-                      </Link>
+                      <div className="flex items-center space-x-2">
+                        {!isOwnProfile && auth.user && bookShelf.user_id !== auth.user.id && (
+                          <button
+                            onClick={() => toggleFavorite(bookShelf.id)}
+                            disabled={isProcessing[bookShelf.id]}
+                            className={`flex items-center justify-center rounded-full p-1 transition-colors ${favoriteStates[bookShelf.id]
+                              ? 'text-red-500 hover:bg-red-50'
+                              : 'text-gray-400 hover:bg-gray-50 hover:text-red-500'
+                              }`}
+                            title={favoriteStates[bookShelf.id] ? "お気に入りから削除" : "お気に入りに追加"}
+                          >
+                            <Heart
+                              className={`h-5 w-5 ${favoriteStates[bookShelf.id] ? 'fill-current' : ''}`}
+                            />
+                          </button>
+                        )}
+                        <Link
+                          href={route('book-shelf.detail', { book_shelf_id: bookShelf.id })}
+                          className="text-sm font-medium text-green-600 hover:text-green-700"
+                        >
+                          詳細を見る
+                        </Link>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

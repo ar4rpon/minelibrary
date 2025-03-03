@@ -22,6 +22,8 @@ class ProfileController extends Controller
      */
     private function getProfileData(User $user)
     {
+        $currentUserId = Auth::id();
+
         // ユーザーの直近5件のメモを取得
         $recentMemos = Memo::where('user_id', $user->id)
             ->with('book')
@@ -71,13 +73,20 @@ class ProfileController extends Controller
                 'book_shelf_name',
                 'description',
                 'is_public',
-                'created_at'
+                'created_at',
+                'user_id'
             )
             ->orderBy('created_at', 'desc')
             ->get()
-            ->map(function ($bookShelf) {
+            ->map(function ($bookShelf) use ($currentUserId) {
                 // 本棚に含まれる本の数を取得
                 $bookCount = $bookShelf->books()->count();
+
+                // ログインユーザーがお気に入りに登録しているかチェック
+                $isFavorited = false;
+                if ($currentUserId) {
+                    $isFavorited = $bookShelf->isFavoritedBy($currentUserId);
+                }
 
                 return [
                     'id' => $bookShelf->id,
@@ -86,6 +95,8 @@ class ProfileController extends Controller
                     'is_public' => $bookShelf->is_public,
                     'created_at' => $bookShelf->created_at->format('Y-m-d'),
                     'book_count' => $bookCount,
+                    'is_favorited' => $isFavorited,
+                    'user_id' => $bookShelf->user_id,
                 ];
             });
 

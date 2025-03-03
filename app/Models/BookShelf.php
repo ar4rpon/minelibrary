@@ -104,7 +104,29 @@ class BookShelf extends Model
      */
     public static function getAllByUserId(int $userId): \Illuminate\Database\Eloquent\Collection
     {
-        return self::where('create_by_id', $userId)->get();
+        return self::where('user_id', $userId)->get();
+    }
+
+    /**
+     * お気に入り登録しているユーザーを取得
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function favoriteUsers()
+    {
+        return $this->belongsToMany(User::class, 'favorite_book_shelves', 'book_shelf_id', 'user_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * 指定したユーザーがこの本棚をお気に入りに登録しているかチェック
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function isFavoritedBy(int $userId): bool
+    {
+        return $this->favoriteUsers()->where('users.id', $userId)->exists();
     }
 
     /**
