@@ -9,6 +9,7 @@ use App\Http\Controllers\MemoController;
 use App\Models\BookShelf;
 use App\Http\Controllers\BookShelfController;
 use App\Http\Controllers\ShareLinkController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 Route::get('/', function () {
     return Inertia::render('features/welcome/pages/Welcome');
@@ -70,5 +71,19 @@ Route::get('/book/{isbn}/memos', [MemoController::class, 'getBookMemos'])->name(
 Route::get('/privacy', function () {
     return Inertia::render('features/privacy/pages/PrivacyPolicy');
 })->name('privacy');
+
+// エラーページ
+Route::get('/404', function () {
+    return Inertia::render('features/error/pages/NotFound');
+})->name('error.404');
+
+Route::get('/500', function () {
+    return Inertia::render('features/error/pages/ServerError');
+})->name('error.500');
+
+// 存在しないルートへのアクセスを404ページにリダイレクト
+Route::fallback(function () {
+    return Inertia::render('features/error/pages/NotFound');
+});
 
 require __DIR__ . '/auth.php';
