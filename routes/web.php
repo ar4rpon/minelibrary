@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Http\Controllers\BookSearchController;
 use App\Http\Controllers\FavoriteBookController;
@@ -12,8 +13,15 @@ use App\Http\Controllers\ShareLinkController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect('/dashboard');
+    }
     return Inertia::render('features/welcome/pages/Welcome');
 });
+
+Route::get('/dashboard', function () {
+    return Inertia::render('features/dashboard/pages/Dashboard');
+})->middleware(['auth'])->name('app-guide');
 
 Route::middleware('auth')->group(function () {
 
@@ -57,10 +65,14 @@ Route::middleware('auth')->group(function () {
 
 
     // プロフィール処理
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// 他のユーザーのプロフィール表示
+Route::get('/user/{userId}/profile', [ProfileController::class, 'showUser'])->name('user.profile');
 
 // 共有リンク
 Route::get('/shared-booklist/{token}', [ShareLinkController::class, 'showSharedBookShelf'])
