@@ -9,6 +9,11 @@ import { BaseCard } from './BaseCard';
 
 interface DefaultCardProps extends BookShelfBase {
   image?: string;
+  owner?: {
+    id: number;
+    name: string;
+  };
+  type?: 'my' | 'favorite';
 }
 
 /**
@@ -20,8 +25,20 @@ export function DefaultCard({
   description,
   isPublic,
   image,
+  owner,
+  type = 'my',
 }: DefaultCardProps) {
   const { dialogs } = useBookShelfState();
+
+  // タイプに応じたURLを生成
+  const detailUrl = type === 'my'
+    ? `/book-shelf/${bookShelfId}`
+    : owner
+      ? `/user/${owner.id}/book-shelf/${bookShelfId}`
+      : `/book-shelf/${bookShelfId}`;
+
+  // 所有者かどうかを判定
+  const isOwner = type === 'my';
 
   return (
     <BaseCard
@@ -41,31 +58,34 @@ export function DefaultCard({
             variant="card"
             onEdit={dialogs.edit.open}
             onDelete={dialogs.delete.open}
+            isShared={!isOwner} // 所有者以外は編集・削除ボタンを表示しない
           />
 
-          <Link href={`/book-shelf/${bookShelfId}`}>
+          <Link href={detailUrl}>
             <Button className="mt-4 text-sm">詳細を見る</Button>
           </Link>
         </div>
       </div>
 
-      <BookShelfDialogs
-        bookShelfId={bookShelfId}
-        initialName={name}
-        initialDescription={description}
-        initialIsPublic={isPublic}
-        dialogStates={{
-          edit: dialogs.edit.isOpen,
-          delete: dialogs.delete.isOpen,
-        }}
-        onDialogStateChange={(dialogKey, isOpen) => {
-          if (dialogKey === 'edit') {
-            isOpen ? dialogs.edit.open() : dialogs.edit.close();
-          } else if (dialogKey === 'delete') {
-            isOpen ? dialogs.delete.open() : dialogs.delete.close();
-          }
-        }}
-      />
+      {isOwner && (
+        <BookShelfDialogs
+          bookShelfId={bookShelfId}
+          initialName={name}
+          initialDescription={description}
+          initialIsPublic={isPublic}
+          dialogStates={{
+            edit: dialogs.edit.isOpen,
+            delete: dialogs.delete.isOpen,
+          }}
+          onDialogStateChange={(dialogKey, isOpen) => {
+            if (dialogKey === 'edit') {
+              isOpen ? dialogs.edit.open() : dialogs.edit.close();
+            } else if (dialogKey === 'delete') {
+              isOpen ? dialogs.delete.open() : dialogs.delete.close();
+            }
+          }}
+        />
+      )}
     </BaseCard>
   );
 }

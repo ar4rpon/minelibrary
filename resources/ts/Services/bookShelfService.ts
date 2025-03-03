@@ -99,7 +99,7 @@ export const getAllBookShelves = async () => {
     return response.data;
   } catch (error) {
     handleApiError(error, '本棚一覧の取得に失敗しました');
-    return [];
+    return { my: [], favorite: [] };
   }
 };
 

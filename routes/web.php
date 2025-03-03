@@ -77,10 +77,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // 他のユーザーのプロフィール表示
+    Route::get('/user/{userId}/profile', [ProfileController::class, 'showUser'])->name('user.profile');
+
+    // 他のユーザーの本棚
+    Route::get('/user/{userId}/book-shelves', [BookShelfController::class, 'userBookShelves'])->name('user.book-shelves');
+    Route::get('/user/{userId}/book-shelf/{bookShelfId}', [BookShelfController::class, 'userBookShelf'])->name('user.book-shelf');
 });
 
-// 他のユーザーのプロフィール表示
-Route::get('/user/{userId}/profile', [ProfileController::class, 'showUser'])->name('user.profile');
+
 
 // 共有リンク
 Route::get('/shared-booklist/{token}', [ShareLinkController::class, 'showSharedBookShelf'])

@@ -250,9 +250,16 @@ export default function Show({
         <section>
           <div className="mb-4 flex items-center justify-between rounded-sm border border-green-600 bg-white px-4 py-3 shadow-md">
             <h2 className="text-xl font-semibold text-green-700">本棚</h2>
-            {isOwnProfile && (
+            {isOwnProfile ? (
               <Link
                 href={route('book-shelf.list')}
+                className="text-sm font-medium text-green-600 hover:text-green-700"
+              >
+                すべて見る
+              </Link>
+            ) : (
+              <Link
+                href={route('user.book-shelves', { userId: user.id })}
                 className="text-sm font-medium text-green-600 hover:text-green-700"
               >
                 すべて見る
@@ -296,7 +303,10 @@ export default function Show({
                           </button>
                         )}
                         <Link
-                          href={route('book-shelf.detail', { book_shelf_id: bookShelf.id })}
+                          href={isOwnProfile
+                            ? route('book-shelf.detail', { book_shelf_id: bookShelf.id })
+                            : route('user.book-shelf', { userId: user.id, bookShelfId: bookShelf.id })
+                          }
                           className="text-sm font-medium text-green-600 hover:text-green-700"
                         >
                           詳細を見る

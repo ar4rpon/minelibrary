@@ -36,9 +36,9 @@ class FavoriteBookShelf extends Model
      *
      * @return BelongsTo
      */
-    public function Bookshelf(): BelongsTo
+    public function bookshelf(): BelongsTo
     {
-        return $this->belongsTo(BookShelf::class);
+        return $this->belongsTo(BookShelf::class, 'book_shelf_id');
     }
 
     /**

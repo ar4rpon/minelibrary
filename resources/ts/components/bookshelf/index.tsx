@@ -8,6 +8,11 @@ interface BookShelfProps extends BookShelfBase {
   userName?: string;
   userImage?: string;
   isShared?: boolean;
+  owner?: {
+    id: number;
+    name: string;
+  };
+  type?: 'my' | 'favorite';
 }
 
 /**

@@ -3,30 +3,42 @@ import CommonPagination from '@/components/common/CommonPagination';
 import DefaultLayout from '@/components/common/layout';
 import { Button } from '@/components/common/ui/button';
 import { Input } from '@/components/common/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/common/ui/tabs';
 import { CreateBookShelfDialog } from '@/features/bookshelf/components/dialogs/CreateBookShelfDialog';
 import { getAllBookShelves } from '@/Services/bookShelfService';
 import { BookShelfBase } from '@/types/bookShelf';
 import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
-import { Plus, Search } from 'lucide-react';
+import { BookOpen, Heart, Plus, Search, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 // 本棚の型定義
-type BookShelf = BookShelfBase & { image?: string };
+type BookShelf = BookShelfBase & {
+  image?: string;
+  type?: 'my' | 'favorite';
+  owner?: {
+    id: number;
+    name: string;
+  };
+};
 
 // プロパティの型定義
 interface Props {
-  initialBookShelves?: BookShelf[];
+  initialBookShelves?: {
+    my: BookShelf[];
+    favorite: BookShelf[];
+  };
 }
 
 /**
  * 本棚一覧ページ
  * ユーザーの本棚一覧を表示し、検索や作成機能を提供する
  */
-export default function BookShelfList({ initialBookShelves = [] }: Props) {
+export default function BookShelfList({ initialBookShelves = { my: [], favorite: [] } }: Props) {
   // 状態管理
-  const [bookShelves, setBookShelves] =
-    useState<BookShelf[]>(initialBookShelves);
+  const [myBookShelves, setMyBookShelves] = useState<BookShelf[]>(initialBookShelves.my);
+  const [favoriteBookShelves, setFavoriteBookShelves] = useState<BookShelf[]>(initialBookShelves.favorite);
+  const [activeTab, setActiveTab] = useState<'my' | 'favorite'>('my');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,7 +54,13 @@ export default function BookShelfList({ initialBookShelves = [] }: Props) {
 
     try {
       const data = await getAllBookShelves();
-      setBookShelves(data);
+      if (data.my && data.favorite) {
+        setMyBookShelves(data.my);
+        setFavoriteBookShelves(data.favorite);
+      } else {
+        // 旧形式のデータの場合（後方互換性のため）
+        setMyBookShelves(data);
+      }
     } catch (error) {
       console.error('本棚一覧の取得に失敗しました:', error);
       setError('本棚一覧の取得に失敗しました。再読み込みしてください。');
@@ -54,13 +72,16 @@ export default function BookShelfList({ initialBookShelves = [] }: Props) {
   // コンポーネントマウント時にデータを取得
   useEffect(() => {
     // 初期データが空の場合のみAPIから取得
-    if (initialBookShelves.length === 0) {
+    if (initialBookShelves.my.length === 0 && initialBookShelves.favorite.length === 0) {
       fetchBookShelves();
     }
-  }, [initialBookShelves.length]);
+  }, [initialBookShelves.my.length, initialBookShelves.favorite.length]);
+
+  // 表示する本棚を選択
+  const displayBookShelves = activeTab === 'my' ? myBookShelves : favoriteBookShelves;
 
   // 検索フィルター
-  const filteredBookShelves = bookShelves.filter(
+  const filteredBookShelves = displayBookShelves.filter(
     (bookShelf) =>
       bookShelf.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       bookShelf.description.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -72,6 +93,13 @@ export default function BookShelfList({ initialBookShelves = [] }: Props) {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
+
+  // タブ切り替え
+  const handleTabChange = (tab: 'my' | 'favorite') => {
+    setActiveTab(tab);
+    setCurrentPage(1); // タブ切り替え時にページを1に戻す
+    setSearchQuery(''); // 検索条件もクリア
+  };
 
   // 新しい本棚作成ダイアログを開く
   const handleCreate = () => {
@@ -117,21 +145,38 @@ export default function BookShelfList({ initialBookShelves = [] }: Props) {
     <DefaultLayout header="本棚一覧">
       <Head title="本棚一覧" />
 
-      {/* 検索と作成ボタン */}
-      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="relative w-full md:w-1/2">
-          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-          <Input
-            placeholder="本棚を検索..."
-            className="pl-8"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+      {/* タブと検索・作成ボタン */}
+      <div className="mb-6 space-y-4">
+        <Tabs defaultValue="my" value={activeTab} onValueChange={(value) => handleTabChange(value as 'my' | 'favorite')}>
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="my" className="flex-1 sm:flex-auto">
+              <BookOpen className="mr-2 h-4 w-4" />
+              自分の本棚
+            </TabsTrigger>
+            <TabsTrigger value="favorite" className="flex-1 sm:flex-auto">
+              <Heart className="mr-2 h-4 w-4" />
+              お気に入り本棚
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="relative w-full md:w-1/2">
+            <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+            <Input
+              placeholder="本棚を検索..."
+              className="pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          {activeTab === 'my' && (
+            <Button className="w-full md:w-auto" onClick={handleCreate}>
+              <Plus className="mr-2 h-4 w-4" />
+              新しい本棚を作成する
+            </Button>
+          )}
         </div>
-        <Button className="w-full md:w-auto" onClick={handleCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          新しい本棚を作成する
-        </Button>
       </div>
 
       {/* 本棚一覧 */}
@@ -195,6 +240,12 @@ export default function BookShelfList({ initialBookShelves = [] }: Props) {
               key={bookShelf.bookShelfId}
               className="transition-all duration-200 hover:translate-x-1"
             >
+              {activeTab === 'favorite' && bookShelf.owner ? (
+                <div className="mb-2 flex items-center text-sm text-gray-600">
+                  <User className="mr-1 h-4 w-4" />
+                  <span>{bookShelf.owner.name}さんの本棚</span>
+                </div>
+              ) : null}
               <BookShelf
                 variant="card"
                 bookShelfId={bookShelf.bookShelfId}
@@ -202,6 +253,8 @@ export default function BookShelfList({ initialBookShelves = [] }: Props) {
                 description={bookShelf.description}
                 isPublic={bookShelf.isPublic}
                 image={bookShelf.image}
+                owner={bookShelf.owner}
+                type={activeTab}
               />
             </div>
           ))}
@@ -227,12 +280,16 @@ export default function BookShelfList({ initialBookShelves = [] }: Props) {
           <h3 className="mb-2 text-lg font-medium text-gray-900">
             {searchQuery
               ? '検索条件に一致する本棚が見つかりませんでした'
-              : '本棚がまだありません'}
+              : activeTab === 'my'
+                ? '本棚がまだありません'
+                : 'お気に入りの本棚がまだありません'}
           </h3>
           <p className="mb-6 text-sm text-gray-500">
             {searchQuery
               ? '検索条件を変更して再度お試しください'
-              : '「新しい本棚を作成する」ボタンから、あなたの最初の本棚を作成しましょう'}
+              : activeTab === 'my'
+                ? '「新しい本棚を作成する」ボタンから、あなたの最初の本棚を作成しましょう'
+                : '他のユーザーの本棚をお気に入りに追加すると、ここに表示されます'}
           </p>
           {searchQuery && (
             <Button
@@ -243,10 +300,12 @@ export default function BookShelfList({ initialBookShelves = [] }: Props) {
               検索条件をクリア
             </Button>
           )}
-          <Button onClick={handleCreate}>
-            <Plus className="mr-2 h-4 w-4" />
-            新しい本棚を作成する
-          </Button>
+          {activeTab === 'my' && (
+            <Button onClick={handleCreate}>
+              <Plus className="mr-2 h-4 w-4" />
+              新しい本棚を作成する
+            </Button>
+          )}
         </div>
       )}
 

@@ -177,7 +177,7 @@ export default function Dashboard() {
             <div>
               <h3 className="mb-1 text-lg font-medium text-green-600">Q: 共有リンクの有効期限はありますか？</h3>
               <p className="text-gray-700">
-                A: 共有リンクに有効期限はありません。ただし、本棚を削除すると関連する共有リンクも無効になります。
+                A: 共有リンクの有効期限は7日間です。ただし、本棚を削除すると関連する共有リンクは無効になります。
               </p>
             </div>
 

@@ -65,7 +65,12 @@ export function BookShelfCard(props: BookShelfCardProps) {
     <BaseCard variant="book-shelf" {...props}>
       <ReadStatusBadge status={readStatusState.status} />
 
-      <Image imageUrl={image_url} title={title} variant="book-shelf" />
+      <Image
+        imageUrl={image_url}
+        title={title}
+        variant="book-shelf"
+        onClick={dialogs.detailBook.open}
+      />
 
       <div className="flex flex-col justify-between space-y-4">
         <Header
