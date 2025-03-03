@@ -11,6 +11,7 @@ export function useBookShelfState(includeAddBook = false) {
     edit: false,
     delete: false,
     ...(includeAddBook ? { addBook: false } : {}),
+    shareLink: false,
   };
 
   const [dialogStates, setDialogStates] =
@@ -37,13 +38,18 @@ export function useBookShelfState(includeAddBook = false) {
       },
       ...(includeAddBook
         ? {
-            addBook: {
-              isOpen: dialogStates.addBook,
-              open: () => handleDialogState('addBook', true),
-              close: () => handleDialogState('addBook', false),
-            },
-          }
+          addBook: {
+            isOpen: dialogStates.addBook,
+            open: () => handleDialogState('addBook', true),
+            close: () => handleDialogState('addBook', false),
+          },
+        }
         : {}),
+      shareLink: {
+        isOpen: dialogStates.shareLink,
+        open: () => handleDialogState('shareLink', true),
+        close: () => handleDialogState('shareLink', false),
+      },
     },
   };
 }

@@ -36,9 +36,15 @@ class ShareLinkController extends Controller
                 'share_url' => $url,
                 'expiry_date' => $shareLink->expiry_date->toIso8601String(),
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'errors' => null
             ], 500);
         }
     }

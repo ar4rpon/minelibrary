@@ -7,6 +7,7 @@ import { BookShelfDialogStates } from '@/types/bookShelf';
 import { AddBookDialog } from './AddBookDialog';
 import { DeleteBookShelfDialog } from './DeleteBookShelfDialog';
 import { EditBookShelfDialog } from './EditBookShelfDialog';
+import { ShareLinkDialog } from './ShareLinkDialog';
 
 interface BookShelfDialogsProps {
   bookShelfId: number;
@@ -85,6 +86,15 @@ export function BookShelfDialogs({
           AddBooksConfirm={handleAddBook}
         />
       )}
+
+      {dialogStates.shareLink !== undefined && (
+        <ShareLinkDialog
+          isOpen={dialogStates.shareLink}
+          onClose={() => onDialogStateChange('shareLink', false)}
+          bookShelfId={bookShelfId}
+        />
+      )}
+
     </>
   );
 }

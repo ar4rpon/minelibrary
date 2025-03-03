@@ -29,9 +29,9 @@ export function ShareLinkDialog({
   const handleGenerateShareLink = async () => {
     setIsLoading(true);
     try {
-      console.log(bookShelfId);
+      console.log('ダイアログから送信するbookShelfId:', bookShelfId);
       const response = await generateShareLink(bookShelfId);
-
+      console.log(response);
       if (response) {
         console.log('共有リンク生成成功:', response);
         setShareUrl(response.share_url);

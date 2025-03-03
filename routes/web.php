@@ -8,6 +8,7 @@ use App\Http\Controllers\FavoriteBookController;
 use App\Http\Controllers\MemoController;
 use App\Models\BookShelf;
 use App\Http\Controllers\BookShelfController;
+use App\Http\Controllers\ShareLinkController;
 
 Route::get('/', function () {
     return Inertia::render('features/welcome/pages/Welcome');
@@ -21,9 +22,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/book/search', [BookSearchController::class, 'index'])->name('book.search');
 
     Route::get('/book-shelf/list', [BookShelfController::class, 'index'])->name('book-shelf.list');
-    Route::get('/book-shelf/detail', function () {
-        return Inertia::render('features/bookshelf/pages/BookShelfDetail');
-    })->name('book-shelf.detail');
     Route::get('/book-shelf/{book_shelf_id}', [BookShelfController::class, 'show'])->name('book-shelf.detail');
 
     // 書籍処理
@@ -51,9 +49,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/get/favorite-books', [FavoriteBookController::class, 'getFavorites'])->name('book-shelf.get.favorite.books');
         Route::post('/add/books', [BookShelfController::class, 'addBooks'])->name('book-shelf.add.books');
         Route::put('/update/{id}', [BookShelfController::class, 'update'])->name('book-shelf.update.book');
-        Route::post('/{isbn}', [BookShelfController::class, 'removeBook'])->name('book-shelf.remove.book');
         Route::delete('/delete/{id}', [BookShelfController::class, 'destroy'])->name('book-shelf.destroy');
-        Route::post('/generate-share-link', [App\Http\Controllers\ShareLinkController::class, 'generateShareLink'])->name('book-shelf.generate-share-link');
+        Route::post('/generate-share-link', [ShareLinkController::class, 'generateShareLink'])->name('book-shelf.generate-share-link');
+        Route::post('/{isbn}', [BookShelfController::class, 'removeBook'])->name('book-shelf.remove.book');
     });
 
 
@@ -64,7 +62,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // 共有リンク
-Route::get('/shared-booklist/{token}', [App\Http\Controllers\ShareLinkController::class, 'showSharedBookShelf'])
+Route::get('/shared-booklist/{token}', [ShareLinkController::class, 'showSharedBookShelf'])
     ->name('shared-booklist');
 // 書籍のメモを取得
 Route::get('/book/{isbn}/memos', [MemoController::class, 'getBookMemos'])->name('book.memos');

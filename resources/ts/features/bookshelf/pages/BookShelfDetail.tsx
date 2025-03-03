@@ -56,15 +56,8 @@ export default function BookShelfDetail({
         bookShelfId={bookShelf.id}
         isPublic={bookShelf.is_public}
         userName={bookShelf.user_name}
-        onShare={handleShareClick}
       />
 
-      {/* 共有ダイアログ */}
-      <ShareLinkDialog
-        isOpen={isShareDialogOpen}
-        onClose={() => setIsShareDialogOpen(false)}
-        bookShelfId={bookShelf.id}
-      />
       <div className="mt-8 grid grid-cols-1 gap-y-4">
         {books && books.length > 0 ? (
           books.map((item: BookShelfBook) => (

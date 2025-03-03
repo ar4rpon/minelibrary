@@ -40,10 +40,7 @@ export function ExtendedBookShelfActions({
   onAddBook,
   onEdit,
   onDelete,
-  onShare = () => {
-    // TODO: 共有機能の実装
-    console.log('共有機能は未実装です');
-  },
+  onShare
 }: ExtendedBookShelfActionsProps) {
   return (
     <DropdownMenu>
@@ -102,11 +99,10 @@ export function Header({
     <div className="space-y-2">
       <div className="flex justify-between">
         <CardTitle
-          className={`${
-            variant === 'description'
+          className={`${variant === 'description'
               ? 'text-2xl font-bold'
               : 'text-xl font-bold'
-          }`}
+            }`}
         >
           {name}
         </CardTitle>
@@ -128,11 +124,10 @@ export function Header({
       </div>
 
       <CardDescription
-        className={`${
-          variant === 'description'
+        className={`${variant === 'description'
             ? 'text-md mt-1 text-gray-700'
             : 'text-sm text-gray-600'
-        }`}
+          }`}
       >
         {description}
       </CardDescription>

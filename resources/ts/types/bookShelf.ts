@@ -13,6 +13,7 @@ export interface BookShelfDialogStates {
   edit: boolean;
   delete: boolean;
   addBook?: boolean; // 本の追加ダイアログは一部のコンポーネントでのみ使用
+  shareLink?: boolean;
 }
 
 // ユーザー情報
@@ -29,7 +30,7 @@ export interface BookShelfCardProps extends BookShelfBase {
 // 本棚詳細用のプロパティ
 export interface BookShelfDescriptionProps
   extends BookShelfBase,
-    Partial<UserInfo> {}
+  Partial<UserInfo> { }
 
 // ドロップダウンメニューのアクション用
 export interface BookShelfActionsProps {

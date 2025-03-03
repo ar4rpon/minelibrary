@@ -26,11 +26,6 @@ export function DetailCard({
   isShared,
 }: DetailCardProps) {
   const { dialogs } = useBookShelfState(true);
-  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-
-  const handleShare = () => {
-    setIsShareDialogOpen(true);
-  };
 
   return (
     <BaseCard
@@ -48,15 +43,15 @@ export function DetailCard({
           onEdit={dialogs.edit.open}
           onDelete={dialogs.delete.open}
           onAddBook={dialogs.addBook?.open}
-          onShare={handleShare}
+          onShare={dialogs.shareLink.open}
         />
       ) : (
         <Header
           name={name}
           description={description}
           variant="description"
-          onEdit={() => {}}
-          onDelete={() => {}}
+          onEdit={() => { }}
+          onDelete={() => { }}
           isShared={true}
         />
       )}
@@ -76,6 +71,7 @@ export function DetailCard({
               edit: dialogs.edit.isOpen,
               delete: dialogs.delete.isOpen,
               addBook: dialogs.addBook?.isOpen,
+              shareLink: dialogs.shareLink?.isOpen,
             }}
             onDialogStateChange={(dialogKey, isOpen) => {
               if (dialogKey === 'edit') {
@@ -84,15 +80,12 @@ export function DetailCard({
                 isOpen ? dialogs.delete.open() : dialogs.delete.close();
               } else if (dialogKey === 'addBook' && dialogs.addBook) {
                 isOpen ? dialogs.addBook.open() : dialogs.addBook.close();
+              } else if (dialogKey === 'shareLink' && dialogs.shareLink) {
+                isOpen ? dialogs.shareLink.open() : dialogs.shareLink.close();
               }
             }}
           />
 
-          <ShareLinkDialog
-            isOpen={isShareDialogOpen}
-            onClose={() => setIsShareDialogOpen(false)}
-            bookShelfId={bookShelfId}
-          />
         </>
       )}
     </BaseCard>
