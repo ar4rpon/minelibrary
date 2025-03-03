@@ -34,8 +34,7 @@ Route::middleware('auth')->group(function () {
         // 書籍ステータス処理
         Route::post('/update-status', [FavoriteBookController::class, 'updateReadStatus'])->name('books.status');
     });
-    // 書籍のメモを取得
-    Route::get('/book/{isbn}/memos', [MemoController::class, 'getBookMemos'])->name('book.memos');
+
 
     // メモ処理
     Route::prefix('memo')->group(function () {
@@ -67,6 +66,8 @@ Route::middleware('auth')->group(function () {
 // 共有リンク
 Route::get('/shared-booklist/{token}', [App\Http\Controllers\ShareLinkController::class, 'showSharedBookShelf'])
     ->name('shared-booklist');
+// 書籍のメモを取得
+Route::get('/book/{isbn}/memos', [MemoController::class, 'getBookMemos'])->name('book.memos');
 
 Route::get('/privacy', function () {
     return Inertia::render('features/privacy/pages/PrivacyPolicy');
