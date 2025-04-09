@@ -1,44 +1,46 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+        {{-- Inline script to detect system dark mode preference and apply it immediately --}}
+        <script>
+            (function() {
+                const appearance = '{{ $appearance ?? "system" }}';
 
-    <title inertia>{{ config('app.name', 'Laravel') }}</title>
+                if (appearance === 'system') {
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+                    if (prefersDark) {
+                        document.documentElement.classList.add('dark');
+                    }
+                }
+            })();
+        </script>
 
-    <!-- Scripts -->
-    @routes
-    <script> 
-    // 設定が反映されないので暫定対応
-    // Ziggyオブジェクトが存在する場合、absoluteプロパティをfalseに設定
-    if (typeof Ziggy !== 'undefined') {
-        Ziggy.absolute = false;
-        
-        // 元のroute関数を保存
-        const originalRoute = route;
-        
-        // route関数をオーバーライド
-        window.route = function(name, params, absolute) {
-            // 第3引数が明示的に指定されていない場合は常にfalseを使用
-            if (absolute === undefined) {
-                absolute = false;
+        {{-- Inline style to set the HTML background color based on our theme in app.css --}}
+        <style>
+            html {
+                background-color: oklch(1 0 0);
             }
-            return originalRoute(name, params, absolute);
-        };
-    }
-    </script>
-    @viteReactRefresh
-    @vite(['resources/ts/app.tsx', "resources/ts/{$page['component']}.tsx"])
-    @inertiaHead
-</head>
 
-<body class="font-sans antialiased">
-    @inertia
-</body>
+            html.dark {
+                background-color: oklch(0.145 0 0);
+            }
+        </style>
 
+        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+
+        @routes
+        @viteReactRefresh
+        @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
+        @inertiaHead
+    </head>
+    <body class="font-sans antialiased">
+        @inertia
+    </body>
 </html>
