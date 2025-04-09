@@ -40,8 +40,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
           if_key_exists: fail
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
 
       - name: Deploy to VPS
+        shell: bash
         run: |
           # rsyncを使ってファイルをデプロイ
           rsync -avz --exclude='.git' \
