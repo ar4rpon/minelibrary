@@ -103,11 +103,17 @@ class MemoController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        if (!$memo) {
+            return response()->json(['error' => 'Memo not found'], 403);
+        }
+
         $memo->updateMemo(
             $request->memo,
             $request->memo_chapter,
             $request->memo_page
         );
+        
+        return response()->json(['memo' => $memo], 200);
     }
 
     public function destroy($memo_id)
@@ -115,8 +121,12 @@ class MemoController extends Controller
         $user = Auth::user();
         $memo = Memo::where('id', $memo_id)->where('user_id', $user->id)->first();
 
+        if (!$memo) {
+            return response()->json(['error' => 'Memo not found'], 403);
+        }
+
         if ($memo->delete()) {
-            return response()->json(['message' => 'Memo deleted successfully'], 200);
+            return response()->json(['success' => true, 'message' => 'メモを削除しました'], 200);
         } else {
             return response()->json(['error' => 'Failed to delete memo'], 500);
         }
@@ -142,6 +152,7 @@ class MemoController extends Controller
                         'user_name' => $memo->user->name,
                         'is_current_user' => $memo->user_id === $user->id,
                         'created_at' => $memo->created_at->format('Y-m-d'),
+                        'user' => $memo->user,
                     ];
                 });
         } else {
@@ -158,11 +169,17 @@ class MemoController extends Controller
                         'user_name' => $memo->user->name,
                         'is_current_user' => "",
                         'created_at' => $memo->created_at->format('Y-m-d'),
+                        'user' => $memo->user,
                     ];
                 });
         }
 
 
-        return response()->json($memos);
+        // 公開メモのみフィルタリング
+        $publicMemos = $memos->filter(function ($memo) {
+            return $memo['user']->is_memo_publish ?? false;
+        })->values();
+
+        return response()->json(['memos' => $publicMemos]);
     }
 }
