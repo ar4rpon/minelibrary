@@ -41,14 +41,20 @@ class BookShelfController extends Controller
                 ];
             });
 
-        // お気に入り本棚を取得
+        // お気に入り本棚を取得 - N+1問題解決のため完全なeager loading実装
         $favoriteBookShelves = FavoriteBookShelf::where('user_id', $user->id)
-            ->with(['bookshelf', 'bookshelf.user'])
+            ->with([
+                'bookshelf' => function($query) {
+                    $query->select('id', 'user_id', 'book_shelf_name', 'description', 'is_public');
+                },
+                'bookshelf.user' => function($query) {
+                    $query->select('id', 'name');
+                }
+            ])
             ->get()
             ->map(function ($favorite) {
                 $bookShelf = $favorite->bookshelf;
                 // 本棚が存在する場合のみ処理
-                Log::info($favorite);
                 if ($bookShelf) {
                     return [
                         'bookShelfId' => $bookShelf->id,
@@ -163,9 +169,8 @@ class BookShelfController extends Controller
     {
         $bookShelf = BookShelf::findOrFail($request->book_shelf_id);
 
-        foreach ($request->isbns as $isbn) {
-            $bookShelf->addBook($isbn);
-        }
+        // N+1問題解決: 一括挿入でパフォーマンス改善
+        $bookShelf->addBooksInBatch($request->isbns);
 
         return response()->json(['message' => 'Books added successfully'], 200);
     }

@@ -49,7 +49,17 @@ class ShareLinkController extends Controller
      */
     public function showSharedBookShelf($token)
     {
-        $shareLink = ShareLink::where('share_token', $token)->firstOrFail();
+        // N+1問題解決: ShareLinkと関連するbookShelfとuserを一括取得
+        $shareLink = ShareLink::where('share_token', $token)
+            ->with([
+                'bookShelf' => function($query) {
+                    $query->select('id', 'user_id', 'book_shelf_name', 'description', 'is_public');
+                },
+                'bookShelf.user' => function($query) {
+                    $query->select('id', 'name');
+                }
+            ])
+            ->firstOrFail();
 
         if (!$shareLink->isValid()) {
             abort(403, '共有リンクの有効期限が切れています');
