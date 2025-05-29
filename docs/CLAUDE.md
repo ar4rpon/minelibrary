@@ -1,5 +1,8 @@
 # Claude Project Rules
 
+## プロジェクト固有ルールのインポート
+@.claude/project-rules.md
+
 ## プロジェクト概要
 このプロジェクトは、本の管理と共有を行うWebアプリケーション「minelibrary」です。
 Laravel 11とReact（Inertia.js）を使用して構築されています。
@@ -45,7 +48,7 @@ Laravel 11とReact（Inertia.js）を使用して構築されています。
 
 3. **ディレクトリ構造**
    ```
-   resources/js/
+   resources/ts/
    ├── components/     # 共通コンポーネント
    ├── features/       # 機能別のコンポーネント
    ├── hooks/          # カスタムフック
