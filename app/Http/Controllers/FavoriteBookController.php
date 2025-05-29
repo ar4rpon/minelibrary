@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\FavoriteBookToggleRequest;
+use App\Http\Requests\FavoriteBookStatusRequest;
 use App\Models\FavoriteBook;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -79,7 +81,7 @@ class FavoriteBookController extends Controller
         return response()->json($favorites);
     }
 
-    public function updateReadStatus(Request $request)
+    public function updateReadStatus(FavoriteBookStatusRequest $request)
     {
         $user = Auth::user();
         $favorite = FavoriteBook::where('user_id', $user->id)
@@ -92,7 +94,7 @@ class FavoriteBookController extends Controller
         }
     }
 
-    public function toggleFavorite(Request $request)
+    public function toggleFavorite(FavoriteBookToggleRequest $request)
     {
         $book = $this->bookController->getOrStore($request);
         $user = Auth::user();

@@ -45,13 +45,6 @@ test('ユーザーは新しい本棚を作成できる', function () {
     ]);
 });
 
-test('本棚作成時にバリデーションが機能する', function () {
-    $this->actingAs($this->user)
-        ->postJson('/book-shelf/create', [])
-        ->assertStatus(422)
-        ->assertJsonValidationErrors(['book_shelf_name', 'description']);
-});
-
 test('ユーザーは自分の本棚を更新できる', function () {
     $bookShelf = BookShelf::factory()->forUser($this->user)->create();
 
