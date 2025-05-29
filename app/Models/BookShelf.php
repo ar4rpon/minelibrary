@@ -141,6 +141,24 @@ class BookShelf extends Model
     }
 
     /**
+     * 複数の本を一括で追加する（N+1問題解決）
+     *
+     * @param array $isbns
+     * @return void
+     */
+    public function addBooksInBatch(array $isbns): void
+    {
+        $data = [];
+        $timestamp = now();
+        
+        foreach ($isbns as $isbn) {
+            $data[$isbn] = ['created_at' => $timestamp];
+        }
+        
+        $this->books()->attach($data);
+    }
+
+    /**
      * 指定されたブックリストIDの全ての書籍データを取得する
      *
      * @param int $bookShelfId

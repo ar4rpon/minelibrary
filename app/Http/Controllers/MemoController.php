@@ -24,18 +24,28 @@ class MemoController extends Controller
         $user = Auth::user();
         $sortBy = $request->input('sortBy', 'date');
 
-        $query = Memo::where('user_id', $user->id)->with('book');
+        // N+1問題解決: eager loadingで必要な本の情報のみを選択取得
+        $query = Memo::where('user_id', $user->id)
+            ->with([
+                'book' => function($query) {
+                    $query->select('isbn', 'title', 'author', 'publisher_name', 'sales_date', 'image_url', 'item_caption', 'item_price');
+                }
+            ]);
 
         if ($sortBy === 'date') {
             $query->orderBy('created_at', 'desc');
         } elseif ($sortBy === 'title') {
             $query->join('books', 'memos.isbn', '=', 'books.isbn')
-                ->orderBy('books.title');
+                ->orderBy('books.title')
+                ->select('memos.*'); // joinの後に元のカラムを明示的に選択
         }
 
         $memos = $query->get()->groupBy('isbn')->map(function ($group) {
+            $firstMemo = $group->first();
+            $book = $firstMemo->book;
+            
             return [
-                'id' => $group->first()->isbn,
+                'id' => $firstMemo->isbn,
                 'contents' => $group->map(function ($memo) {
                     return [
                         'id' => $memo->id,
@@ -44,14 +54,16 @@ class MemoController extends Controller
                         'memo_page' => $memo->memo_page,
                     ];
                 })->toArray(),
-                'book' => array_merge($group->first()->book->toArray(), [
-                    'isbn' => $group->first()->book->isbn,
-                    'publisher_name' => $group->first()->book->publisher_name,
-                    'item_caption' => $group->first()->book->item_caption,
-                    'sales_date' => $group->first()->book->sales_date,
-                    'item_price' => $group->first()->book->item_price,
-                    'image_url' => $group->first()->book->image_url,
-                ]),
+                'book' => [
+                    'isbn' => $book->isbn,
+                    'title' => $book->title,
+                    'author' => $book->author,
+                    'publisher_name' => $book->publisher_name,
+                    'sales_date' => $book->sales_date,
+                    'image_url' => $book->image_url,
+                    'item_caption' => $book->item_caption,
+                    'item_price' => $book->item_price,
+                ],
             ];
         })->values();
 
@@ -124,14 +136,19 @@ class MemoController extends Controller
 
     public function getBookMemos($isbn)
     {
+        // N+1問題解決: user情報を必要な部分のみ取得
+        $baseQuery = Memo::where('isbn', $isbn)
+            ->join('users', 'memos.user_id', '=', 'users.id')
+            ->where('users.is_memo_publish', true) // 公開設定のユーザーのみ
+            ->select('memos.*', 'users.name as user_name')
+            ->orderBy('created_at', 'desc');
+
         if (Auth::user()) {
             $user = Auth::user();
-
-            $memos = Memo::where('isbn', $isbn)
-                ->with('user')
+            
+            $memos = $baseQuery
                 // 登録ユーザーのメモを判別させる
-                ->orderByRaw("CASE WHEN user_id = ? THEN 0 ELSE 1 END", [$user->id])
-                ->orderBy('created_at', 'desc')
+                ->orderByRaw("CASE WHEN memos.user_id = ? THEN 0 ELSE 1 END", [$user->id])
                 ->get()
                 ->map(function ($memo) use ($user) {
                     return [
@@ -139,15 +156,13 @@ class MemoController extends Controller
                         'memo' => $memo->memo,
                         'memo_chapter' => $memo->memo_chapter,
                         'memo_page' => $memo->memo_page,
-                        'user_name' => $memo->user->name,
+                        'user_name' => $memo->user_name,
                         'is_current_user' => $memo->user_id === $user->id,
                         'created_at' => $memo->created_at->format('Y-m-d'),
                     ];
                 });
         } else {
-            $memos = Memo::where('isbn', $isbn)
-                ->with('user')
-                ->orderBy('created_at', 'desc')
+            $memos = $baseQuery
                 ->get()
                 ->map(function ($memo) {
                     return [
@@ -155,14 +170,13 @@ class MemoController extends Controller
                         'memo' => $memo->memo,
                         'memo_chapter' => $memo->memo_chapter,
                         'memo_page' => $memo->memo_page,
-                        'user_name' => $memo->user->name,
-                        'is_current_user' => "",
+                        'user_name' => $memo->user_name,
+                        'is_current_user' => false,
                         'created_at' => $memo->created_at->format('Y-m-d'),
                     ];
                 });
         }
 
-
-        return response()->json($memos);
+        return response()->json(['memos' => $memos]);
     }
 }
