@@ -39,7 +39,7 @@ class BookShelfController extends Controller
 
         // お気に入り本棚を取得
         $favoriteBookShelves = FavoriteBookShelf::where('user_id', $user->id)
-            ->with('bookshelf')
+            ->with(['bookshelf', 'bookshelf.user'])
             ->get()
             ->map(function ($favorite) {
                 $bookShelf = $favorite->bookshelf;
@@ -76,17 +76,22 @@ class BookShelfController extends Controller
         $user = Auth::user();
         $bookShelf = BookShelf::where('id', $book_shelf_id)
             ->where('user_id', $user->id)
+            ->with('user')
             ->firstOrFail();
 
         $userName = $bookShelf->user->name;
 
-        $books = BookShelf::getBooks($book_shelf_id)->map(function ($book) use ($user) {
-            $favoriteBook = FavoriteBook::where('isbn', $book->isbn)
-                ->where('user_id', $user->id)
-                ->first();
+        $books = BookShelf::getBooks($book_shelf_id);
+        
+        // お気に入り状態を事前に取得
+        $favoriteIsbns = FavoriteBook::where('user_id', $user->id)
+            ->whereIn('isbn', $books->pluck('isbn'))
+            ->pluck('read_status', 'isbn');
+        
+        $books = $books->map(function ($book) use ($favoriteIsbns) {
             return [
                 'isbn' => $book->isbn,
-                'read_status' => $favoriteBook ? $favoriteBook->read_status : null,
+                'read_status' => $favoriteIsbns->get($book->isbn),
                 'book' => [
                     'title' => $book->title,
                     'author' => $book->author,
@@ -179,14 +184,18 @@ class BookShelfController extends Controller
             'book_shelf_id' => 'required|exists:book_shelves,id',
         ]);
 
-        $books = BookShelf::getBooks($request->book_shelf_id)->map(function ($book) {
-            $user = Auth::user();
-            $favoriteBook = FavoriteBook::where('isbn', $book->isbn)
-                ->where('user_id', $user->id)
-                ->first();
+        $user = Auth::user();
+        $books = BookShelf::getBooks($request->book_shelf_id);
+        
+        // お気に入り状態を事前に取得
+        $favoriteIsbns = FavoriteBook::where('user_id', $user->id)
+            ->whereIn('isbn', $books->pluck('isbn'))
+            ->pluck('read_status', 'isbn');
+        
+        $books = $books->map(function ($book) use ($favoriteIsbns) {
             return [
                 'isbn' => $book->isbn,
-                'read_status' => $favoriteBook->read_status,
+                'read_status' => $favoriteIsbns->get($book->isbn),
                 'book' => [
                     'title' => $book->title,
                     'author' => $book->author,
@@ -245,6 +254,7 @@ class BookShelfController extends Controller
         // 公開されている本棚のみ取得
         $bookshelves = BookShelf::where('user_id', $userId)
             ->where('is_public', true)
+            ->withCount('books')
             ->select(
                 'id as bookShelfId',
                 'book_shelf_name as name',
@@ -253,13 +263,12 @@ class BookShelfController extends Controller
             )
             ->get()
             ->map(function ($bookshelf) {
-                $bookCount = BookShelf::getBooks($bookshelf->bookShelfId)->count();
                 return [
                     'bookShelfId' => $bookshelf->bookShelfId,
                     'name' => $bookshelf->name,
                     'description' => $bookshelf->description,
                     'isPublic' => $bookshelf->isPublic,
-                    'bookCount' => $bookCount,
+                    'bookCount' => $bookshelf->books_count,
                 ];
             });
 
