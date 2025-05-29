@@ -138,7 +138,12 @@ class BookShelfController extends Controller
             'description' => 'required|string',
             'is_public' => 'required|boolean',
         ]);
-        $bookShelf = BookShelf::findOrFail($id);
+        
+        $user = Auth::user();
+        $bookShelf = BookShelf::where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+            
         $bookShelf->updateName($request->book_shelf_name);
         $bookShelf->updateDescription($request->description);
         $bookShelf->updateIsPublic($request->is_public);
