@@ -147,7 +147,7 @@ export default function BookShelfList({ initialBookShelves = { my: [], favorite:
 
       {/* タブと検索・作成ボタン */}
       <div className="mb-6 space-y-4">
-        <Tabs defaultValue="my" value={activeTab} onValueChange={(value) => handleTabChange(value as 'my' | 'favorite')}>
+        <Tabs defaultValue="my" value={activeTab} onValueChange={(value: any) => handleTabChange(value as 'my' | 'favorite')}>
           <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="my" className="flex-1 sm:flex-auto">
               <BookOpen className="mr-2 h-4 w-4" />

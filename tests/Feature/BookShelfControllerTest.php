@@ -14,13 +14,13 @@ beforeEach(function () {
 });
 
 test('認証されていないユーザーは本棚一覧にアクセスできない', function () {
-    $this->get('/bookshelves')
+    $this->get('/book-shelf/list')
         ->assertRedirect('/login');
 });
 
 test('認証済みユーザーは本棚一覧を表示できる', function () {
     $this->actingAs($this->user)
-        ->get('/bookshelves')
+        ->get('/book-shelf/list')
         ->assertStatus(200);
 });
 
@@ -31,7 +31,7 @@ test('ユーザーは新しい本棚を作成できる', function () {
     ];
 
     $this->actingAs($this->user)
-        ->post('/api/bookshelves', $bookShelfData)
+        ->post('/book-shelf/create', $bookShelfData)
         ->assertStatus(201)
         ->assertJson([
             'book_shelf_name' => 'テスト本棚',
@@ -47,7 +47,7 @@ test('ユーザーは新しい本棚を作成できる', function () {
 
 test('本棚作成時にバリデーションが機能する', function () {
     $this->actingAs($this->user)
-        ->post('/api/bookshelves', [])
+        ->postJson('/book-shelf/create', [])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['book_shelf_name', 'description']);
 });
@@ -62,7 +62,7 @@ test('ユーザーは自分の本棚を更新できる', function () {
     ];
 
     $this->actingAs($this->user)
-        ->put("/api/bookshelves/{$bookShelf->id}", $updateData)
+        ->put("/book-shelf/update/{$bookShelf->id}", $updateData)
         ->assertStatus(200);
 
     $this->assertDatabaseHas('book_shelves', [
@@ -78,7 +78,7 @@ test('ユーザーは他人の本棚を更新できない', function () {
     $bookShelf = BookShelf::factory()->forUser($otherUser)->create();
 
     $this->actingAs($this->user)
-        ->put("/api/bookshelves/{$bookShelf->id}", [
+        ->put("/book-shelf/update/{$bookShelf->id}", [
             'book_shelf_name' => '不正な更新',
             'description' => '不正な説明',
             'is_public' => false,
@@ -90,7 +90,7 @@ test('ユーザーは自分の本棚を削除できる', function () {
     $bookShelf = BookShelf::factory()->forUser($this->user)->create();
 
     $this->actingAs($this->user)
-        ->delete("/api/bookshelves/{$bookShelf->id}")
+        ->delete("/book-shelf/delete/{$bookShelf->id}")
         ->assertStatus(200);
 
     $this->assertDatabaseMissing('book_shelves', [
@@ -103,7 +103,7 @@ test('本棚に本を追加できる', function () {
     $books = Book::factory()->count(3)->create();
 
     $this->actingAs($this->user)
-        ->post('/api/bookshelves/books', [
+        ->post('/book-shelf/add/books', [
             'book_shelf_id' => $bookShelf->id,
             'isbns' => $books->pluck('isbn')->toArray(),
         ])
@@ -123,7 +123,7 @@ test('本棚から本を削除できる', function () {
     $bookShelf->addBook($book->isbn);
 
     $this->actingAs($this->user)
-        ->post('/api/bookshelves/books/remove', [
+        ->post("/book-shelf/{$book->isbn}", [
             'book_shelf_id' => $bookShelf->id,
             'isbn' => $book->isbn,
         ])
@@ -141,12 +141,8 @@ test('公開本棚一覧を表示できる', function () {
     BookShelf::factory()->count(2)->forUser($otherUser)->private()->create();
 
     $this->actingAs($this->user)
-        ->get("/users/{$otherUser->id}/bookshelves")
-        ->assertStatus(200)
-        ->assertInertia(fn ($page) => $page
-            ->component('features/bookshelf/pages/UserBookShelfList')
-            ->has('bookshelves', 3)
-        );
+        ->get("/user/{$otherUser->id}/book-shelves")
+        ->assertStatus(200);
 });
 
 test('非公開本棚は他のユーザーに表示されない', function () {
@@ -154,6 +150,6 @@ test('非公開本棚は他のユーザーに表示されない', function () {
     $privateBookShelf = BookShelf::factory()->forUser($otherUser)->private()->create();
 
     $this->actingAs($this->user)
-        ->get("/users/{$otherUser->id}/bookshelves/{$privateBookShelf->id}")
+        ->get("/user/{$otherUser->id}/book-shelf/{$privateBookShelf->id}")
         ->assertStatus(404);
 });

@@ -15,5 +15,5 @@ test('new users can register', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('book.search', absolute: false));
+    $response->assertRedirect(route('app-guide', absolute: false));
 });

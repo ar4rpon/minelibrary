@@ -199,6 +199,19 @@ $this->mock(BookService::class, function ($mock) {
     php artisan test --coverage --min=60
 ```
 
+## テスト戦略
+
+### テストカテゴリの定義
+1. **ユニットテスト (Unit)**: 単一のクラス・メソッドのテスト
+2. **フィーチャーテスト (Feature)**: HTTPリクエスト経由の機能テスト
+3. **統合テスト (Integration)**: 複数コンポーネントの連携テスト
+
+### テスト優先順位
+1. 認証・認可 (セキュリティ最重要)
+2. 主要なCRUD操作 (BookShelf, Book)
+3. ビジネスロジック (お気に入り、検索)
+4. 外部API連携 (楽天API)
+
 ## テストカバレッジ目標
 
 ### 現在の目標（Phase 1）

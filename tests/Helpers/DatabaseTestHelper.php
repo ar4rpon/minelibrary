@@ -102,7 +102,7 @@ trait DatabaseTestHelper
      * @param array $data
      * @return void
      */
-    protected function assertSoftDeleted(string $model, array $data): void
+    protected function assertModelSoftDeleted(string $model, array $data): void
     {
         $instance = new $model;
         $table = $instance->getTable();
