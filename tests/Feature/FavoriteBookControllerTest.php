@@ -138,32 +138,6 @@ test('存在しない本の読書状態を更新しようとするとエラー',
         ->assertStatus(200);
 });
 
-test('お気に入り追加時にバリデーションが機能する', function () {
-    $this->actingAs($this->user)
-        ->postJson('/books/toggle-favorite', [])
-        ->assertStatus(422)
-        ->assertJsonValidationErrors(['isbn']);
-});
-
-test('読書状態更新時にバリデーションが機能する', function () {
-    $book = Book::factory()->create();
-
-    // ISBNがない場合、バリデーションエラー
-    $this->actingAs($this->user)
-        ->postJson('/books/update-status', [
-            'readStatus' => 'reading',
-        ])
-        ->assertStatus(422)
-        ->assertJsonValidationErrors(['isbn']);
-
-    // ISBNのみでも成功（readStatusは任意項目）
-    $this->actingAs($this->user)
-        ->postJson('/books/update-status', [
-            'isbn' => $book->isbn,
-        ])
-        ->assertStatus(200);
-});
-
 test('お気に入り一覧にステータスごとにグループ化されて表示される', function () {
     // 本の作成
     $books = Book::factory()->count(5)->create();

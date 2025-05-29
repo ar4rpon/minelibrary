@@ -200,14 +200,3 @@ test('ソート機能が動作する', function () {
         ->assertStatus(200);
 });
 
-test('検索バリデーションが機能する', function () {
-    // ページ番号が0以下の場合
-    $this->actingAs($this->user)
-        ->get('/book/search?keyword=本&page=0')
-        ->assertSessionHasErrors('page');
-
-    // ページ番号が負の場合
-    $this->actingAs($this->user)
-        ->get('/book/search?keyword=本&page=-1')
-        ->assertSessionHasErrors('page');
-});

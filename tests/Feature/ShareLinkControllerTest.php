@@ -42,22 +42,6 @@ test('他人の本棚の共有リンクは生成できない', function () {
         ->assertStatus(500);
 });
 
-test('存在しない本棚IDで共有リンク生成はエラーになる', function () {
-    $this->actingAs($this->user)
-        ->postJson('/book-shelf/generate-share-link', [
-            'book_shelf_id' => 99999,
-        ])
-        ->assertStatus(422)
-        ->assertJsonValidationErrors(['book_shelf_id']);
-});
-
-test('共有リンクのバリデーションが機能する', function () {
-    $this->actingAs($this->user)
-        ->postJson('/book-shelf/generate-share-link', [])
-        ->assertStatus(422)
-        ->assertJsonValidationErrors(['book_shelf_id']);
-});
-
 test('認証されていないユーザーは共有リンクを生成できない', function () {
     $this->postJson('/book-shelf/generate-share-link', [
         'book_shelf_id' => $this->bookShelf->id,

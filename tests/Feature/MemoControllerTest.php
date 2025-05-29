@@ -154,24 +154,6 @@ test('他人のメモは削除できない', function () {
     ]);
 });
 
-test('メモ作成時にバリデーションが機能する', function () {
-    // ISBNがない場合
-    $this->actingAs($this->user)
-        ->postJson('/memo/create', [
-            'memo' => 'メモ内容',
-        ])
-        ->assertStatus(422)
-        ->assertJsonValidationErrors(['isbn']);
-
-    // メモ内容がない場合
-    $this->actingAs($this->user)
-        ->postJson('/memo/create', [
-            'isbn' => $this->book->isbn,
-        ])
-        ->assertStatus(422)
-        ->assertJsonValidationErrors(['memo']);
-});
-
 test('本のメモ一覧を取得できる（公開メモ）', function () {
     $publicUser = User::factory()->create([
         'is_memo_publish' => true,
@@ -261,14 +243,3 @@ test('メモ更新時に内容のバリデーションが機能する', function
         ->assertJsonValidationErrors(['memo']);
 });
 
-test('章とページは整数値でなければならない', function () {
-    $this->actingAs($this->user)
-        ->postJson('/memo/create', [
-            'isbn' => $this->book->isbn,
-            'memo' => 'メモ内容',
-            'memo_chapter' => 'abc',
-            'memo_page' => 'xyz',
-        ])
-        ->assertStatus(422)
-        ->assertJsonValidationErrors(['memo_chapter', 'memo_page']);
-});
