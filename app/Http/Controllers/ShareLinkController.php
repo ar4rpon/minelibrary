@@ -6,6 +6,7 @@ use App\Models\BookShelf;
 use App\Models\ShareLink;
 use App\Models\FavoriteBook;
 use Illuminate\Http\Request;
+use App\Http\Requests\ShareLinkRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -17,13 +18,9 @@ class ShareLinkController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function generateShareLink(Request $request)
+    public function generateShareLink(ShareLinkRequest $request)
     {
         try {
-            $request->validate([
-                'book_shelf_id' => 'required|exists:book_shelves,id',
-            ]);
-
             $user = Auth::user();
             $bookShelf = BookShelf::where('id', $request->book_shelf_id)
                 ->where('user_id', $user->id)
@@ -36,11 +33,6 @@ class ShareLinkController extends Controller
                 'share_url' => $url,
                 'expiry_date' => $shareLink->expiry_date->toIso8601String(),
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'errors' => $e->errors()
-            ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),

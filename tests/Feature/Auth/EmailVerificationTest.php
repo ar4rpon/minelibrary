@@ -5,7 +5,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 
-test('email verification screen can be rendered', function () {
+test('メール認証画面が表示される', function () {
     $user = User::factory()->unverified()->create();
 
     $response = $this->actingAs($user)->get('/verify-email');
@@ -13,7 +13,7 @@ test('email verification screen can be rendered', function () {
     $response->assertStatus(200);
 });
 
-test('email can be verified', function () {
+test('メールアドレスが認証される', function () {
     $user = User::factory()->unverified()->create();
 
     Event::fake();
@@ -31,7 +31,7 @@ test('email can be verified', function () {
     $response->assertRedirect(route('book.search', absolute: false) . '?verified=1');
 });
 
-test('email is not verified with invalid hash', function () {
+test('無効なハッシュではメール認証されない', function () {
     $user = User::factory()->unverified()->create();
 
     $verificationUrl = URL::temporarySignedRoute(
