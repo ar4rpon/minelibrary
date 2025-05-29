@@ -7,11 +7,12 @@ use App\Http\Controllers\BookController;
 use App\Http\Requests\MemoStoreRequest;
 use App\Http\Requests\MemoUpdateRequest;
 use App\Models\Memo;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\HandlesUserAuth;
 use Inertia\Inertia;
 
 class MemoController extends Controller
 {
+    use HandlesUserAuth;
     protected $bookController;
 
     public function __construct(BookController $bookController)
@@ -21,7 +22,7 @@ class MemoController extends Controller
 
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $sortBy = $request->input('sortBy', 'date');
 
         // N+1問題解決: eager loadingで必要な本の情報のみを選択取得
@@ -80,7 +81,7 @@ class MemoController extends Controller
 
     public function store(MemoStoreRequest $request)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $memo = Memo::createMemo(
             $request->isbn,
             $request->memo,
@@ -89,18 +90,18 @@ class MemoController extends Controller
             $request->memo_page
         );
 
-        return response()->json(['memo' => $memo], 201);
+        return $this->createdResponse(['memo' => $memo]);
     }
 
     public function update(MemoUpdateRequest $request, $memo_id)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $memo = Memo::where('id', $memo_id)
             ->where('user_id', $user->id)
             ->first();
 
         if (!$memo) {
-            return response()->json(['error' => 'Memo not found'], 403);
+            return $this->errorResponse('Memo not found', 403);
         }
 
         $memo->updateMemo(
@@ -109,22 +110,22 @@ class MemoController extends Controller
             $request->memo_page
         );
         
-        return response()->json(['memo' => $memo], 200);
+        return $this->successResponse(['memo' => $memo]);
     }
 
     public function destroy($memo_id)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $memo = Memo::where('id', $memo_id)
             ->where('user_id', $user->id)
             ->first();
 
         if (!$memo) {
-            return response()->json(['error' => 'Memo not found'], 403);
+            return $this->errorResponse('Memo not found', 403);
         }
 
         $memo->delete();
-        return response()->json(['success' => true, 'message' => 'メモを削除しました'], 200);
+        return $this->successResponse(['success' => true, 'message' => 'メモを削除しました']);
     }
 
     public function getBookMemos($isbn)
@@ -142,8 +143,8 @@ class MemoController extends Controller
             })
             ->orderBy('created_at', 'desc');
 
-        if (Auth::user()) {
-            $user = Auth::user();
+        if ($this->getAuthUser()) {
+            $user = $this->getAuthUser();
             
             $memos = $baseQuery
                 // 登録ユーザーのメモを判別させる
@@ -176,6 +177,6 @@ class MemoController extends Controller
                 });
         }
 
-        return response()->json(['memos' => $memos]);
+        return $this->successResponse(['memos' => $memos]);
     }
 }

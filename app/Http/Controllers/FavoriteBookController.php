@@ -7,11 +7,13 @@ use App\Http\Requests\FavoriteBookToggleRequest;
 use App\Http\Requests\FavoriteBookStatusRequest;
 use App\Models\FavoriteBook;
 use App\Models\Book;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\HandlesUserAuth;
+use App\Http\Traits\HandlesEagerLoading;
 use Inertia\Inertia;
 
 class FavoriteBookController extends Controller
 {
+    use HandlesUserAuth, HandlesEagerLoading;
 
     public function index(Request $request)
     {
@@ -27,7 +29,7 @@ class FavoriteBookController extends Controller
     public function getFavorites()
     {
         $favorites = $this->getFavoritesData();
-        return response()->json($favorites);
+        return $this->successResponse($favorites);
     }
 
     /**
@@ -38,7 +40,7 @@ class FavoriteBookController extends Controller
      */
     private function getFavoritesData(?string $sortBy = null)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
 
         // N+1問題解決: 必要な本の情報のみを効率的に取得
         $query = FavoriteBook::where('user_id', $user->id)
@@ -74,14 +76,14 @@ class FavoriteBookController extends Controller
 
     public function updateReadStatus(FavoriteBookStatusRequest $request)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $favorite = FavoriteBook::where('user_id', $user->id)
             ->where('isbn', $request->isbn)
             ->first();
 
         if ($favorite) {
             $favorite->update(['read_status' => $request->readStatus]);
-            return response()->json(['readStatus' => $request->readStatus]);
+            return $this->successResponse(['readStatus' => $request->readStatus]);
         }
     }
 
@@ -105,7 +107,7 @@ class FavoriteBookController extends Controller
             $book = $existingBook;
         }
 
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $isFavorite = FavoriteBook::isFavorite($book->isbn, $user->id);
 
         if ($isFavorite) {
@@ -118,14 +120,14 @@ class FavoriteBookController extends Controller
             $isFavorite = true;
         }
 
-        return response()->json(['isFavorite' => $isFavorite]);
+        return $this->successResponse(['isFavorite' => $isFavorite]);
     }
 
     public function getFavoriteStatus(Request $request)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $isFavorite = FavoriteBook::isFavorite($request->isbn, $user->id);
 
-        return response()->json(['isFavorite' => $isFavorite]);
+        return $this->successResponse(['isFavorite' => $isFavorite]);
     }
 }

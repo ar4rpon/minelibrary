@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\BookShelf;
 use App\Models\FavoriteBookShelf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\HandlesUserAuth;
+use App\Http\Traits\HandlesApiResponses;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class FavoriteBookShelfController extends Controller
 {
+    use HandlesUserAuth, HandlesApiResponses;
     /**
      * お気に入り本棚一覧を表示
      *
@@ -18,7 +20,7 @@ class FavoriteBookShelfController extends Controller
      */
     public function index(): Response
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
 
         // N+1問題解決: 必要な関連データを一括取得とwithCountを使用
         $favoriteBookShelves = FavoriteBookShelf::where('user_id', $user->id)
@@ -67,15 +69,13 @@ class FavoriteBookShelfController extends Controller
         ]);
 
         $bookShelfId = $request->input('book_shelf_id');
-        $user = Auth::user();
-        $userId = $user->id;
+        $user = $this->getAuthUser();
+        $userId = $this->getAuthUserId();
 
         // 本棚が公開されているか確認
         $bookShelf = BookShelf::findOrFail($bookShelfId);
         if (!$bookShelf->is_public && $bookShelf->user_id !== $userId) {
-            return response()->json([
-                'message' => 'この本棚はお気に入りに追加できません。',
-            ], 403);
+            return $this->errorResponse('この本棚はお気に入りに追加できません。', 403);
         }
 
         // 既にお気に入りに追加されているか確認
@@ -98,7 +98,7 @@ class FavoriteBookShelfController extends Controller
             $message = 'お気に入りに追加しました。';
         }
 
-        return response()->json([
+        return $this->successResponse([
             'is_favorited' => $isFavorited,
             'message' => $message,
         ]);
@@ -117,14 +117,14 @@ class FavoriteBookShelfController extends Controller
         ]);
 
         $bookShelfId = $request->input('book_shelf_id');
-        $user = Auth::user();
-        $userId = $user->id;
+        $user = $this->getAuthUser();
+        $userId = $this->getAuthUserId();
 
         $isFavorited = FavoriteBookShelf::where('book_shelf_id', $bookShelfId)
             ->where('user_id', $userId)
             ->exists();
 
-        return response()->json([
+        return $this->successResponse([
             'is_favorited' => $isFavorited,
         ]);
     }

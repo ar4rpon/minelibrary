@@ -7,7 +7,9 @@ use App\Models\FavoriteBook;
 use App\Models\FavoriteBookShelf;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\HandlesUserAuth;
+use App\Http\Traits\HandlesEagerLoading;
+use App\Http\Traits\HandlesApiResponses;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Requests\BookShelfStoreRequest;
@@ -18,9 +20,10 @@ use App\Http\Requests\BookShelfRemoveBookRequest;
 
 class BookShelfController extends Controller
 {
+    use HandlesUserAuth, HandlesEagerLoading, HandlesApiResponses;
     public function index()
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
 
         // 自分の本棚を取得
         $myBookshelves = BookShelf::where('user_id', $user->id)
@@ -83,7 +86,7 @@ class BookShelfController extends Controller
 
     public function show($book_shelf_id)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $bookShelf = BookShelf::where('id', $book_shelf_id)
             ->where('user_id', $user->id)
             ->with('user')
@@ -94,25 +97,9 @@ class BookShelfController extends Controller
         $books = $bookShelf->books;
         
         // お気に入り状態を事前に取得
-        $favoriteIsbns = FavoriteBook::where('user_id', $user->id)
-            ->whereIn('isbn', $books->pluck('isbn'))
-            ->pluck('read_status', 'isbn');
+        $favoriteStatuses = $this->loadFavoriteStatuses($books, $user->id);
         
-        $books = $books->map(function ($book) use ($favoriteIsbns) {
-            return [
-                'isbn' => $book->isbn,
-                'read_status' => $favoriteIsbns->get($book->isbn),
-                'book' => [
-                    'title' => $book->title,
-                    'author' => $book->author,
-                    'publisher_name' => $book->publisher_name,
-                    'sales_date' => $book->sales_date,
-                    'image_url' => $book->image_url,
-                    'item_caption' => $book->item_caption,
-                    'item_price' => $book->item_price,
-                ],
-            ];
-        });
+        $books = $this->formatBooksWithFavoriteStatus($books, $favoriteStatuses);
 
         $bookShelf->user_name = $userName;
 
@@ -124,7 +111,7 @@ class BookShelfController extends Controller
 
     public function store(BookShelfStoreRequest $request)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
 
         $bookShelf = (new BookShelf())->add(
             [
@@ -139,7 +126,7 @@ class BookShelfController extends Controller
 
     public function update(BookShelfUpdateRequest $request, $id)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $bookShelf = BookShelf::where('id', $id)
             ->where('user_id', $user->id)
             ->firstOrFail();
@@ -151,7 +138,7 @@ class BookShelfController extends Controller
 
     public function getMyAll()
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
 
         $bookshelves = BookShelf::where('user_id', $user->id)
             ->select(
@@ -162,7 +149,7 @@ class BookShelfController extends Controller
             )
             ->get();
 
-        return response()->json($bookshelves);
+        return $this->successResponse($bookshelves);
     }
 
     public function addBooks(BookShelfBookRequest $request)
@@ -172,62 +159,46 @@ class BookShelfController extends Controller
         // N+1問題解決: 一括挿入でパフォーマンス改善
         $bookShelf->addBooksInBatch($request->isbns);
 
-        return response()->json(['message' => 'Books added successfully'], 200);
+        return $this->successMessage('Books added successfully');
     }
 
     public function getBooks(BookShelfGetBooksRequest $request)
     {
 
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $bookShelf = BookShelf::findOrFail($request->book_shelf_id);
         $books = $bookShelf->books;
         
         // お気に入り状態を事前に取得
-        $favoriteIsbns = FavoriteBook::where('user_id', $user->id)
-            ->whereIn('isbn', $books->pluck('isbn'))
-            ->pluck('read_status', 'isbn');
+        $favoriteStatuses = $this->loadFavoriteStatuses($books, $user->id);
         
-        $books = $books->map(function ($book) use ($favoriteIsbns) {
-            return [
-                'isbn' => $book->isbn,
-                'read_status' => $favoriteIsbns->get($book->isbn),
-                'book' => [
-                    'title' => $book->title,
-                    'author' => $book->author,
-                    'publisher_name' => $book->publisher_name,
-                    'sales_date' => $book->sales_date,
-                    'image_url' => $book->image_url,
-                    'item_caption' => $book->item_caption,
-                    'item_price' => $book->item_price,
-                ],
-            ];
-        });
+        $books = $this->formatBooksWithFavoriteStatus($books, $favoriteStatuses);
 
-        return response()->json($books);
+        return $this->successResponse($books);
     }
 
     public function destroy($id)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $bookShelf = BookShelf::where('id', $id)
             ->where('user_id', $user->id)
             ->firstOrFail();
 
         $bookShelf->delete();
 
-        return response()->json(['message' => 'Book shelf deleted successfully'], 200);
+        return $this->deletedResponse('Book shelf deleted successfully');
     }
 
     public function removeBook(BookShelfRemoveBookRequest $request)
     {
-        $user = Auth::user();
+        $user = $this->getAuthUser();
         $bookShelf = BookShelf::where('id', $request->book_shelf_id)
             ->where('user_id', $user->id)
             ->firstOrFail();
 
         $bookShelf->removeBook($request->isbn);
 
-        return response()->json(['message' => 'Book removed successfully'], 200);
+        return $this->successMessage('Book removed successfully');
     }
 
     /**
@@ -306,9 +277,9 @@ class BookShelfController extends Controller
 
         // 現在のユーザーがこの本棚をお気に入りに登録しているか確認
         $isFavorited = false;
-        if (Auth::check()) {
+        if ($this->getAuthUser()) {
             $isFavorited = FavoriteBookShelf::where('book_shelf_id', $bookShelf->id)
-                ->where('user_id', Auth::id())
+                ->where('user_id', $this->getAuthUserId())
                 ->exists();
         }
 

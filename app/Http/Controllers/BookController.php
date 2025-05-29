@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Http\Requests\BookStoreRequest;
-use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -24,10 +23,10 @@ class BookController extends Controller
         $existingBook = (new Book())->getBookInfo($request->isbn);
 
         if ($existingBook) {
-            return response()->json($existingBook);
+            return $this->successResponse($existingBook);
         }
 
         $book = (new Book())->addBook($bookData);
-        return response()->json($book);
+        return $this->successResponse($book);
     }
 }

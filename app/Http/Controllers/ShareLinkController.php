@@ -7,11 +7,13 @@ use App\Models\ShareLink;
 use App\Models\FavoriteBook;
 use Illuminate\Http\Request;
 use App\Http\Requests\ShareLinkRequest;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\HandlesUserAuth;
+use App\Http\Traits\HandlesApiResponses;
 use Inertia\Inertia;
 
 class ShareLinkController extends Controller
 {
+    use HandlesUserAuth, HandlesApiResponses;
     /**
      * 本棚の共有リンクを生成する
      *
@@ -21,7 +23,7 @@ class ShareLinkController extends Controller
     public function generateShareLink(ShareLinkRequest $request)
     {
         try {
-            $user = Auth::user();
+            $user = $this->getAuthUser();
             $bookShelf = BookShelf::where('id', $request->book_shelf_id)
                 ->where('user_id', $user->id)
                 ->firstOrFail();
@@ -29,15 +31,12 @@ class ShareLinkController extends Controller
             $shareLink = new ShareLink();
             $url = $shareLink->generateShareLink($request->book_shelf_id);
 
-            return response()->json([
+            return $this->successResponse([
                 'share_url' => $url,
                 'expiry_date' => $shareLink->expiry_date->toIso8601String(),
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'errors' => null
-            ], 500);
+            return $this->errorResponse($e->getMessage(), 500);
         }
     }
 
