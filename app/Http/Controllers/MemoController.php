@@ -90,7 +90,9 @@ class MemoController extends Controller
     public function update(MemoUpdateRequest $request, $memo_id)
     {
         $user = Auth::user();
-        $memo = Memo::where('id', $memo_id)->where('user_id', $user->id)->first();
+        $memo = Memo::where('id', $memo_id)
+            ->where('user_id', $user->id)
+            ->first();
 
         if (!$memo) {
             return response()->json(['error' => 'Memo not found'], 403);
@@ -108,17 +110,16 @@ class MemoController extends Controller
     public function destroy($memo_id)
     {
         $user = Auth::user();
-        $memo = Memo::where('id', $memo_id)->where('user_id', $user->id)->first();
+        $memo = Memo::where('id', $memo_id)
+            ->where('user_id', $user->id)
+            ->first();
 
         if (!$memo) {
             return response()->json(['error' => 'Memo not found'], 403);
         }
 
-        if ($memo->delete()) {
-            return response()->json(['success' => true, 'message' => 'メモを削除しました'], 200);
-        } else {
-            return response()->json(['error' => 'Failed to delete memo'], 500);
-        }
+        $memo->delete();
+        return response()->json(['success' => true, 'message' => 'メモを削除しました'], 200);
     }
 
     public function getBookMemos($isbn)

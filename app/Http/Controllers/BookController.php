@@ -3,24 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use Illuminate\Http\Request;
-
+use App\Http\Requests\BookStoreRequest;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
-    public function getOrStore(Request $request)
+    public function getOrStore(BookStoreRequest $request)
     {
-        $request->validate([
-            'isbn' => 'required|string',
-            'title' => 'required|string',
-            'author' => 'required|string',
-            'publisher_name' => 'required|string',
-            'sales_date' => 'required|string',
-            'image_url' => 'required|string',
-            'item_caption' => 'required|string',
-            'item_price' => 'required|integer',
-        ]);
-
         $bookData = $request->only([
             'isbn',
             'title',
@@ -35,10 +24,10 @@ class BookController extends Controller
         $existingBook = (new Book())->getBookInfo($request->isbn);
 
         if ($existingBook) {
-            return $existingBook;
+            return response()->json($existingBook);
         }
 
         $book = (new Book())->addBook($bookData);
-        return $book;
+        return response()->json($book);
     }
 }

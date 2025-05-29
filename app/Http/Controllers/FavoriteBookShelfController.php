@@ -67,7 +67,8 @@ class FavoriteBookShelfController extends Controller
         ]);
 
         $bookShelfId = $request->input('book_shelf_id');
-        $userId = Auth::id();
+        $user = Auth::user();
+        $userId = $user->id;
 
         // 本棚が公開されているか確認
         $bookShelf = BookShelf::findOrFail($bookShelfId);
@@ -116,7 +117,8 @@ class FavoriteBookShelfController extends Controller
         ]);
 
         $bookShelfId = $request->input('book_shelf_id');
-        $userId = Auth::id();
+        $user = Auth::user();
+        $userId = $user->id;
 
         $isFavorited = FavoriteBookShelf::where('book_shelf_id', $bookShelfId)
             ->where('user_id', $userId)

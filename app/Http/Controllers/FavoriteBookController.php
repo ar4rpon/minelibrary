@@ -6,18 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Requests\FavoriteBookToggleRequest;
 use App\Http\Requests\FavoriteBookStatusRequest;
 use App\Models\FavoriteBook;
+use App\Models\Book;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use App\Http\Controllers\BookController;
 
 class FavoriteBookController extends Controller
 {
-    protected $bookController;
-
-    public function __construct(BookController $bookController)
-    {
-        $this->bookController = $bookController;
-    }
 
     public function index(Request $request)
     {
@@ -93,9 +87,25 @@ class FavoriteBookController extends Controller
 
     public function toggleFavorite(FavoriteBookToggleRequest $request)
     {
-        $book = $this->bookController->getOrStore($request);
-        $user = Auth::user();
+        $bookData = $request->only([
+            'isbn',
+            'title',
+            'author',
+            'publisher_name',
+            'sales_date',
+            'image_url',
+            'item_caption',
+            'item_price',
+        ]);
 
+        $existingBook = (new Book())->getBookInfo($request->isbn);
+        if (!$existingBook) {
+            $book = (new Book())->addBook($bookData);
+        } else {
+            $book = $existingBook;
+        }
+
+        $user = Auth::user();
         $isFavorite = FavoriteBook::isFavorite($book->isbn, $user->id);
 
         if ($isFavorite) {
