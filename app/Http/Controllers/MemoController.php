@@ -34,13 +34,18 @@ class MemoController extends Controller
 
         if ($sortBy === 'date') {
             $query->orderBy('created_at', 'desc');
-        } elseif ($sortBy === 'title') {
-            $query->join('books', 'memos.isbn', '=', 'books.isbn')
-                ->orderBy('books.title')
-                ->select('memos.*'); // joinの後に元のカラムを明示的に選択
         }
 
-        $memos = $query->get()->groupBy('isbn')->map(function ($group) {
+        $memos = $query->get()->groupBy('isbn');
+        
+        // タイトルでソートする場合
+        if ($sortBy === 'title') {
+            $memos = $memos->sortBy(function ($group) {
+                return $group->first()->book->title;
+            });
+        }
+        
+        $memos = $memos->map(function ($group) {
             $firstMemo = $group->first();
             $book = $firstMemo->book;
             
@@ -124,11 +129,17 @@ class MemoController extends Controller
 
     public function getBookMemos($isbn)
     {
-        // N+1問題解決: user情報を必要な部分のみ取得
+        // N+1問題解決: eager loadingでuser情報を取得
         $baseQuery = Memo::where('isbn', $isbn)
-            ->join('users', 'memos.user_id', '=', 'users.id')
-            ->where('users.is_memo_publish', true) // 公開設定のユーザーのみ
-            ->select('memos.*', 'users.name as user_name')
+            ->with([
+                'user' => function($query) {
+                    $query->select('id', 'name', 'is_memo_publish')
+                          ->where('is_memo_publish', true);
+                }
+            ])
+            ->whereHas('user', function($query) {
+                $query->where('is_memo_publish', true);
+            })
             ->orderBy('created_at', 'desc');
 
         if (Auth::user()) {
@@ -144,7 +155,7 @@ class MemoController extends Controller
                         'memo' => $memo->memo,
                         'memo_chapter' => $memo->memo_chapter,
                         'memo_page' => $memo->memo_page,
-                        'user_name' => $memo->user_name,
+                        'user_name' => $memo->user->name,
                         'is_current_user' => $memo->user_id === $user->id,
                         'created_at' => $memo->created_at->format('Y-m-d'),
                     ];
@@ -158,7 +169,7 @@ class MemoController extends Controller
                         'memo' => $memo->memo,
                         'memo_chapter' => $memo->memo_chapter,
                         'memo_page' => $memo->memo_page,
-                        'user_name' => $memo->user_name,
+                        'user_name' => $memo->user->name,
                         'is_current_user' => false,
                         'created_at' => $memo->created_at->format('Y-m-d'),
                     ];

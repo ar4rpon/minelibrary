@@ -68,7 +68,7 @@ class ShareLinkController extends Controller
         $bookShelf = $shareLink->bookShelf;
         $userName = $bookShelf->user->name;
 
-        $books = BookShelf::getBooks($bookShelf->id)->map(function ($book) {
+        $books = $bookShelf->books->map(function ($book) {
             return [
                 'isbn' => $book->isbn,
                 'read_status' => null,

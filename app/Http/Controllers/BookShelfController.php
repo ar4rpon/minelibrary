@@ -91,7 +91,7 @@ class BookShelfController extends Controller
 
         $userName = $bookShelf->user->name;
 
-        $books = BookShelf::getBooks($book_shelf_id);
+        $books = $bookShelf->books;
         
         // お気に入り状態を事前に取得
         $favoriteIsbns = FavoriteBook::where('user_id', $user->id)
@@ -179,7 +179,8 @@ class BookShelfController extends Controller
     {
 
         $user = Auth::user();
-        $books = BookShelf::getBooks($request->book_shelf_id);
+        $bookShelf = BookShelf::findOrFail($request->book_shelf_id);
+        $books = $bookShelf->books;
         
         // お気に入り状態を事前に取得
         $favoriteIsbns = FavoriteBook::where('user_id', $user->id)
@@ -288,7 +289,7 @@ class BookShelfController extends Controller
             ->where('is_public', true)
             ->firstOrFail();
 
-        $books = BookShelf::getBooks($bookShelf->id)->map(function ($book) {
+        $books = $bookShelf->books->map(function ($book) {
             return [
                 'isbn' => $book->isbn,
                 'book' => [
@@ -306,7 +307,9 @@ class BookShelfController extends Controller
         // 現在のユーザーがこの本棚をお気に入りに登録しているか確認
         $isFavorited = false;
         if (Auth::check()) {
-            $isFavorited = $bookShelf->isFavoritedBy(Auth::id());
+            $isFavorited = FavoriteBookShelf::where('book_shelf_id', $bookShelf->id)
+                ->where('user_id', Auth::id())
+                ->exists();
         }
 
         return Inertia::render('features/bookshelf/pages/UserBookShelfDetail', [
