@@ -20,13 +20,20 @@ class FavoriteBookShelfController extends Controller
     {
         $user = Auth::user();
 
-        // ユーザーがお気に入りに登録している本棚を取得
+        // N+1問題解決: 必要な関連データを一括取得とwithCountを使用
         $favoriteBookShelves = FavoriteBookShelf::where('user_id', $user->id)
-            ->with('bookshelf')
+            ->with([
+                'bookshelf' => function($query) {
+                    $query->select('id', 'user_id', 'book_shelf_name', 'description', 'is_public', 'created_at')
+                          ->withCount('books');
+                },
+                'bookshelf.user' => function($query) {
+                    $query->select('id', 'name');
+                }
+            ])
             ->get()
             ->map(function ($favorite) {
                 $bookShelf = $favorite->bookshelf;
-                $bookCount = $bookShelf->books()->count();
 
                 return [
                     'id' => $bookShelf->id,
@@ -34,7 +41,7 @@ class FavoriteBookShelfController extends Controller
                     'description' => $bookShelf->description,
                     'is_public' => $bookShelf->is_public,
                     'created_at' => $bookShelf->created_at->format('Y-m-d'),
-                    'book_count' => $bookCount,
+                    'book_count' => $bookShelf->books_count, // withCountで取得済み
                     'owner' => [
                         'id' => $bookShelf->user->id,
                         'name' => $bookShelf->user->name,

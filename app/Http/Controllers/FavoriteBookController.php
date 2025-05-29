@@ -21,33 +21,8 @@ class FavoriteBookController extends Controller
 
     public function index(Request $request)
     {
-        $user = Auth::user();
         $sortBy = $request->input('sortBy', 'newDate');
-
-        $query = FavoriteBook::where('user_id', $user->id)->with('book');
-
-        if ($sortBy === 'newDate') {
-            $query->orderBy('created_at', 'desc');
-        } elseif ($sortBy === 'oldDate') {
-            $query->orderBy('created_at', 'asc');
-        }
-
-        $favorites = $query->get()->map(function ($favorite) {
-            return [
-                'isbn' => $favorite->isbn,
-                'read_status' => $favorite->read_status,
-                'created_at' => $favorite->created_at,
-                'book' => [
-                    'title' => $favorite->book->title,
-                    'author' => $favorite->book->author,
-                    'publisher_name' => $favorite->book->publisher_name,
-                    'sales_date' => $favorite->book->sales_date,
-                    'image_url' => $favorite->book->image_url,
-                    'item_caption' => $favorite->book->item_caption,
-                    'item_price' => $favorite->book->item_price,
-                ],
-            ];
-        });
+        $favorites = $this->getFavoritesData($sortBy);
 
         return Inertia::render('features/book/pages/FavoriteBookList', [
             'favorites' => $favorites,
@@ -57,11 +32,35 @@ class FavoriteBookController extends Controller
 
     public function getFavorites()
     {
+        $favorites = $this->getFavoritesData();
+        return response()->json($favorites);
+    }
+
+    /**
+     * お気に入り本のデータを取得する共通メソッド（重複ロジック統一）
+     *
+     * @param string|null $sortBy
+     * @return \Illuminate\Support\Collection
+     */
+    private function getFavoritesData(?string $sortBy = null)
+    {
         $user = Auth::user();
 
-        $query = FavoriteBook::where('user_id', $user->id)->with('book');
+        // N+1問題解決: 必要な本の情報のみを効率的に取得
+        $query = FavoriteBook::where('user_id', $user->id)
+            ->with([
+                'book' => function($query) {
+                    $query->select('isbn', 'title', 'author', 'publisher_name', 'sales_date', 'image_url', 'item_caption', 'item_price');
+                }
+            ]);
 
-        $favorites = $query->get()->map(function ($favorite) {
+        if ($sortBy === 'newDate') {
+            $query->orderBy('created_at', 'desc');
+        } elseif ($sortBy === 'oldDate') {
+            $query->orderBy('created_at', 'asc');
+        }
+
+        return $query->get()->map(function ($favorite) {
             return [
                 'isbn' => $favorite->isbn,
                 'read_status' => $favorite->read_status,
@@ -77,8 +76,6 @@ class FavoriteBookController extends Controller
                 ],
             ];
         });
-
-        return response()->json($favorites);
     }
 
     public function updateReadStatus(FavoriteBookStatusRequest $request)
