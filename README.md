@@ -63,3 +63,33 @@ text
         },
     },
 →記載しないとインポートエラーになる
+
+## テストの実行
+
+### PHPテスト（Pest）
+プロジェクトではPestフレームワークを使用してテストを作成しています。
+
+```bash
+# 全てのテストを実行
+php artisan test
+
+# 特定のテストファイルを実行
+php artisan test tests/Feature/BookShelfControllerTest.php
+
+# カバレッジレポート付きで実行
+php artisan test --coverage
+
+# 並列実行（高速化）
+php artisan test --parallel
+```
+
+### テストデータベース
+テスト実行時は自動的にインメモリSQLiteデータベースを使用します。
+本番データベースには影響しません。
+
+### テストの書き方
+新しいテストを作成する場合は、`TESTING.md`を参照してください。
+
+詳細なテストガイドラインは以下を参照：
+- [TESTING.md](./TESTING.md) - テスト戦略とガイドライン
+- [CLAUDE.md](./CLAUDE.md) - プロジェクトルールとコーディング規約
