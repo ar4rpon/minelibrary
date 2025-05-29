@@ -13,10 +13,10 @@ class BookSearchController extends Controller
     {
         $validated = $request->validate([
             'keyword' => 'nullable|string',
-            'page' => 'integer|min:1',
-            'genre' => 'string',
-            'sort' => 'string',
-            'searchMethod' => 'in:title,isbn',
+            'page' => 'nullable|integer|min:1',
+            'genre' => 'nullable|string',
+            'sort' => 'nullable|string',
+            'searchMethod' => 'nullable|in:title,isbn',
         ]);
 
         $results = [];
@@ -25,11 +25,11 @@ class BookSearchController extends Controller
         if ($request->filled('keyword')) {
             $response = Http::get('https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404', [
                 'applicationId' => config('rakuten.app_id'),
-                'title' => $validated['searchMethod'] === 'title' ? $validated['keyword'] : null,
+                'title' => isset($validated['searchMethod']) && $validated['searchMethod'] === 'title' ? $validated['keyword'] : null,
                 'page' => $validated['page'] ?? 1,
-                'booksGenreId' => $validated['genre'] !== 'all' ? $validated['genre'] : null,
+                'booksGenreId' => isset($validated['genre']) && $validated['genre'] !== 'all' ? $validated['genre'] : null,
                 'sort' => $validated['sort'] ?? 'standard',
-                'isbn' => $validated['searchMethod'] === 'isbn' ? $validated['keyword'] : null,
+                'isbn' => isset($validated['searchMethod']) && $validated['searchMethod'] === 'isbn' ? $validated['keyword'] : null,
                 'hits' => 9,
             ]);
 
