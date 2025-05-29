@@ -148,14 +148,15 @@ test('お気に入り追加時にバリデーションが機能する', function
 test('読書状態更新時にバリデーションが機能する', function () {
     $book = Book::factory()->create();
 
-    // ISBNがない場合、何も更新されない
+    // ISBNがない場合、バリデーションエラー
     $this->actingAs($this->user)
         ->postJson('/books/update-status', [
             'readStatus' => 'reading',
         ])
-        ->assertStatus(200);
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['isbn']);
 
-    // readStatusがない場合、何も更新されない
+    // ISBNのみでも成功（readStatusは任意項目）
     $this->actingAs($this->user)
         ->postJson('/books/update-status', [
             'isbn' => $book->isbn,

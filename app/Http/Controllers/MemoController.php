@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\BookController;
+use App\Http\Requests\MemoStoreRequest;
+use App\Http\Requests\MemoUpdateRequest;
 use App\Models\Memo;
 use Illuminate\Support\Facades\Auth;
-// use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class MemoController extends Controller
@@ -61,21 +61,8 @@ class MemoController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(MemoStoreRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'isbn' => 'required|string',
-            'memo' => 'required|string',
-            'memo_chapter' => 'nullable|integer',
-            'memo_page' => 'nullable|integer',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-
-        // メモの作成
         $user = Auth::user();
         $memo = Memo::createMemo(
             $request->isbn,
@@ -88,20 +75,10 @@ class MemoController extends Controller
         return response()->json(['memo' => $memo], 201);
     }
 
-    public function update(Request $request, $memo_id)
+    public function update(MemoUpdateRequest $request, $memo_id)
     {
         $user = Auth::user();
         $memo = Memo::where('id', $memo_id)->where('user_id', $user->id)->first();
-
-        $validator = Validator::make($request->all(), [
-            'memo' => 'required|string',
-            'memo_chapter' => 'nullable|integer',
-            'memo_page' => 'nullable|integer',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
 
         if (!$memo) {
             return response()->json(['error' => 'Memo not found'], 403);

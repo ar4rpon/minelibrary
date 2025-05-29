@@ -9,8 +9,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-
 use Illuminate\Http\Request;
+use App\Http\Requests\BookShelfStoreRequest;
+use App\Http\Requests\BookShelfUpdateRequest;
+use App\Http\Requests\BookShelfBookRequest;
+use App\Http\Requests\BookShelfGetBooksRequest;
+use App\Http\Requests\BookShelfRemoveBookRequest;
 
 class BookShelfController extends Controller
 {
@@ -112,14 +116,10 @@ class BookShelfController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(BookShelfStoreRequest $request)
     {
         $user = Auth::user();
 
-        $request->validate([
-            'book_shelf_name' => 'required|string',
-            'description' => 'required|string',
-        ]);
         $bookShelf = (new BookShelf())->add(
             [
                 'user_id' => $user->id,
@@ -131,14 +131,8 @@ class BookShelfController extends Controller
         return $bookShelf;
     }
 
-    public function update(Request $request, $id)
+    public function update(BookShelfUpdateRequest $request, $id)
     {
-        $request->validate([
-            'book_shelf_name' => 'required|string',
-            'description' => 'required|string',
-            'is_public' => 'required|boolean',
-        ]);
-        
         $user = Auth::user();
         $bookShelf = BookShelf::where('id', $id)
             ->where('user_id', $user->id)
@@ -165,14 +159,8 @@ class BookShelfController extends Controller
         return response()->json($bookshelves);
     }
 
-    public function addBooks(Request $request)
+    public function addBooks(BookShelfBookRequest $request)
     {
-        $request->validate([
-            'book_shelf_id' => 'required|exists:book_shelves,id',
-            'isbns' => 'required|array',
-            'isbns.*' => 'required|string|exists:books,isbn'
-        ]);
-
         $bookShelf = BookShelf::findOrFail($request->book_shelf_id);
 
         foreach ($request->isbns as $isbn) {
@@ -182,12 +170,8 @@ class BookShelfController extends Controller
         return response()->json(['message' => 'Books added successfully'], 200);
     }
 
-    public function getBooks(Request $request)
+    public function getBooks(BookShelfGetBooksRequest $request)
     {
-
-        $request->validate([
-            'book_shelf_id' => 'required|exists:book_shelves,id',
-        ]);
 
         $user = Auth::user();
         $books = BookShelf::getBooks($request->book_shelf_id);
@@ -228,13 +212,8 @@ class BookShelfController extends Controller
         return response()->json(['message' => 'Book shelf deleted successfully'], 200);
     }
 
-    public function removeBook(Request $request)
+    public function removeBook(BookShelfRemoveBookRequest $request)
     {
-        $request->validate([
-            'book_shelf_id' => 'required|exists:book_shelves,id',
-            'isbn' => 'required|string|exists:books,isbn',
-        ]);
-
         $user = Auth::user();
         $bookShelf = BookShelf::where('id', $request->book_shelf_id)
             ->where('user_id', $user->id)

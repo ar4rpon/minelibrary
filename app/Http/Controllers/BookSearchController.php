@@ -4,20 +4,13 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Http;
-// use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
+use App\Http\Requests\BookSearchRequest;
 
 class BookSearchController extends Controller
 {
-    public function index(Request $request)
+    public function index(BookSearchRequest $request)
     {
-        $validated = $request->validate([
-            'keyword' => 'nullable|string',
-            'page' => 'nullable|integer|min:1',
-            'genre' => 'nullable|string',
-            'sort' => 'nullable|string',
-            'searchMethod' => 'nullable|in:title,isbn',
-        ]);
+        $validated = $request->validated();
 
         $results = [];
         $totalItems = 0;
