@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BookShelf;
-use App\Models\ShareLink;
-use App\Models\FavoriteBook;
+use App\Services\ShareLinkService;
 use Illuminate\Http\Request;
 use App\Http\Requests\ShareLinkRequest;
 use App\Http\Traits\HandlesUserAuth;
@@ -14,6 +12,13 @@ use Inertia\Inertia;
 class ShareLinkController extends Controller
 {
     use HandlesUserAuth, HandlesApiResponses;
+
+    private ShareLinkService $shareLinkService;
+
+    public function __construct(ShareLinkService $shareLinkService)
+    {
+        $this->shareLinkService = $shareLinkService;
+    }
     /**
      * 本棚の共有リンクを生成する
      *
@@ -24,17 +29,9 @@ class ShareLinkController extends Controller
     {
         try {
             $user = $this->getAuthUser();
-            $bookShelf = BookShelf::where('id', $request->book_shelf_id)
-                ->where('user_id', $user->id)
-                ->firstOrFail();
+            $result = $this->shareLinkService->generateShareLink($request->book_shelf_id, $user->id);
 
-            $shareLink = new ShareLink();
-            $url = $shareLink->generateShareLink($request->book_shelf_id);
-
-            return $this->successResponse([
-                'share_url' => $url,
-                'expiry_date' => $shareLink->expiry_date->toIso8601String(),
-            ]);
+            return $this->successResponse($result);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);
         }
@@ -48,48 +45,8 @@ class ShareLinkController extends Controller
      */
     public function showSharedBookShelf($token)
     {
-        // N+1問題解決: ShareLinkと関連するbookShelfとuserを一括取得
-        $shareLink = ShareLink::where('share_token', $token)
-            ->with([
-                'bookShelf' => function($query) {
-                    $query->select('id', 'user_id', 'book_shelf_name', 'description', 'is_public');
-                },
-                'bookShelf.user' => function($query) {
-                    $query->select('id', 'name');
-                }
-            ])
-            ->firstOrFail();
+        $data = $this->shareLinkService->getSharedBookShelf($token);
 
-        if (!$shareLink->isValid()) {
-            abort(403, '共有リンクの有効期限が切れています');
-        }
-
-        $bookShelf = $shareLink->bookShelf;
-        $userName = $bookShelf->user->name;
-
-        $books = $bookShelf->books->map(function ($book) {
-            return [
-                'isbn' => $book->isbn,
-                'read_status' => null,
-                'book' => [
-                    'title' => $book->title,
-                    'author' => $book->author,
-                    'publisher_name' => $book->publisher_name,
-                    'sales_date' => $book->sales_date,
-                    'image_url' => $book->image_url,
-                    'item_caption' => $book->item_caption,
-                    'item_price' => $book->item_price,
-                ],
-            ];
-        });
-
-        $bookShelf->user_name = $userName;
-
-        return Inertia::render('features/bookshelf/pages/SharedBookShelfDetail', [
-            'bookShelf' => $bookShelf,
-            'books' => $books,
-            'isShared' => true,
-            'expiryDate' => $shareLink->expiry_date->toIso8601String(),
-        ]);
+        return Inertia::render('features/bookshelf/pages/SharedBookShelfDetail', $data);
     }
 }

@@ -3,54 +3,25 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Http;
+use App\Services\BookSearchService;
 use App\Http\Requests\BookSearchRequest;
 
 class BookSearchController extends Controller
 {
+    private BookSearchService $bookSearchService;
+
+    public function __construct(BookSearchService $bookSearchService)
+    {
+        $this->bookSearchService = $bookSearchService;
+    }
     public function index(BookSearchRequest $request)
     {
         $validated = $request->validated();
-
-        $results = [];
-        $totalItems = 0;
-
-        if ($request->filled('keyword')) {
-            $response = Http::get('https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404', [
-                'applicationId' => config('rakuten.app_id'),
-                'title' => isset($validated['searchMethod']) && $validated['searchMethod'] === 'title' ? $validated['keyword'] : null,
-                'page' => $validated['page'] ?? 1,
-                'booksGenreId' => isset($validated['genre']) && $validated['genre'] !== 'all' ? $validated['genre'] : null,
-                'sort' => $validated['sort'] ?? 'standard',
-                'isbn' => isset($validated['searchMethod']) && $validated['searchMethod'] === 'isbn' ? $validated['keyword'] : null,
-                'hits' => 9,
-            ]);
-
-            $data = $response->json();
-            $results = $data['Items'] ?? [];
-            $totalItems = $data['count'] ?? 0;
-        }
-        $results = array_map(function ($item) {
-            if (isset($item['Item']['largeImageUrl'])) {
-                $item['Item']['largeImageUrl'] = str_replace(
-                    'ex=200x200',
-                    'ex=300x300',
-                    $item['Item']['largeImageUrl']
-                );
-            }
-            // 変数名を統一するためにキーを追加
-            $item['Item']['publisher_name'] = $item['Item']['publisherName'];
-            $item['Item']['item_caption'] = $item['Item']['itemCaption'];
-            $item['Item']['sales_date'] = $item['Item']['salesDate'];
-            $item['Item']['item_price'] = $item['Item']['itemPrice'];
-            $item['Item']['image_url'] = $item['Item']['largeImageUrl'];
-
-            return $item;
-        }, $results);
+        $searchResult = $this->bookSearchService->searchBooks($validated);
 
         return Inertia::render('features/book/pages/SearchBook', [
-            'results' => $results,
-            'totalItems' => $totalItems,
+            'results' => $searchResult['results'],
+            'totalItems' => $searchResult['totalItems'],
             'filters' => $validated,
         ]);
     }
