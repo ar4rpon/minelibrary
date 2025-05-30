@@ -5,16 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Services\ProfileService;
 use App\Models\User;
+use App\Http\Traits\HandlesUserAuth;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    use HandlesUserAuth;
+    
     private ProfileService $profileService;
 
     public function __construct(ProfileService $profileService)
@@ -27,8 +29,8 @@ class ProfileController extends Controller
      */
     public function show(Request $request): Response
     {
-        $user = $request->user();
-        $currentUserId = Auth::id();
+        $user = $this->getAuthUser();
+        $currentUserId = $this->getAuthUserId();
         $data = $this->profileService->getProfileData($user, $currentUserId);
 
         // 自分のプロフィールの場合は、非公開の本棚も表示
@@ -47,7 +49,7 @@ class ProfileController extends Controller
     public function showUser($userId): Response
     {
         $user = User::findOrFail($userId);
-        $currentUserId = Auth::id();
+        $currentUserId = $this->getAuthUserId();
         $data = $this->profileService->getProfileData($user, $currentUserId);
         $data['isOwnProfile'] = $currentUserId === $user->id;
 
@@ -60,7 +62,7 @@ class ProfileController extends Controller
     public function edit(Request $request): Response
     {
         return Inertia::render('features/profile/pages/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $this->getAuthUser() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);
     }
@@ -70,7 +72,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $this->profileService->updateProfile($request->user(), $request->validated());
+        $this->profileService->updateProfile($this->getAuthUser(), $request->validated());
 
         return Redirect::route('profile.edit');
     }
@@ -84,7 +86,7 @@ class ProfileController extends Controller
             'password' => ['required', 'current_password'],
         ]);
 
-        $user = $request->user();
+        $user = $this->getAuthUser();
         
         $this->profileService->deleteAccount($user);
 
