@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
 use App\Http\Requests\BookStoreRequest;
+use App\Services\BookService;
 
 class BookController extends Controller
 {
+    private BookService $bookService;
+
+    public function __construct(BookService $bookService)
+    {
+        $this->bookService = $bookService;
+    }
+
     public function getOrStore(BookStoreRequest $request)
     {
         $bookData = $request->only([
@@ -20,13 +27,7 @@ class BookController extends Controller
             'item_price',
         ]);
 
-        $existingBook = (new Book())->getBookInfo($request->isbn);
-
-        if ($existingBook) {
-            return $this->successResponse($existingBook);
-        }
-
-        $book = (new Book())->addBook($bookData);
+        $book = $this->bookService->getOrCreateBook($bookData);
         return $this->successResponse($book);
     }
 }

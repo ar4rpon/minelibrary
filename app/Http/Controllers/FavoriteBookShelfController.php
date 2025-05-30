@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BookShelf;
-use App\Models\FavoriteBookShelf;
+use App\Services\FavoriteBookShelfService;
 use Illuminate\Http\Request;
 use App\Http\Traits\HandlesUserAuth;
 use App\Http\Traits\HandlesApiResponses;
@@ -13,6 +12,13 @@ use Inertia\Response;
 class FavoriteBookShelfController extends Controller
 {
     use HandlesUserAuth, HandlesApiResponses;
+
+    private FavoriteBookShelfService $favoriteBookShelfService;
+
+    public function __construct(FavoriteBookShelfService $favoriteBookShelfService)
+    {
+        $this->favoriteBookShelfService = $favoriteBookShelfService;
+    }
     /**
      * お気に入り本棚一覧を表示
      *
@@ -21,35 +27,7 @@ class FavoriteBookShelfController extends Controller
     public function index(): Response
     {
         $user = $this->getAuthUser();
-
-        // N+1問題解決: 必要な関連データを一括取得とwithCountを使用
-        $favoriteBookShelves = FavoriteBookShelf::where('user_id', $user->id)
-            ->with([
-                'bookshelf' => function($query) {
-                    $query->select('id', 'user_id', 'book_shelf_name', 'description', 'is_public', 'created_at')
-                          ->withCount('books');
-                },
-                'bookshelf.user' => function($query) {
-                    $query->select('id', 'name');
-                }
-            ])
-            ->get()
-            ->map(function ($favorite) {
-                $bookShelf = $favorite->bookshelf;
-
-                return [
-                    'id' => $bookShelf->id,
-                    'name' => $bookShelf->book_shelf_name,
-                    'description' => $bookShelf->description,
-                    'is_public' => $bookShelf->is_public,
-                    'created_at' => $bookShelf->created_at->format('Y-m-d'),
-                    'book_count' => $bookShelf->books_count, // withCountで取得済み
-                    'owner' => [
-                        'id' => $bookShelf->user->id,
-                        'name' => $bookShelf->user->name,
-                    ],
-                ];
-            });
+        $favoriteBookShelves = $this->favoriteBookShelfService->getFavoriteBookShelves($user->id);
 
         return Inertia::render('features/bookshelf/pages/FavoriteList', [
             'favoriteBookShelves' => $favoriteBookShelves,
@@ -69,39 +47,14 @@ class FavoriteBookShelfController extends Controller
         ]);
 
         $bookShelfId = $request->input('book_shelf_id');
-        $user = $this->getAuthUser();
         $userId = $this->getAuthUserId();
 
-        // 本棚が公開されているか確認
-        $bookShelf = BookShelf::findOrFail($bookShelfId);
-        if (!$bookShelf->is_public && $bookShelf->user_id !== $userId) {
-            return $this->errorResponse('この本棚はお気に入りに追加できません。', 403);
+        try {
+            $result = $this->favoriteBookShelfService->toggleFavorite($bookShelfId, $userId);
+            return $this->successResponse($result);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 403);
         }
-
-        // 既にお気に入りに追加されているか確認
-        $favorite = FavoriteBookShelf::where('book_shelf_id', $bookShelfId)
-            ->where('user_id', $userId)
-            ->first();
-
-        if ($favorite) {
-            // お気に入りから削除
-            $favorite->delete();
-            $isFavorited = false;
-            $message = 'お気に入りから削除しました。';
-        } else {
-            // お気に入りに追加
-            FavoriteBookShelf::create([
-                'book_shelf_id' => $bookShelfId,
-                'user_id' => $userId,
-            ]);
-            $isFavorited = true;
-            $message = 'お気に入りに追加しました。';
-        }
-
-        return $this->successResponse([
-            'is_favorited' => $isFavorited,
-            'message' => $message,
-        ]);
     }
 
     /**
@@ -117,12 +70,9 @@ class FavoriteBookShelfController extends Controller
         ]);
 
         $bookShelfId = $request->input('book_shelf_id');
-        $user = $this->getAuthUser();
         $userId = $this->getAuthUserId();
 
-        $isFavorited = FavoriteBookShelf::where('book_shelf_id', $bookShelfId)
-            ->where('user_id', $userId)
-            ->exists();
+        $isFavorited = $this->favoriteBookShelfService->getFavoriteStatus($bookShelfId, $userId);
 
         return $this->successResponse([
             'is_favorited' => $isFavorited,
