@@ -1,4 +1,4 @@
-import { BaseDialog } from '@/components/common/dialog/BaseDialog';
+import { BaseDialog } from '@/components/ui/base-dialog';
 import { Button } from '@/components/ui/button';
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';

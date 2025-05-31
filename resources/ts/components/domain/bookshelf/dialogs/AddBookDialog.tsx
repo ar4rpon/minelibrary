@@ -1,5 +1,5 @@
 import { BookShelfService } from '@/api/services';
-import { BaseDialog } from '@/components/common/dialog/BaseDialog';
+import { BaseDialog } from '@/components/ui/base-dialog';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {

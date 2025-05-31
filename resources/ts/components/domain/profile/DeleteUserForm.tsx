@@ -1,5 +1,5 @@
-import { BaseDialog } from '@/components/common/dialog/BaseDialog';
 import InputError from '@/components/common/InputError';
+import { BaseDialog } from '@/components/ui/base-dialog';
 import { Button } from '@/components/ui/button';
 import {
   DialogDescription,

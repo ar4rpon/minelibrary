@@ -1,5 +1,5 @@
-import { BaseDialog } from '@/components/common/dialog/BaseDialog';
 import { AmazonButton, RakutenButton } from '@/components/domain/book';
+import { BaseDialog } from '@/components/ui/base-dialog';
 import {
   DialogDescription,
   DialogHeader,
