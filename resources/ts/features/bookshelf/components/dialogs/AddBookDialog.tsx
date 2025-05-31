@@ -1,3 +1,4 @@
+import { BookShelfService } from '@/api/services';
 import { BaseDialog } from '@/components/common/dialog/BaseDialog';
 import { Button } from '@/components/common/ui/button';
 import { Checkbox } from '@/components/common/ui/checkbox';
@@ -14,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/common/ui/table';
-import { getFavoriteBooks } from '@/Services/bookShelfService';
 import { DialogProps, ReadStatus } from '@/types';
 import { useEffect, useState } from 'react';
 
@@ -33,7 +33,7 @@ const statusConfig = {
   reading: {
     text: '読んでる',
   },
-  done_read: {
+  finished: {
     text: '読んだ',
   },
 };
@@ -97,8 +97,13 @@ export function AddBookDialog({
   }, [isOpen]);
 
   const fetchFavoriteBooks = async () => {
-    const books = await getFavoriteBooks();
-    setFavoriteBooks(books);
+    const books = await BookShelfService.getFavoriteBooks();
+    // FavoriteBookをBook型に変換
+    const convertedBooks: Book[] = books.map((book) => ({
+      ...book,
+      read_status: book.read_status as ReadStatus,
+    }));
+    setFavoriteBooks(convertedBooks);
   };
 
   const handleSelect = (isbn: string, isChecked: boolean) => {

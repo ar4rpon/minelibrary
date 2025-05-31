@@ -102,8 +102,9 @@ export function BookDetailDialog({
           <div className="space-y-4">
             <h3 className="text-lg font-bold">ユーザーのメモ・感想</h3>
             <div className="hidden-scrollbar max-h-[300px] overflow-y-auto">
-              {memos.length == 0 ? (<p className="font-bold">まだメモがありません。</p>)
-                :
+              {memos.length == 0 ? (
+                <p className="font-bold">まだメモがありません。</p>
+              ) : (
                 <>
                   {memos.map((memo) => (
                     <div
@@ -125,7 +126,7 @@ export function BookDetailDialog({
                     </div>
                   ))}
                 </>
-              }
+              )}
             </div>
           </div>
         </div>

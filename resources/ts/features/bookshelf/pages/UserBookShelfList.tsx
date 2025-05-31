@@ -60,8 +60,12 @@ export default function UserBookShelfList({ user, bookshelves = [] }: Props) {
           <User className="h-6 w-6" />
         </div>
         <div className="ml-4">
-          <h2 className="text-xl font-semibold text-green-700">{user.name}さんの本棚</h2>
-          <p className="text-sm text-gray-600">公開されている本棚のみ表示しています</p>
+          <h2 className="text-xl font-semibold text-green-700">
+            {user.name}さんの本棚
+          </h2>
+          <p className="text-sm text-gray-600">
+            公開されている本棚のみ表示しています
+          </p>
         </div>
       </div>
 

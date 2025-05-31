@@ -54,15 +54,18 @@ export default function MemoList() {
       </div>
 
       <div className="grid grid-cols-1 gap-x-8 gap-y-4">
-        {memos ? <>{memos.map((memo) => (
-          <MemoCard
-            key={memo.id}
-            id={memo.id}
-            contents={memo.contents}
-            book={memo.book}
-          />
-        ))}
-        </> : (
+        {memos ? (
+          <>
+            {memos.map((memo) => (
+              <MemoCard
+                key={memo.id}
+                id={memo.id}
+                contents={memo.contents}
+                book={memo.book}
+              />
+            ))}
+          </>
+        ) : (
           <p className="font-bold">まだメモはありません</p>
         )}
       </div>

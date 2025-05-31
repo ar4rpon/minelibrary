@@ -1,7 +1,6 @@
 import DefaultLayout from '@/components/common/layout';
 import { Button } from '@/components/common/ui/button';
 import { Card, CardContent } from '@/components/common/ui/card';
-import { ReadStatusBadge } from '@/components/book/ReadStatusBadge';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import { BookOpen, Heart, User } from 'lucide-react';
@@ -47,7 +46,11 @@ interface Props {
  * 他ユーザーの本棚詳細ページ
  * 特定ユーザーの特定の公開本棚の詳細を表示する
  */
-export default function UserBookShelfDetail({ user, bookShelf, books = [] }: Props) {
+export default function UserBookShelfDetail({
+  user,
+  bookShelf,
+  books = [],
+}: Props) {
   // 状態管理
   const [isFavorited, setIsFavorited] = useState(bookShelf.isFavorited);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -60,7 +63,7 @@ export default function UserBookShelfDetail({ user, bookShelf, books = [] }: Pro
 
     try {
       const response = await axios.post(route('book-shelf-favorite.toggle'), {
-        book_shelf_id: bookShelf.id
+        book_shelf_id: bookShelf.id,
       });
 
       setIsFavorited(response.data.is_favorited);
@@ -83,7 +86,9 @@ export default function UserBookShelfDetail({ user, bookShelf, books = [] }: Pro
               <User className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-2xl font-semibold text-green-700">{bookShelf.name}</h2>
+              <h2 className="text-2xl font-semibold text-green-700">
+                {bookShelf.name}
+              </h2>
               <p className="text-sm text-gray-600">{user.name}さんの本棚</p>
             </div>
           </div>
@@ -92,8 +97,11 @@ export default function UserBookShelfDetail({ user, bookShelf, books = [] }: Pro
             size="sm"
             onClick={toggleFavorite}
             disabled={isProcessing}
-            className={`flex items-center ${isFavorited ? 'border-red-200 bg-red-50 text-red-500 hover:bg-red-100' : ''
-              }`}
+            className={`flex items-center ${
+              isFavorited
+                ? 'border-red-200 bg-red-50 text-red-500 hover:bg-red-100'
+                : ''
+            }`}
           >
             <Heart
               className={`mr-1 h-4 w-4 ${isFavorited ? 'fill-current' : ''}`}

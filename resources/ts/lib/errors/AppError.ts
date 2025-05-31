@@ -5,11 +5,11 @@ export class AppError extends Error {
   constructor(
     message: string,
     public statusCode?: number,
-    public originalError?: unknown
+    public originalError?: unknown,
   ) {
     super(message);
     this.name = 'AppError';
-    
+
     // スタックトレースの調整
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, AppError);

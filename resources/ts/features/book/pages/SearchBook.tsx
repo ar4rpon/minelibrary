@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/common/ui/select';
-import { BookData } from '@/Services/bookService';
+import type { BookData } from '@/types/api';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
@@ -84,6 +84,7 @@ const SearchPage = () => {
     if (filters.page !== currentPage) {
       searchBooks();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.page, currentPage]);
 
   useEffect(() => {

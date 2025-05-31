@@ -1,11 +1,16 @@
-import DefaultLayout from '@/components/common/layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/ui/card';
 import { ReadStatusBadge } from '@/components/book/ReadStatusBadge';
+import DefaultLayout from '@/components/common/layout';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/common/ui/card';
 import { PageProps, ReadStatus } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
-import { BookOpen, Bookmark, Heart, User } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';
+import { BookOpen, Bookmark, Heart, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface UserProfile {
   id: number;
@@ -75,14 +80,18 @@ export default function Show({
   isOwnProfile,
   auth,
 }: PageProps<ShowProps>) {
-  const pageTitle = isOwnProfile ? "マイプロフィール" : `${user.name}さんのプロフィール`;
-  const [favoriteStates, setFavoriteStates] = useState<Record<number, boolean>>({});
+  const pageTitle = isOwnProfile
+    ? 'マイプロフィール'
+    : `${user.name}さんのプロフィール`;
+  const [favoriteStates, setFavoriteStates] = useState<Record<number, boolean>>(
+    {},
+  );
   const [isProcessing, setIsProcessing] = useState<Record<number, boolean>>({});
 
   // 初期化時にbookShelvesからお気に入り状態を設定
   useEffect(() => {
     const initialStates: Record<number, boolean> = {};
-    bookShelves.forEach(shelf => {
+    bookShelves.forEach((shelf) => {
       initialStates[shelf.id] = shelf.is_favorited || false;
     });
     setFavoriteStates(initialStates);
@@ -92,22 +101,21 @@ export default function Show({
   const toggleFavorite = async (bookShelfId: number) => {
     if (isProcessing[bookShelfId]) return;
 
-    setIsProcessing(prev => ({ ...prev, [bookShelfId]: true }));
+    setIsProcessing((prev) => ({ ...prev, [bookShelfId]: true }));
 
     try {
       const response = await axios.post(route('book-shelf-favorite.toggle'), {
-        book_shelf_id: bookShelfId
+        book_shelf_id: bookShelfId,
       });
 
-      setFavoriteStates(prev => ({
+      setFavoriteStates((prev) => ({
         ...prev,
-        [bookShelfId]: response.data.is_favorited
+        [bookShelfId]: response.data.is_favorited,
       }));
-
     } catch (error) {
       console.error('お気に入り処理に失敗しました', error);
     } finally {
-      setIsProcessing(prev => ({ ...prev, [bookShelfId]: false }));
+      setIsProcessing((prev) => ({ ...prev, [bookShelfId]: false }));
     }
   };
 
@@ -131,7 +139,9 @@ export default function Show({
               )}
             </div>
             <div className="flex-1">
-              <h2 className="mb-2 text-2xl font-semibold text-green-700">{user.name}</h2>
+              <h2 className="mb-2 text-2xl font-semibold text-green-700">
+                {user.name}
+              </h2>
               <p className="mb-4 text-gray-600">{user.email}</p>
               {user.profile_message && (
                 <p className="text-gray-700">{user.profile_message}</p>
@@ -175,8 +185,12 @@ export default function Show({
                         className="h-20 w-16 rounded-sm border object-cover"
                       />
                       <div className="flex-1 space-y-1">
-                        <h3 className="line-clamp-1 font-medium">{memo.book.title}</h3>
-                        <p className="text-xs text-gray-500">{memo.book.author}</p>
+                        <h3 className="line-clamp-1 font-medium">
+                          {memo.book.title}
+                        </h3>
+                        <p className="text-xs text-gray-500">
+                          {memo.book.author}
+                        </p>
                         <p className="line-clamp-2 text-sm">{memo.memo}</p>
                         <div className="flex items-center justify-between">
                           <div className="text-xs text-gray-500">
@@ -184,7 +198,9 @@ export default function Show({
                             {memo.memo_chapter && memo.memo_page && ' | '}
                             {memo.memo_page && `${memo.memo_page}P`}
                           </div>
-                          <div className="text-xs text-gray-500">{memo.created_at}</div>
+                          <div className="text-xs text-gray-500">
+                            {memo.created_at}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -203,7 +219,9 @@ export default function Show({
         {/* お気に入りの本 */}
         <section>
           <div className="mb-4 flex items-center justify-between rounded-sm border border-green-600 bg-white px-4 py-3 shadow-md">
-            <h2 className="text-xl font-semibold text-green-700">お気に入りの本</h2>
+            <h2 className="text-xl font-semibold text-green-700">
+              お気に入りの本
+            </h2>
             {isOwnProfile && (
               <Link
                 href={route('favorite.index')}
@@ -287,25 +305,38 @@ export default function Show({
                         {bookShelf.created_at}
                       </span>
                       <div className="flex items-center space-x-2">
-                        {!isOwnProfile && auth.user && bookShelf.user_id !== auth.user.id && (
-                          <button
-                            onClick={() => toggleFavorite(bookShelf.id)}
-                            disabled={isProcessing[bookShelf.id]}
-                            className={`flex items-center justify-center rounded-full p-1 transition-colors ${favoriteStates[bookShelf.id]
-                              ? 'text-red-500 hover:bg-red-50'
-                              : 'text-gray-400 hover:bg-gray-50 hover:text-red-500'
+                        {!isOwnProfile &&
+                          auth.user &&
+                          bookShelf.user_id !== auth.user.id && (
+                            <button
+                              onClick={() => toggleFavorite(bookShelf.id)}
+                              disabled={isProcessing[bookShelf.id]}
+                              className={`flex items-center justify-center rounded-full p-1 transition-colors ${
+                                favoriteStates[bookShelf.id]
+                                  ? 'text-red-500 hover:bg-red-50'
+                                  : 'text-gray-400 hover:bg-gray-50 hover:text-red-500'
                               }`}
-                            title={favoriteStates[bookShelf.id] ? "お気に入りから削除" : "お気に入りに追加"}
-                          >
-                            <Heart
-                              className={`h-5 w-5 ${favoriteStates[bookShelf.id] ? 'fill-current' : ''}`}
-                            />
-                          </button>
-                        )}
+                              title={
+                                favoriteStates[bookShelf.id]
+                                  ? 'お気に入りから削除'
+                                  : 'お気に入りに追加'
+                              }
+                            >
+                              <Heart
+                                className={`h-5 w-5 ${favoriteStates[bookShelf.id] ? 'fill-current' : ''}`}
+                              />
+                            </button>
+                          )}
                         <Link
-                          href={isOwnProfile
-                            ? route('book-shelf.detail', { book_shelf_id: bookShelf.id })
-                            : route('user.book-shelf', { userId: user.id, bookShelfId: bookShelf.id })
+                          href={
+                            isOwnProfile
+                              ? route('book-shelf.detail', {
+                                  book_shelf_id: bookShelf.id,
+                                })
+                              : route('user.book-shelf', {
+                                  userId: user.id,
+                                  bookShelfId: bookShelf.id,
+                                })
                           }
                           className="text-sm font-medium text-green-600 hover:text-green-700"
                         >

@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, AxiosError } from 'axios';
 import { ApiErrorHandler } from '@/lib/errors/ApiErrorHandler';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 
 /**
  * 統一APIクライアント
@@ -26,16 +26,18 @@ class ApiClient {
     this.instance.interceptors.request.use(
       (config) => {
         // CSRFトークンの設定
-        const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        const token = document
+          .querySelector('meta[name="csrf-token"]')
+          ?.getAttribute('content');
         if (token) {
           config.headers['X-CSRF-TOKEN'] = token;
         }
-        
+
         return config;
       },
       (error) => {
         return Promise.reject(error);
-      }
+      },
     );
 
     // レスポンスインターセプター
@@ -44,7 +46,7 @@ class ApiClient {
       (error: AxiosError) => {
         ApiErrorHandler.handle(error, 'API Request');
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -53,17 +55,17 @@ class ApiClient {
   }
 
   // 便利メソッド
-  async get<T>(url: string, params?: any): Promise<T> {
+  async get<T>(url: string, params?: unknown): Promise<T> {
     const response = await this.instance.get(url, { params });
     return response.data;
   }
 
-  async post<T>(url: string, data?: any): Promise<T> {
+  async post<T>(url: string, data?: unknown): Promise<T> {
     const response = await this.instance.post(url, data);
     return response.data;
   }
 
-  async put<T>(url: string, data?: any): Promise<T> {
+  async put<T>(url: string, data?: unknown): Promise<T> {
     const response = await this.instance.put(url, data);
     return response.data;
   }

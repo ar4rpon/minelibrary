@@ -43,6 +43,7 @@ export default function FavoriteBookList() {
     if (sortBy !== initialSortBy) {
       router.get(route('favorite.index'), { sortBy }, { preserveState: true });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy]);
 
   return (

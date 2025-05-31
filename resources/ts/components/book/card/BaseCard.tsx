@@ -1,5 +1,5 @@
 import { Card } from '@/components/common/ui/card';
-import { BookData } from '@/Services/bookService';
+import type { BookData } from '@/types/api';
 import React from 'react';
 
 interface BaseCardProps extends BookData {

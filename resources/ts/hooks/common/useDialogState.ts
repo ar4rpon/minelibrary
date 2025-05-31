@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 /**
  * ダイアログ制御インターフェース
@@ -26,25 +26,33 @@ export function useDialogState(initialState = false): DialogControls {
  * TypeScript完全対応版
  */
 export function useMultipleDialogs<T extends readonly string[]>(
-  dialogNames: T
+  dialogNames: T,
 ): Record<T[number], DialogControls> {
   const [states, setStates] = useState<Record<string, boolean>>(
-    dialogNames.reduce((acc, name) => ({ ...acc, [name]: false }), {})
+    dialogNames.reduce((acc, name) => ({ ...acc, [name]: false }), {}),
   );
 
-  const controls = {} as Record<T[number], DialogControls>;
-  
-  dialogNames.forEach((name: T[number]) => {
-    controls[name] = {
-      isOpen: states[name] || false,
-      open: useCallback(() => {
-        setStates(prev => ({ ...prev, [name]: true }));
-      }, [name]),
-      close: useCallback(() => {
-        setStates(prev => ({ ...prev, [name]: false }));
-      }, [name])
-    };
-  });
+  const openDialog = useCallback((name: string) => {
+    setStates((prev) => ({ ...prev, [name]: true }));
+  }, []);
+
+  const closeDialog = useCallback((name: string) => {
+    setStates((prev) => ({ ...prev, [name]: false }));
+  }, []);
+
+  const controls = useMemo(() => {
+    const result = {} as Record<T[number], DialogControls>;
+
+    dialogNames.forEach((name: T[number]) => {
+      result[name] = {
+        isOpen: states[name] || false,
+        open: () => openDialog(name),
+        close: () => closeDialog(name),
+      };
+    });
+
+    return result;
+  }, [states, openDialog, closeDialog, dialogNames]);
 
   return controls;
 }

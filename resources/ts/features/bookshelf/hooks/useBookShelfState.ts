@@ -38,12 +38,12 @@ export function useBookShelfState(includeAddBook = false) {
       },
       ...(includeAddBook
         ? {
-          addBook: {
-            isOpen: dialogStates.addBook,
-            open: () => handleDialogState('addBook', true),
-            close: () => handleDialogState('addBook', false),
-          },
-        }
+            addBook: {
+              isOpen: dialogStates.addBook,
+              open: () => handleDialogState('addBook', true),
+              close: () => handleDialogState('addBook', false),
+            },
+          }
         : {}),
       shareLink: {
         isOpen: dialogStates.shareLink,
