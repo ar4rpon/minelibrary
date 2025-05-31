@@ -1,7 +1,7 @@
 import { BaseCard } from '@/components/common/BaseCard';
+import { BookShelfDialogs } from '@/components/domain/bookshelf/dialogs/BookShelfDialogs';
 import { Separator } from '@/components/ui/separator';
-import { BookShelfDialogs } from '@/features/bookshelf/components/dialogs/BookShelfDialogs';
-import { useBookShelfState } from '@/features/bookshelf/hooks/useBookShelfState';
+import { useBookShelfState } from '@/hooks/domain/useBookShelfState';
 import { BookShelfBase } from '@/types/bookShelf';
 import { Header } from '../elements/Header';
 import { UserInfo } from '../elements/UserInfo';

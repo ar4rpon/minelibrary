@@ -1,8 +1,8 @@
 import DefaultLayout from '@/components/common/layout';
+import DeleteUserForm from '@/components/domain/profile/DeleteUserForm';
+import UpdatePasswordForm from '@/components/domain/profile/UpdatePasswordForm';
+import UpdateProfileInformationForm from '@/components/domain/profile/UpdateProfileInformationForm';
 import { Card } from '@/components/ui/card';
-import DeleteUserForm from '@/features/profile/components/DeleteUserForm';
-import UpdatePasswordForm from '@/features/profile/components/UpdatePasswordForm';
-import UpdateProfileInformationForm from '@/features/profile/components/UpdateProfileInformationForm';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
 
