@@ -1,6 +1,6 @@
-import BookCard from '@/components/book/card';
-import BookShelf from '@/components/bookshelf';
 import DefaultLayout from '@/components/common/layout';
+import BookCard from '@/components/domain/book/card';
+import { BookShelfDetailCard } from '@/components/domain/bookshelf';
 import { ReadStatus } from '@/types';
 import { Head } from '@inertiajs/react';
 
@@ -41,8 +41,7 @@ export default function BookShelfDetail({
     <DefaultLayout header="本棚詳細">
       <Head title={bookShelf.book_shelf_name} />
 
-      <BookShelf
-        variant="description"
+      <BookShelfDetailCard
         name={bookShelf.book_shelf_name}
         description={bookShelf.description}
         bookShelfId={bookShelf.id}

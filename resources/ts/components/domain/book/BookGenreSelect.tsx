@@ -4,14 +4,14 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../components/common/ui/select';
+} from '@/components/common/ui/select';
 
 interface BookGenreProps {
   value: string;
   onValueChange: (value: string) => void;
 }
 
-export default function BookGenreSelect({
+export function BookGenreSelect({
   onValueChange,
   value,
 }: BookGenreProps) {
@@ -43,3 +43,5 @@ export default function BookGenreSelect({
     </Select>
   );
 }
+
+export default BookGenreSelect;

@@ -1,4 +1,3 @@
-import { ReadStatusBadge } from '@/components/book/ReadStatusBadge';
 import DefaultLayout from '@/components/common/layout';
 import {
   Card,
@@ -6,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/common/ui/card';
+import { ReadStatusBadge } from '@/components/domain/book';
 import { PageProps, ReadStatus } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';
