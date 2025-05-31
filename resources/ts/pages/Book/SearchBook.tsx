@@ -1,7 +1,7 @@
-import CommonPagination from '@/components/common/CommonPagination';
-import DefaultLayout from '@/components/common/layout';
+import { CommonPagination } from '@/components/common/CommonPagination';
+import { DefaultLayout } from '@/components/common/layout';
 import { BookGenreSelect } from '@/components/domain/book';
-import BookCard from '@/components/domain/book/card';
+import { BookCard } from '@/components/domain/book/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {

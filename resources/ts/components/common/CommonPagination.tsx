@@ -15,7 +15,7 @@ interface PaginationProps {
   handlePageChange: (value: number) => void;
 }
 
-export default function CommonPagination({
+export function CommonPagination({
   totalPages,
   totalItems,
   currentPage,
