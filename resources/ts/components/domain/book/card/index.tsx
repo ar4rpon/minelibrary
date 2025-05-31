@@ -58,7 +58,6 @@ export default function BookCard(props: BookCardProps) {
 }
 
 // 各コンポーネントをエクスポート
-export { BaseCard } from './BaseCard';
 export { BookShelfCard } from './BookShelfCard';
 export { DefaultCard } from './DefaultCard';
 export { Header } from './elements/Header';

@@ -2,7 +2,7 @@ import AmazonLogo from '@/components/common/Icon/Amazon';
 import { Button } from '@/components/common/ui/button';
 import { LabelHTMLAttributes } from 'react';
 
-export default function AmazonButton({
+export function AmazonButton({
   url,
   className = '',
 }: LabelHTMLAttributes<HTMLLabelElement> & { url: string }) {
@@ -21,3 +21,5 @@ export default function AmazonButton({
     </Button>
   );
 }
+
+export default AmazonButton;

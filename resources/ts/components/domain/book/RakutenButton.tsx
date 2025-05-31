@@ -2,7 +2,7 @@ import RakutenLogo from '@/components/common/Icon/Rakuten';
 import { Button } from '@/components/common/ui/button';
 import { LabelHTMLAttributes } from 'react';
 
-export default function RakutenButton({
+export function RakutenButton({
   url,
   className = '',
 }: LabelHTMLAttributes<HTMLLabelElement> & { url: string }) {
@@ -21,3 +21,5 @@ export default function RakutenButton({
     </Button>
   );
 }
+
+export default RakutenButton;

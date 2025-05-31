@@ -1,30 +1,35 @@
 import { BookService } from '@/api/services';
-import { ReadStatusBadge } from '@/components/book/ReadStatusBadge';
+import { BaseCard } from '@/components/common/BaseCard';
 import { Button } from '@/components/common/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/common/ui/dropdown-menu';
 import { BookDetailDialog } from '@/features/book/components/dialogs/BookDetailDialog';
 import { UpdateReadStatusDialog } from '@/features/book/components/dialogs/UpdateReadStatusDialog';
 import { useBookMemo } from '@/features/book/hooks/useBookMemo';
 import { useBookShelf } from '@/features/book/hooks/useBookShelf';
 import { useFavoriteBook } from '@/features/book/hooks/useFavoriteBook';
-import { DeleteBookDialog } from '@/features/bookshelf/components/dialogs/DeleteBookDialog';
+import { CreateBookShelfDialog } from '@/features/bookshelf/components/dialogs/CreateBookShelfDialog';
 import { CreateMemoDialog } from '@/features/memo/components/dialogs/CreateMemoDialog';
 import { useBookCardState } from '@/hooks/domain';
 import { ReadStatus } from '@/types';
 import type { BookData } from '@/types/api';
-import { Book, BookOpen, Edit, Heart, Library } from 'lucide-react';
-import { BaseCard } from './BaseCard';
+import { Book, BookOpen, Edit, Heart, Library, Plus } from 'lucide-react';
+import { ReadStatusBadge } from '../ReadStatusBadge';
 import { Header } from './elements/Header';
 import { Image } from './elements/Image';
 
-interface BookShelfCardProps extends BookData {
+interface FavoriteCardProps extends BookData {
   readStatus: ReadStatus;
-  book_shelf_id: number;
 }
 
 /**
- * 本棚バリアントの書籍カードコンポーネント
+ * お気に入りバリアントの書籍カードコンポーネント
  */
-export function BookShelfCard(props: BookShelfCardProps) {
+export function FavoriteCard(props: FavoriteCardProps) {
   const {
     title,
     author,
@@ -35,12 +40,11 @@ export function BookShelfCard(props: BookShelfCardProps) {
     image_url,
     item_caption,
     readStatus,
-    book_shelf_id,
   } = props;
 
   const { dialogs, readStatus: readStatusState } = useBookCardState(readStatus);
   const { isFavorite, toggleFavorite } = useFavoriteBook(props);
-  const { removeFromBookshelf } = useBookShelf();
+  const { bookshelves, addToBookshelf, createBookshelf } = useBookShelf();
   const { createMemo } = useBookMemo();
 
   const handleCreateMemo = async (
@@ -52,9 +56,12 @@ export function BookShelfCard(props: BookShelfCardProps) {
     dialogs.createMemo.close();
   };
 
-  const handleDeleteBook = async () => {
-    await removeFromBookshelf(book_shelf_id, isbn);
-    dialogs.deleteBook.close();
+  const handleCreateBookshelf = async (
+    bookShelfName: string,
+    description: string,
+  ) => {
+    await createBookshelf(bookShelfName, description);
+    dialogs.createBookShelf.close();
   };
 
   const handleUpdateReadStatus = () => {
@@ -63,15 +70,10 @@ export function BookShelfCard(props: BookShelfCardProps) {
   };
 
   return (
-    <BaseCard variant="book-shelf" {...props}>
+    <BaseCard variant="book-favorite" {...props}>
       <ReadStatusBadge status={readStatusState.current} />
 
-      <Image
-        imageUrl={image_url}
-        title={title}
-        variant="book-shelf"
-        onClick={dialogs.detailBook.open}
-      />
+      <Image imageUrl={image_url} title={title} variant="favorite" />
 
       <div className="flex flex-col justify-between space-y-4">
         <Header
@@ -79,7 +81,7 @@ export function BookShelfCard(props: BookShelfCardProps) {
           author={author}
           publisherName={publisher_name}
           salesDate={sales_date}
-          variant="book-shelf"
+          variant="favorite"
         />
 
         <div className="grid gap-2 sm:grid-cols-2">
@@ -128,16 +130,37 @@ export function BookShelfCard(props: BookShelfCardProps) {
             </p>
             <p className="sm:hidden">{isFavorite ? '解除' : '追加'}</p>
           </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            className="flex-1"
-            onClick={dialogs.deleteBook.open}
-          >
-            <Library className="mr-2 h-4 w-4" />
-            <span className="hidden sm:inline">本棚から削除する</span>
-            <span className="sm:hidden">削除</span>
-          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="sm" className="flex-1">
+                <Library className="mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">本棚に追加</span>
+                <span className="sm:hidden">追加</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              {bookshelves.map((shelf) => (
+                <DropdownMenuItem
+                  key={shelf.id}
+                  className="flex items-center truncate"
+                  onClick={() => addToBookshelf(shelf.id, isbn)}
+                >
+                  <Library className="mr-2 h-4 w-4" />
+                  {shelf.book_shelf_name.length > 12
+                    ? shelf.book_shelf_name.slice(0, 12) + '...'
+                    : shelf.book_shelf_name}
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuItem
+                className="flex items-center"
+                onClick={dialogs.createBookShelf.open}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                本棚を作成
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -170,10 +193,10 @@ export function BookShelfCard(props: BookShelfCardProps) {
         isbn={isbn}
       />
 
-      <DeleteBookDialog
-        isOpen={dialogs.deleteBook.isOpen}
-        onClose={dialogs.deleteBook.close}
-        onDeleteBookConfirm={handleDeleteBook}
+      <CreateBookShelfDialog
+        isOpen={dialogs.createBookShelf.isOpen}
+        onClose={dialogs.createBookShelf.close}
+        onCreateBookShelfConfirm={handleCreateBookshelf}
       />
     </BaseCard>
   );

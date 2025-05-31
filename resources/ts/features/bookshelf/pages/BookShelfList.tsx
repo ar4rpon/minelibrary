@@ -1,5 +1,5 @@
 import { BookShelfService } from '@/api/services';
-import BookShelf from '@/components/bookshelf';
+import { BookShelfDefaultCard } from '@/components/domain/bookshelf';
 import CommonPagination from '@/components/common/CommonPagination';
 import DefaultLayout from '@/components/common/layout';
 import { Button } from '@/components/common/ui/button';
@@ -278,8 +278,7 @@ export default function BookShelfList({
                   <span>{bookShelf.owner.name}さんの本棚</span>
                 </div>
               ) : null}
-              <BookShelf
-                variant="card"
+              <BookShelfDefaultCard
                 bookShelfId={bookShelf.id}
                 name={bookShelf.book_shelf_name}
                 description={bookShelf.description || ''}

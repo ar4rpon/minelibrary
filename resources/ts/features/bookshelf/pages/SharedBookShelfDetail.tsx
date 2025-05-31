@@ -1,6 +1,6 @@
-import BookCard from '@/components/book/card';
-import BookShelf from '@/components/bookshelf';
 import DefaultLayout from '@/components/common/layout';
+import BookCard from '@/components/domain/book/card';
+import { BookShelfDetailCard } from '@/components/domain/bookshelf';
 import { ReadStatus } from '@/types';
 import { Head } from '@inertiajs/react';
 import { format } from 'date-fns';
@@ -58,8 +58,7 @@ export default function SharedBookShelfDetail({
         </p>
       </div>
 
-      <BookShelf
-        variant="description"
+      <BookShelfDetailCard
         name={bookShelf.book_shelf_name}
         description={bookShelf.description}
         bookShelfId={bookShelf.id}

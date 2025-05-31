@@ -1,10 +1,10 @@
+import { BaseCard } from '@/components/common/BaseCard';
 import FavoriteIcon from '@/components/common/Icon/FavoriteIcon';
 import { Button } from '@/components/common/ui/button';
 import { BookDetailDialog } from '@/features/book/components/dialogs/BookDetailDialog';
 import { useFavoriteBook } from '@/features/book/hooks/useFavoriteBook';
 import { useBookCardState } from '@/hooks/domain';
 import type { BookData } from '@/types/api';
-import { BaseCard } from './BaseCard';
 import { Header } from './elements/Header';
 import { Image } from './elements/Image';
 
@@ -29,7 +29,7 @@ export function DefaultCard(props: DefaultCardProps) {
   const { isFavorite, toggleFavorite } = useFavoriteBook(props);
 
   return (
-    <BaseCard variant="default" {...props}>
+    <BaseCard variant="book-default" {...props}>
       <Image imageUrl={image_url} title={title} variant="default" />
 
       <div className="flex flex-1 flex-col justify-between space-y-4">

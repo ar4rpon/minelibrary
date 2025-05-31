@@ -1,4 +1,4 @@
-import BookShelf from '@/components/bookshelf';
+import { BookShelfDefaultCard } from '@/components/domain/bookshelf';
 import CommonPagination from '@/components/common/CommonPagination';
 import DefaultLayout from '@/components/common/layout';
 import { Button } from '@/components/common/ui/button';
@@ -90,14 +90,12 @@ export default function UserBookShelfList({ user, bookshelves = [] }: Props) {
               key={bookShelf.bookShelfId}
               className="transition-all duration-200 hover:translate-x-1"
             >
-              <BookShelf
-                variant="card"
+              <BookShelfDefaultCard
                 bookShelfId={bookShelf.bookShelfId}
                 name={bookShelf.name}
                 description={bookShelf.description}
                 isPublic={bookShelf.isPublic}
                 image={bookShelf.image}
-                userName={user.name}
               />
             </div>
           ))}
