@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { DialogProps } from '@/types';
+import { DialogProps } from '@/types/ui/dialog';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { Copy } from 'lucide-react';

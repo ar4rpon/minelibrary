@@ -1,3 +1,4 @@
+import type { ReadStatus } from '../domain/book';
 import { BaseSearchParams, PaginatedResponse } from './common';
 
 /**
@@ -13,11 +14,6 @@ export interface BookData {
   item_caption: string;
   item_price: number;
 }
-
-/**
- * 読書ステータス
- */
-export type ReadStatus = 'want_read' | 'reading' | 'finished';
 
 /**
  * 読書ステータス付きの本データ

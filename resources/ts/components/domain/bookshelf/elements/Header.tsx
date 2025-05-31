@@ -9,7 +9,7 @@ import {
 import {
   BookShelfActionsProps,
   ExtendedBookShelfActionsProps,
-} from '@/types/bookShelf';
+} from '@/types/ui/component';
 import { BookPlus, MoreVertical, Pencil, Share, Trash } from 'lucide-react';
 
 // 基本的なアクション（編集・削除）

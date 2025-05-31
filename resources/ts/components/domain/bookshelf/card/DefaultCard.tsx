@@ -2,7 +2,7 @@ import { BaseCard } from '@/components/common/BaseCard';
 import { BookShelfDialogs } from '@/components/domain/bookshelf/dialogs/BookShelfDialogs';
 import { Button } from '@/components/ui/button';
 import { useBookShelfState } from '@/hooks/domain/useBookShelfState';
-import { BookShelfBase } from '@/types/bookShelf';
+import { BookShelfBase } from '@/types/domain/bookshelf';
 import { Link } from '@inertiajs/react';
 import { Header } from '../elements/Header';
 import { Image } from '../elements/Image';

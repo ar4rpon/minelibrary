@@ -3,7 +3,7 @@ import DefaultLayout from '@/components/common/layout';
 import { BookShelfDefaultCard } from '@/components/domain/bookshelf';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { BookShelfBase } from '@/types/bookShelf';
+import { BookShelfBase } from '@/types/domain/bookshelf';
 import { Head } from '@inertiajs/react';
 import { Search, User } from 'lucide-react';
 import { useState } from 'react';

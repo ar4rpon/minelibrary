@@ -1,7 +1,8 @@
 import { useAsyncState } from '@/api/hooks';
 import { BookService } from '@/api/services';
 import { useMultipleDialogs } from '@/hooks/common';
-import type { BookData, ReadStatus } from '@/types/api';
+import type { BookData } from '@/types/api';
+import type { ReadStatus } from '@/types/domain/book';
 import { useState } from 'react';
 
 /**

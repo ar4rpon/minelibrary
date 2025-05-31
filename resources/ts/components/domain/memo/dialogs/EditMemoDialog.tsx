@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { DialogProps } from '@/types';
+import { DialogProps } from '@/types/ui/dialog';
 import { useEffect, useState } from 'react';
 
 interface EditMemoDialogProps extends DialogProps {

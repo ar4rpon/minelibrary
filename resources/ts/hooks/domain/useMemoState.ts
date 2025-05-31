@@ -2,7 +2,7 @@ import {
   createDialogNames,
   useMultipleDialogs,
 } from '@/hooks/common/useDialogState';
-import { MemoContent } from '@/types';
+import { MemoContent } from '@/types/domain/memo';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
