@@ -8,8 +8,9 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useDialogState } from '@/hooks/common/useDialogState';
 import { useForm } from '@inertiajs/react';
-import { FormEventHandler, useRef, useState } from 'react';
+import { FormEventHandler, useRef } from 'react';
 
 /**
  * アカウント削除フォームコンポーネント
@@ -20,7 +21,7 @@ export default function DeleteUserForm({
 }: {
   className?: string;
 }) {
-  const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
+  const deleteDialog = useDialogState();
   const passwordInput = useRef<HTMLInputElement>(null);
 
   const {
@@ -36,7 +37,7 @@ export default function DeleteUserForm({
   });
 
   const confirmUserDeletion = () => {
-    setConfirmingUserDeletion(true);
+    deleteDialog.open();
   };
 
   const deleteUser: FormEventHandler = (e) => {
@@ -51,8 +52,7 @@ export default function DeleteUserForm({
   };
 
   const closeDialog = () => {
-    setConfirmingUserDeletion(false);
-
+    deleteDialog.close();
     clearErrors();
     reset();
   };
@@ -67,7 +67,7 @@ export default function DeleteUserForm({
       <Button onClick={confirmUserDeletion} variant="destructive">
         アカウント削除
       </Button>
-      <BaseDialog isOpen={confirmingUserDeletion} onClose={closeDialog}>
+      <BaseDialog isOpen={deleteDialog.isOpen} onClose={closeDialog}>
         <DialogHeader>
           <DialogTitle>アカウント削除確認</DialogTitle>
         </DialogHeader>

@@ -1,55 +1,30 @@
-import { BookShelfDialogStates } from '@/types/bookShelf';
-import { useState } from 'react';
+import {
+  createDialogNames,
+  useMultipleDialogs,
+} from '@/hooks/common/useDialogState';
+
+/**
+ * BookShelf関連のダイアログ名定義
+ */
+const BOOKSHELF_DIALOG_NAMES = createDialogNames('edit', 'delete', 'shareLink');
+const BOOKSHELF_WITH_ADD_DIALOG_NAMES = createDialogNames(
+  'edit',
+  'delete',
+  'shareLink',
+  'addBook',
+);
 
 /**
  * BookShelfコンポーネントの状態を管理するカスタムフック
- * ダイアログの開閉状態などを管理
+ * 統一されたダイアログ状態管理を使用
  */
 export function useBookShelfState(includeAddBook = false) {
-  // ダイアログの開閉状態
-  const initialState: BookShelfDialogStates = {
-    edit: false,
-    delete: false,
-    ...(includeAddBook ? { addBook: false } : {}),
-    shareLink: false,
-  };
-
-  const [dialogStates, setDialogStates] =
-    useState<BookShelfDialogStates>(initialState);
-
-  const handleDialogState = (
-    dialogKey: keyof BookShelfDialogStates,
-    isOpen: boolean,
-  ) => {
-    setDialogStates((prev) => ({ ...prev, [dialogKey]: isOpen }));
-  };
+  // 統一されたダイアログ管理フックを使用
+  const dialogControls = useMultipleDialogs(
+    includeAddBook ? BOOKSHELF_WITH_ADD_DIALOG_NAMES : BOOKSHELF_DIALOG_NAMES,
+  );
 
   return {
-    dialogs: {
-      edit: {
-        isOpen: dialogStates.edit,
-        open: () => handleDialogState('edit', true),
-        close: () => handleDialogState('edit', false),
-      },
-      delete: {
-        isOpen: dialogStates.delete,
-        open: () => handleDialogState('delete', true),
-        close: () => handleDialogState('delete', false),
-      },
-      ...(includeAddBook
-        ? {
-            addBook: {
-              isOpen: dialogStates.addBook,
-              open: () => handleDialogState('addBook', true),
-              close: () => handleDialogState('addBook', false),
-            },
-          }
-        : {}),
-      shareLink: {
-        isOpen: dialogStates.shareLink,
-        open: () => handleDialogState('shareLink', true),
-        close: () => handleDialogState('shareLink', false),
-      },
-    },
+    dialogs: dialogControls,
   };
 }

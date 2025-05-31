@@ -6,6 +6,7 @@ import { CreateBookShelfDialog } from '@/components/domain/bookshelf/dialogs/Cre
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useDialogStateWithLoading } from '@/hooks/common/useDialogState';
 import type { BookShelfData } from '@/types/api';
 import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
@@ -45,12 +46,13 @@ export default function BookShelfList({
     initialBookShelves.favorite,
   );
   const [activeTab, setActiveTab] = useState<'my' | 'favorite'>('my');
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // 統一されたダイアログ状態管理
+  const createDialog = useDialogStateWithLoading();
   const itemsPerPage = 5; // 1ページあたりの表示数
 
   // 本棚一覧を取得する関数
@@ -129,7 +131,7 @@ export default function BookShelfList({
 
   // 新しい本棚作成ダイアログを開く
   const handleCreate = () => {
-    setCreateDialogOpen(true);
+    createDialog.open();
   };
 
   // 本棚作成の確認処理
@@ -142,7 +144,7 @@ export default function BookShelfList({
       return;
     }
 
-    setIsCreating(true);
+    createDialog.setLoading(true);
 
     try {
       const response = await axios.post(`/book-shelf/create`, {
@@ -158,12 +160,12 @@ export default function BookShelfList({
       setCurrentPage(1);
 
       // ダイアログを閉じる
-      setCreateDialogOpen(false);
+      createDialog.close();
     } catch (error) {
       console.error('本棚作成エラー:', error);
       alert('本棚の作成に失敗しました。もう一度お試しください。');
     } finally {
-      setIsCreating(false);
+      createDialog.setLoading(false);
     }
   };
 
@@ -354,10 +356,10 @@ export default function BookShelfList({
 
       {/* 本棚作成ダイアログ */}
       <CreateBookShelfDialog
-        isOpen={createDialogOpen}
-        onClose={() => setCreateDialogOpen(false)}
+        isOpen={createDialog.isOpen}
+        onClose={createDialog.close}
         onCreateBookShelfConfirm={confirmBookShelfCreate}
-        isLoading={isCreating}
+        isLoading={createDialog.isLoading}
       />
     </DefaultLayout>
   );
