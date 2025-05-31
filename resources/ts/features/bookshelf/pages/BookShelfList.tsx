@@ -1,10 +1,10 @@
 import { BookShelfService } from '@/api/services';
-import { BookShelfDefaultCard } from '@/components/domain/bookshelf';
 import CommonPagination from '@/components/common/CommonPagination';
 import DefaultLayout from '@/components/common/layout';
 import { Button } from '@/components/common/ui/button';
 import { Input } from '@/components/common/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/common/ui/tabs';
+import { BookShelfDefaultCard } from '@/components/domain/bookshelf';
 import { CreateBookShelfDialog } from '@/features/bookshelf/components/dialogs/CreateBookShelfDialog';
 import type { BookShelfData } from '@/types/api';
 import { Head, router } from '@inertiajs/react';
