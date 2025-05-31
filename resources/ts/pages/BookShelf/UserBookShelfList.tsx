@@ -1,5 +1,5 @@
-import CommonPagination from '@/components/common/CommonPagination';
-import DefaultLayout from '@/components/common/layout';
+import { CommonPagination } from '@/components/common/CommonPagination';
+import { DefaultLayout } from '@/components/common/layout';
 import { BookShelfDefaultCard } from '@/components/domain/bookshelf';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

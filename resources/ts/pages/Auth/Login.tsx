@@ -1,5 +1,5 @@
 import InputError from '@/components/common/InputError';
-import DefaultLayout from '@/components/common/layout';
+import { DefaultLayout } from '@/components/common/layout';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';

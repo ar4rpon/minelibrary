@@ -52,7 +52,7 @@ test('タイトルで本を検索できる', function () {
         ->get('/book/search?keyword=Laravel&searchMethod=title')
         ->assertStatus(200)
         ->assertInertia(fn ($page) => $page
-            ->component('features/book/pages/SearchBook')
+            ->component('Book/SearchBook')
             ->has('results', 1)
             ->where('results.0.Item.title', 'PHPフレームワーク Laravel入門')
         );

@@ -1,5 +1,5 @@
-import DefaultLayout from '@/components/common/layout';
-import BookCard from '@/components/domain/book/card';
+import { DefaultLayout } from '@/components/common/layout';
+import { BookCard } from '@/components/domain/book/card';
 import { BookShelfDetailCard } from '@/components/domain/bookshelf';
 import { ReadStatus } from '@/types/domain/book';
 import { Head } from '@inertiajs/react';

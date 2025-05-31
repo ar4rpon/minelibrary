@@ -1,6 +1,6 @@
 import { BookShelfService } from '@/api/services';
-import CommonPagination from '@/components/common/CommonPagination';
-import DefaultLayout from '@/components/common/layout';
+import { CommonPagination } from '@/components/common/CommonPagination';
+import { DefaultLayout } from '@/components/common/layout';
 import { BookShelfDefaultCard } from '@/components/domain/bookshelf';
 import { CreateBookShelfDialog } from '@/components/domain/bookshelf/dialogs/CreateBookShelfDialog';
 import { Button } from '@/components/ui/button';

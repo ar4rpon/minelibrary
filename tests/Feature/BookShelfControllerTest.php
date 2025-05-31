@@ -6,6 +6,7 @@ use App\Models\Book;
 use Tests\Helpers\AuthTestHelper;
 use Tests\Helpers\DatabaseTestHelper;
 use Tests\Helpers\ApiTestHelper;
+use Illuminate\Support\Facades\Session;
 
 uses(AuthTestHelper::class, DatabaseTestHelper::class, ApiTestHelper::class);
 
@@ -30,8 +31,10 @@ test('ユーザーは新しい本棚を作成できる', function () {
         'description' => 'これはテスト用の本棚です',
     ];
 
+    Session::start();
     $this->actingAs($this->user)
-        ->post('/book-shelf/create', $bookShelfData)
+        ->withSession(['_token' => Session::token()])
+        ->post('/book-shelf/create', array_merge($bookShelfData, ['_token' => Session::token()]))
         ->assertStatus(201)
         ->assertJson([
             'book_shelf_name' => 'テスト本棚',
@@ -54,8 +57,10 @@ test('ユーザーは自分の本棚を更新できる', function () {
         'is_public' => false,
     ];
 
+    Session::start();
     $this->actingAs($this->user)
-        ->put("/book-shelf/update/{$bookShelf->id}", $updateData)
+        ->withSession(['_token' => Session::token()])
+        ->put("/book-shelf/update/{$bookShelf->id}", array_merge($updateData, ['_token' => Session::token()]))
         ->assertStatus(200);
 
     $this->assertDatabaseHas('book_shelves', [
@@ -70,11 +75,14 @@ test('ユーザーは他人の本棚を更新できない', function () {
     $otherUser = User::factory()->create();
     $bookShelf = BookShelf::factory()->forUser($otherUser)->create();
 
+    Session::start();
     $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->put("/book-shelf/update/{$bookShelf->id}", [
             'book_shelf_name' => '不正な更新',
             'description' => '不正な説明',
             'is_public' => false,
+            '_token' => Session::token(),
         ])
         ->assertStatus(404);
 });
@@ -82,8 +90,10 @@ test('ユーザーは他人の本棚を更新できない', function () {
 test('ユーザーは自分の本棚を削除できる', function () {
     $bookShelf = BookShelf::factory()->forUser($this->user)->create();
 
+    Session::start();
     $this->actingAs($this->user)
-        ->delete("/book-shelf/delete/{$bookShelf->id}")
+        ->withSession(['_token' => Session::token()])
+        ->delete("/book-shelf/delete/{$bookShelf->id}", ['_token' => Session::token()])
         ->assertStatus(200);
 
     $this->assertDatabaseMissing('book_shelves', [
@@ -95,10 +105,13 @@ test('本棚に本を追加できる', function () {
     $bookShelf = BookShelf::factory()->forUser($this->user)->create();
     $books = Book::factory()->count(3)->create();
 
+    Session::start();
     $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->post('/book-shelf/add/books', [
             'book_shelf_id' => $bookShelf->id,
             'isbns' => $books->pluck('isbn')->toArray(),
+            '_token' => Session::token(),
         ])
         ->assertStatus(200);
 
@@ -115,10 +128,13 @@ test('本棚から本を削除できる', function () {
     $book = Book::factory()->create();
     $bookShelf->addBook($book->isbn);
 
+    Session::start();
     $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->post("/book-shelf/{$book->isbn}", [
             'book_shelf_id' => $bookShelf->id,
             'isbn' => $book->isbn,
+            '_token' => Session::token(),
         ])
         ->assertStatus(200);
 

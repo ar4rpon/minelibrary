@@ -6,6 +6,7 @@ use App\Models\Memo;
 use Tests\Helpers\AuthTestHelper;
 use Tests\Helpers\DatabaseTestHelper;
 use Tests\Helpers\ApiTestHelper;
+use Illuminate\Support\Facades\Session;
 
 uses(AuthTestHelper::class, DatabaseTestHelper::class, ApiTestHelper::class);
 
@@ -33,8 +34,10 @@ test('メモを作成できる', function () {
         'memo_page' => 42,
     ];
 
+    Session::start();
     $this->actingAs($this->user)
-        ->postJson('/memo/create', $memoData)
+        ->withSession(['_token' => Session::token()])
+        ->postJson('/memo/create', array_merge(['_token' => Session::token()], $memoData))
         ->assertStatus(201)
         ->assertJson([
             'memo' => [
@@ -60,8 +63,10 @@ test('章とページ情報なしでメモを作成できる', function () {
         'memo' => '全体的な感想です。',
     ];
 
+    Session::start();
     $this->actingAs($this->user)
-        ->postJson('/memo/create', $memoData)
+        ->withSession(['_token' => Session::token()])
+        ->postJson('/memo/create', array_merge(['_token' => Session::token()], $memoData))
         ->assertStatus(201);
 
     $this->assertDatabaseHas('memos', [
@@ -87,8 +92,10 @@ test('自分のメモを更新できる', function () {
         'memo_page' => 100,
     ];
 
+    Session::start();
     $this->actingAs($this->user)
-        ->putJson("/memo/{$memo->id}", $updateData)
+        ->withSession(['_token' => Session::token()])
+        ->putJson("/memo/{$memo->id}", array_merge(['_token' => Session::token()], $updateData))
         ->assertStatus(200)
         ->assertJson([
             'memo' => [
@@ -112,8 +119,11 @@ test('他人のメモは更新できない', function () {
         ->forBook($this->book)
         ->create();
 
+    Session::start();
     $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->putJson("/memo/{$memo->id}", [
+            '_token' => Session::token(),
             'memo' => '不正な更新',
         ])
         ->assertStatus(403);
@@ -125,8 +135,12 @@ test('自分のメモを削除できる', function () {
         ->forBook($this->book)
         ->create();
 
+    Session::start();
     $this->actingAs($this->user)
-        ->deleteJson("/memo/{$memo->id}")
+        ->withSession(['_token' => Session::token()])
+        ->deleteJson("/memo/{$memo->id}", [
+            '_token' => Session::token(),
+        ])
         ->assertStatus(200)
         ->assertJson([
             'success' => true,
@@ -145,8 +159,12 @@ test('他人のメモは削除できない', function () {
         ->forBook($this->book)
         ->create();
 
+    Session::start();
     $this->actingAs($this->user)
-        ->deleteJson("/memo/{$memo->id}")
+        ->withSession(['_token' => Session::token()])
+        ->deleteJson("/memo/{$memo->id}", [
+            '_token' => Session::token(),
+        ])
         ->assertStatus(403);
 
     $this->assertDatabaseHas('memos', [
@@ -200,7 +218,7 @@ test('メモ一覧が本ごとにグループ化されて表示される', funct
         ->get('/memo/list')
         ->assertStatus(200)
         ->assertInertia(fn ($page) => $page
-            ->component('features/memo/pages/MemoList')
+            ->component('Memo/MemoList')
             ->has('memos', 3)
         );
 });
@@ -235,8 +253,11 @@ test('メモ更新時に内容のバリデーションが機能する', function
         ->forBook($this->book)
         ->create();
 
+    Session::start();
     $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->putJson("/memo/{$memo->id}", [
+            '_token' => Session::token(),
             'memo' => '',
         ])
         ->assertStatus(422)

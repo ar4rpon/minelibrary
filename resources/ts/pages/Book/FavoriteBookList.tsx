@@ -1,5 +1,5 @@
-import DefaultLayout from '@/components/common/layout';
-import BookCard from '@/components/domain/book/card';
+import { DefaultLayout } from '@/components/common/layout';
+import { BookCard } from '@/components/domain/book/card';
 import {
   Select,
   SelectContent,

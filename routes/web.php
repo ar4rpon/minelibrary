@@ -17,11 +17,11 @@ Route::get('/', function () {
     if (Auth::check()) {
         return redirect('/dashboard');
     }
-    return Inertia::render('features/welcome/pages/Welcome');
+    return Inertia::render('Welcome');
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('features/dashboard/pages/Dashboard');
+    return Inertia::render('Dashboard');
 })->middleware(['auth'])->name('app-guide');
 
 Route::middleware('auth')->group(function () {
@@ -95,21 +95,21 @@ Route::get('/shared-booklist/{token}', [ShareLinkController::class, 'showSharedB
 Route::get('/book/{isbn}/memos', [MemoController::class, 'getBookMemos'])->name('book.memos');
 
 Route::get('/privacy', function () {
-    return Inertia::render('features/privacy/pages/PrivacyPolicy');
+    return Inertia::render('PrivacyPolicy');
 })->name('privacy');
 
 // エラーページ
 Route::get('/404', function () {
-    return Inertia::render('features/error/pages/NotFound');
+    return Inertia::render('NotFound');
 })->name('error.404');
 
 Route::get('/500', function () {
-    return Inertia::render('features/error/pages/ServerError');
+    return Inertia::render('ServerError');
 })->name('error.500');
 
 // 存在しないルートへのアクセスを404ページにリダイレクト
 Route::fallback(function () {
-    return Inertia::render('features/error/pages/NotFound');
+    return Inertia::render('NotFound');
 });
 
 require __DIR__ . '/auth.php';

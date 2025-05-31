@@ -28,7 +28,7 @@ class MemoController extends Controller
         $sortBy = $request->input('sortBy', 'date');
         $memos = $this->memoService->getUserMemos($user->id, $sortBy);
 
-        return Inertia::render('features/memo/pages/MemoList', [
+        return Inertia::render('Memo/MemoList', [
             'memos' => $memos,
             'sortBy' => $sortBy,
         ]);

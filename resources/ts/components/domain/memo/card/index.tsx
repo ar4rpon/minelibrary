@@ -1,1 +1,1 @@
-export { MemoCard, MemoCard as default } from './MemoCard';
+export { MemoCard } from './MemoCard';

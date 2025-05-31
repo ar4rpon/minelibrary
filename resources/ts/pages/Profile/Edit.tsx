@@ -1,4 +1,4 @@
-import DefaultLayout from '@/components/common/layout';
+import { DefaultLayout } from '@/components/common/layout';
 import DeleteUserForm from '@/components/domain/profile/DeleteUserForm';
 import UpdatePasswordForm from '@/components/domain/profile/UpdatePasswordForm';
 import UpdateProfileInformationForm from '@/components/domain/profile/UpdateProfileInformationForm';

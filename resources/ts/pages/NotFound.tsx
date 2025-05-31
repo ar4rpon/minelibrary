@@ -1,4 +1,4 @@
-import DefaultLayout from '@/components/common/layout';
+import { DefaultLayout } from '@/components/common/layout';
 import { Button } from '@/components/ui/button';
 import { Head, Link } from '@inertiajs/react';
 import { FileQuestion } from 'lucide-react';

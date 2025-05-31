@@ -27,7 +27,7 @@ class FavoriteBookController extends Controller
         $sortBy = $request->input('sortBy', 'newDate');
         $favorites = $this->favoriteBookService->getFavoritesData($user->id, $sortBy);
 
-        return Inertia::render('features/book/pages/FavoriteBookList', [
+        return Inertia::render('Book/FavoriteBookList', [
             'favorites' => $favorites,
             'sortBy' => $sortBy,
         ]);

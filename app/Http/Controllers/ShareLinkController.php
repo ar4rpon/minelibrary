@@ -47,6 +47,6 @@ class ShareLinkController extends Controller
     {
         $data = $this->shareLinkService->getSharedBookShelf($token);
 
-        return Inertia::render('features/bookshelf/pages/SharedBookShelfDetail', $data);
+        return Inertia::render('BookShelf/SharedBookShelfDetail', $data);
     }
 }

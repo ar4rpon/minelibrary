@@ -33,7 +33,7 @@
     }
     </script>
     @viteReactRefresh
-    @vite(['resources/ts/app.tsx', "resources/ts/{$page['component']}.tsx"])
+    @vite(['resources/ts/app.tsx'])
     @inertiaHead
 </head>
 

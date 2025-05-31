@@ -1,4 +1,4 @@
-import DefaultLayout from '@/components/common/layout';
+import { DefaultLayout } from '@/components/common/layout';
 import { Head } from '@inertiajs/react';
 
 /**

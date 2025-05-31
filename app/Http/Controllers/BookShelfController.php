@@ -34,7 +34,7 @@ class BookShelfController extends Controller
         $user = $this->getAuthUser();
         $bookShelves = $this->bookShelfService->getUserBookShelves($user->id);
 
-        return Inertia::render('features/bookshelf/pages/BookShelfList', [
+        return Inertia::render('BookShelf/BookShelfList', [
             'initialBookShelves' => $bookShelves
         ]);
     }
@@ -54,7 +54,7 @@ class BookShelfController extends Controller
 
         $bookShelf->user_name = $userName;
 
-        return Inertia::render('features/bookshelf/pages/BookShelfDetail', [
+        return Inertia::render('BookShelf/BookShelfDetail', [
             'bookShelf' => $bookShelf,
             'books' => $books,
         ]);
@@ -137,7 +137,7 @@ class BookShelfController extends Controller
     {
         $data = $this->bookShelfService->getPublicUserBookShelves($userId);
 
-        return Inertia::render('features/bookshelf/pages/UserBookShelfList', $data);
+        return Inertia::render('BookShelf/UserBookShelfList', $data);
     }
 
     /**
@@ -152,6 +152,6 @@ class BookShelfController extends Controller
         $currentUserId = $this->getAuthUser() ? $this->getAuthUserId() : null;
         $data = $this->bookShelfService->getPublicUserBookShelf($userId, $bookShelfId, $currentUserId);
 
-        return Inertia::render('features/bookshelf/pages/UserBookShelfDetail', $data);
+        return Inertia::render('BookShelf/UserBookShelfDetail', $data);
     }
 }

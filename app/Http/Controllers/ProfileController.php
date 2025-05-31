@@ -40,7 +40,7 @@ class ProfileController extends Controller
         $data['bookShelves'] = $data['bookShelves']->concat($privateBookShelves)->sortByDesc('created_at')->values();
         $data['isOwnProfile'] = true;
 
-        return Inertia::render('features/profile/pages/Show', $data);
+        return Inertia::render('Profile/Show', $data);
     }
 
     /**
@@ -53,7 +53,7 @@ class ProfileController extends Controller
         $data = $this->profileService->getProfileData($user, $currentUserId);
         $data['isOwnProfile'] = $currentUserId === $user->id;
 
-        return Inertia::render('features/profile/pages/Show', $data);
+        return Inertia::render('Profile/Show', $data);
     }
 
     /**
@@ -61,7 +61,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        return Inertia::render('features/profile/pages/Edit', [
+        return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $this->getAuthUser() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);

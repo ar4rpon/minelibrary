@@ -29,7 +29,7 @@ class FavoriteBookShelfController extends Controller
         $user = $this->getAuthUser();
         $favoriteBookShelves = $this->favoriteBookShelfService->getFavoriteBookShelves($user->id);
 
-        return Inertia::render('features/bookshelf/pages/FavoriteList', [
+        return Inertia::render('BookShelf/BookShelfList', [
             'favoriteBookShelves' => $favoriteBookShelves,
         ]);
     }

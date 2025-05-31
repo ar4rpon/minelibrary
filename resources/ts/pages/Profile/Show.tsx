@@ -1,4 +1,4 @@
-import DefaultLayout from '@/components/common/layout';
+import { DefaultLayout } from '@/components/common/layout';
 import { ReadStatusBadge } from '@/components/domain/book';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageProps } from '@/types';

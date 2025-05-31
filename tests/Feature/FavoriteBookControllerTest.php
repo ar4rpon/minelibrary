@@ -6,6 +6,7 @@ use App\Models\FavoriteBook;
 use Tests\Helpers\AuthTestHelper;
 use Tests\Helpers\DatabaseTestHelper;
 use Tests\Helpers\ApiTestHelper;
+use Illuminate\Support\Facades\Session;
 
 uses(AuthTestHelper::class, DatabaseTestHelper::class, ApiTestHelper::class);
 
@@ -27,8 +28,11 @@ test('認証済みユーザーはお気に入り一覧を表示できる', funct
 test('本をお気に入りに追加できる', function () {
     $book = Book::factory()->create();
 
+    Session::start();
     $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->postJson('/books/toggle-favorite', [
+            '_token' => Session::token(),
             'isbn' => $book->isbn,
             'title' => $book->title,
             'author' => $book->author,
@@ -56,8 +60,11 @@ test('お気に入りの本を削除できる', function () {
         ->forBook($book)
         ->create();
 
+    Session::start();
     $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->postJson('/books/toggle-favorite', [
+            '_token' => Session::token(),
             'isbn' => $book->isbn,
             'title' => $book->title,
             'author' => $book->author,
@@ -110,8 +117,11 @@ test('読書状態を更新できる', function () {
         ->wantRead()
         ->create();
 
+    Session::start();
     $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->postJson('/books/update-status', [
+            '_token' => Session::token(),
             'isbn' => $book->isbn,
             'readStatus' => 'reading',
         ])
@@ -130,8 +140,11 @@ test('読書状態を更新できる', function () {
 test('存在しない本の読書状態を更新しようとするとエラー', function () {
     $book = Book::factory()->create();
 
+    Session::start();
     $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->postJson('/books/update-status', [
+            '_token' => Session::token(),
             'isbn' => $book->isbn,
             'readStatus' => 'reading',
         ])
@@ -165,7 +178,7 @@ test('お気に入り一覧にステータスごとにグループ化されて�
         ->get('/favorite-book/list')
         ->assertStatus(200)
         ->assertInertia(fn ($page) => $page
-            ->component('features/book/pages/FavoriteBookList')
+            ->component('Book/FavoriteBookList')
             ->has('favorites', 3)
         );
 });

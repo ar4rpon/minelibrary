@@ -7,6 +7,7 @@ use App\Models\ShareLink;
 use Tests\Helpers\AuthTestHelper;
 use Tests\Helpers\DatabaseTestHelper;
 use Tests\Helpers\ApiTestHelper;
+use Illuminate\Support\Facades\Session;
 
 uses(AuthTestHelper::class, DatabaseTestHelper::class, ApiTestHelper::class);
 
@@ -16,8 +17,11 @@ beforeEach(function () {
 });
 
 test('認証済みユーザーは自分の本棚の共有リンクを生成できる', function () {
+    Session::start();
     $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->postJson('/book-shelf/generate-share-link', [
+            '_token' => Session::token(),
             'book_shelf_id' => $this->bookShelf->id,
         ])
         ->assertStatus(200)
@@ -35,17 +39,23 @@ test('他人の本棚の共有リンクは生成できない', function () {
     $otherUser = User::factory()->create();
     $otherBookShelf = BookShelf::factory()->create(['user_id' => $otherUser->id]);
 
+    Session::start();
     $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->postJson('/book-shelf/generate-share-link', [
+            '_token' => Session::token(),
             'book_shelf_id' => $otherBookShelf->id,
         ])
         ->assertStatus(500);
 });
 
 test('認証されていないユーザーは共有リンクを生成できない', function () {
-    $this->postJson('/book-shelf/generate-share-link', [
-        'book_shelf_id' => $this->bookShelf->id,
-    ])
+    Session::start();
+    $this->withSession(['_token' => Session::token()])
+        ->postJson('/book-shelf/generate-share-link', [
+            '_token' => Session::token(),
+            'book_shelf_id' => $this->bookShelf->id,
+        ])
         ->assertStatus(401);
 });
 
@@ -60,7 +70,7 @@ test('有効な共有リンクで本棚を表示できる', function () {
     $this->get("/shared-booklist/{$shareLink->share_token}")
         ->assertStatus(200)
         ->assertInertia(fn ($page) => $page
-            ->component('features/bookshelf/pages/SharedBookShelfDetail')
+            ->component('BookShelf/SharedBookShelfDetail')
             ->has('bookShelf')
             ->has('books')
             ->where('isShared', true)
@@ -126,14 +136,19 @@ test('共有リンクの有効期限がレスポンスに含まれる', function
 });
 
 test('共有リンク生成時にユニークなトークンが生成される', function () {
+    Session::start();
     $response1 = $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->postJson('/book-shelf/generate-share-link', [
+            '_token' => Session::token(),
             'book_shelf_id' => $this->bookShelf->id,
         ]);
 
     $bookShelf2 = BookShelf::factory()->create(['user_id' => $this->user->id]);
     $response2 = $this->actingAs($this->user)
+        ->withSession(['_token' => Session::token()])
         ->postJson('/book-shelf/generate-share-link', [
+            '_token' => Session::token(),
             'book_shelf_id' => $bookShelf2->id,
         ]);
 

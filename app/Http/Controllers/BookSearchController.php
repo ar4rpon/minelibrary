@@ -19,7 +19,7 @@ class BookSearchController extends Controller
         $validated = $request->validated();
         $searchResult = $this->bookSearchService->searchBooks($validated);
 
-        return Inertia::render('features/book/pages/SearchBook', [
+        return Inertia::render('Book/SearchBook', [
             'results' => $searchResult['results'],
             'totalItems' => $searchResult['totalItems'],
             'filters' => $validated,
