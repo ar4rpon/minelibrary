@@ -30,7 +30,7 @@ export interface BookShelfCardProps extends BookShelfBase {
 // 本棚詳細用のプロパティ
 export interface BookShelfDescriptionProps
   extends BookShelfBase,
-  Partial<UserInfo> { }
+    Partial<UserInfo> {}
 
 // ドロップダウンメニューのアクション用
 export interface BookShelfActionsProps {

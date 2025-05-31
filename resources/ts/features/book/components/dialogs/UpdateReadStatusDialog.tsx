@@ -17,7 +17,7 @@ import { DialogProps, ReadStatus } from '@/types';
 
 interface ReadStatusProps {
   readStatus: ReadStatus;
-  onChangeValue: any;
+  onChangeValue: (value: ReadStatus) => void;
 }
 
 /**
@@ -39,7 +39,10 @@ export function UpdateReadStatusDialog({
       <DialogDescription asChild>
         <div className="mt-4 flex w-full flex-col">
           <div className="mt-4 grid items-center gap-1.5 text-left">
-            <Select value={readStatus} onValueChange={(e) => onChangeValue(e)}>
+            <Select
+              value={readStatus}
+              onValueChange={(e) => onChangeValue(e as ReadStatus)}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="ステータスを更新" />
               </SelectTrigger>

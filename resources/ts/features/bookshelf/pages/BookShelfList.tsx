@@ -1,19 +1,19 @@
+import { BookShelfService } from '@/api/services';
 import BookShelf from '@/components/bookshelf';
 import CommonPagination from '@/components/common/CommonPagination';
 import DefaultLayout from '@/components/common/layout';
 import { Button } from '@/components/common/ui/button';
 import { Input } from '@/components/common/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/common/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/common/ui/tabs';
 import { CreateBookShelfDialog } from '@/features/bookshelf/components/dialogs/CreateBookShelfDialog';
-import { getAllBookShelves } from '@/Services/bookShelfService';
-import { BookShelfBase } from '@/types/bookShelf';
+import type { BookShelfData } from '@/types/api';
 import { Head, router } from '@inertiajs/react';
 import axios from 'axios';
 import { BookOpen, Heart, Plus, Search, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 // 本棚の型定義
-type BookShelf = BookShelfBase & {
+type BookShelf = BookShelfData & {
   image?: string;
   type?: 'my' | 'favorite';
   owner?: {
@@ -34,10 +34,16 @@ interface Props {
  * 本棚一覧ページ
  * ユーザーの本棚一覧を表示し、検索や作成機能を提供する
  */
-export default function BookShelfList({ initialBookShelves = { my: [], favorite: [] } }: Props) {
+export default function BookShelfList({
+  initialBookShelves = { my: [], favorite: [] },
+}: Props) {
   // 状態管理
-  const [myBookShelves, setMyBookShelves] = useState<BookShelf[]>(initialBookShelves.my);
-  const [favoriteBookShelves, setFavoriteBookShelves] = useState<BookShelf[]>(initialBookShelves.favorite);
+  const [myBookShelves, setMyBookShelves] = useState<BookShelf[]>(
+    initialBookShelves.my,
+  );
+  const [favoriteBookShelves, setFavoriteBookShelves] = useState<BookShelf[]>(
+    initialBookShelves.favorite,
+  );
   const [activeTab, setActiveTab] = useState<'my' | 'favorite'>('my');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,13 +59,25 @@ export default function BookShelfList({ initialBookShelves = { my: [], favorite:
     setError(null);
 
     try {
-      const data = await getAllBookShelves();
+      const data = await BookShelfService.getAllBookShelves();
       if (data.my && data.favorite) {
-        setMyBookShelves(data.my);
-        setFavoriteBookShelves(data.favorite);
+        // BookShelfDataをBookShelf型に変換
+        const convertedMy: BookShelf[] = data.my.map((item) => ({
+          ...item,
+          type: 'my' as const,
+        }));
+        const convertedFavorite: BookShelf[] = data.favorite.map((item) => ({
+          ...item,
+          type: 'favorite' as const,
+        }));
+        setMyBookShelves(convertedMy);
+        setFavoriteBookShelves(convertedFavorite);
       } else {
         // 旧形式のデータの場合（後方互換性のため）
-        setMyBookShelves(data);
+        const converted = Array.isArray(data)
+          ? data.map((item) => ({ ...item, type: 'my' as const }))
+          : [];
+        setMyBookShelves(converted);
       }
     } catch (error) {
       console.error('本棚一覧の取得に失敗しました:', error);
@@ -72,19 +90,27 @@ export default function BookShelfList({ initialBookShelves = { my: [], favorite:
   // コンポーネントマウント時にデータを取得
   useEffect(() => {
     // 初期データが空の場合のみAPIから取得
-    if (initialBookShelves.my.length === 0 && initialBookShelves.favorite.length === 0) {
+    if (
+      initialBookShelves.my.length === 0 &&
+      initialBookShelves.favorite.length === 0
+    ) {
       fetchBookShelves();
     }
   }, [initialBookShelves.my.length, initialBookShelves.favorite.length]);
 
   // 表示する本棚を選択
-  const displayBookShelves = activeTab === 'my' ? myBookShelves : favoriteBookShelves;
+  const displayBookShelves =
+    activeTab === 'my' ? myBookShelves : favoriteBookShelves;
 
   // 検索フィルター
   const filteredBookShelves = displayBookShelves.filter(
     (bookShelf) =>
-      bookShelf.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      bookShelf.description.toLowerCase().includes(searchQuery.toLowerCase()),
+      bookShelf.book_shelf_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      (bookShelf.description || '')
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()),
   );
 
   // ページネーション
@@ -147,7 +173,13 @@ export default function BookShelfList({ initialBookShelves = { my: [], favorite:
 
       {/* タブと検索・作成ボタン */}
       <div className="mb-6 space-y-4">
-        <Tabs defaultValue="my" value={activeTab} onValueChange={(value: any) => handleTabChange(value as 'my' | 'favorite')}>
+        <Tabs
+          defaultValue="my"
+          value={activeTab}
+          onValueChange={(value: string) =>
+            handleTabChange(value as 'my' | 'favorite')
+          }
+        >
           <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="my" className="flex-1 sm:flex-auto">
               <BookOpen className="mr-2 h-4 w-4" />
@@ -237,7 +269,7 @@ export default function BookShelfList({ initialBookShelves = { my: [], favorite:
         <div className="grid grid-cols-1 gap-x-8 gap-y-6">
           {paginatedBookShelves.map((bookShelf) => (
             <div
-              key={bookShelf.bookShelfId}
+              key={bookShelf.id}
               className="transition-all duration-200 hover:translate-x-1"
             >
               {activeTab === 'favorite' && bookShelf.owner ? (
@@ -248,10 +280,10 @@ export default function BookShelfList({ initialBookShelves = { my: [], favorite:
               ) : null}
               <BookShelf
                 variant="card"
-                bookShelfId={bookShelf.bookShelfId}
-                name={bookShelf.name}
-                description={bookShelf.description}
-                isPublic={bookShelf.isPublic}
+                bookShelfId={bookShelf.id}
+                name={bookShelf.book_shelf_name}
+                description={bookShelf.description || ''}
+                isPublic={bookShelf.is_public}
                 image={bookShelf.image}
                 owner={bookShelf.owner}
                 type={activeTab}

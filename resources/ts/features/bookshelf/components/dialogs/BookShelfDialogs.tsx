@@ -1,8 +1,4 @@
-import {
-  addBooksToShelf,
-  deleteBookShelf,
-  updateBookShelf,
-} from '@/Services/bookShelfService';
+import { BookShelfService } from '@/api/services';
 import { BookShelfDialogStates } from '@/types/bookShelf';
 import { AddBookDialog } from './AddBookDialog';
 import { DeleteBookShelfDialog } from './DeleteBookShelfDialog';
@@ -37,7 +33,7 @@ export function BookShelfDialogs({
     description: string,
     isPublic: boolean,
   ) => {
-    const success = await updateBookShelf(
+    const success = await BookShelfService.updateBookShelf(
       bookShelfId,
       name,
       description,
@@ -49,14 +45,17 @@ export function BookShelfDialogs({
   };
 
   const handleDelete = async () => {
-    const success = await deleteBookShelf(bookShelfId);
+    const success = await BookShelfService.deleteBookShelf(bookShelfId);
     if (success) {
       onDialogStateChange('delete', false);
     }
   };
 
   const handleAddBook = async (selectedIsbns: string[]) => {
-    const success = await addBooksToShelf(bookShelfId, selectedIsbns);
+    const success = await BookShelfService.addBooksToShelf(
+      bookShelfId,
+      selectedIsbns,
+    );
     if (success) {
       onDialogStateChange('addBook', false);
     }
@@ -94,7 +93,6 @@ export function BookShelfDialogs({
           bookShelfId={bookShelfId}
         />
       )}
-
     </>
   );
 }

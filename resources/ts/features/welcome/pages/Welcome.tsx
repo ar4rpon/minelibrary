@@ -1,6 +1,5 @@
 import DefaultLayout from '@/components/common/layout';
 import { Button } from '@/components/common/ui/button';
-import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import {
   BookHeart,
@@ -17,7 +16,7 @@ import {
  * ウェルカムページ
  * アプリケーションのトップページを表示する
  */
-export default function Welcome({}: PageProps) {
+export default function Welcome() {
   return (
     <DefaultLayout>
       <Head title="MineLibrary | あなたの読書体験を豊かに" />

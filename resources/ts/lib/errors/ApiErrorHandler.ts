@@ -13,7 +13,7 @@ export class ApiErrorHandler {
     if (error instanceof AxiosError) {
       const message = this.extractMessageFromAxiosError(error);
       const statusCode = error.response?.status;
-      
+
       console.error(`${context}: ${message}`, {
         statusCode,
         url: error.config?.url,
@@ -21,15 +21,15 @@ export class ApiErrorHandler {
         data: error.config?.data,
         response: error.response?.data,
       });
-      
+
       throw new AppError(message, statusCode, error);
     }
-    
+
     if (error instanceof Error) {
       console.error(`${context}: ${error.message}`, error);
       throw new AppError(error.message, undefined, error);
     }
-    
+
     console.error(`${context}: 予期せぬエラーが発生しました`, error);
     throw new AppError('予期せぬエラーが発生しました', undefined, error);
   }
@@ -39,7 +39,7 @@ export class ApiErrorHandler {
    */
   static async executeWithErrorHandling<T>(
     asyncFn: () => Promise<T>,
-    context: string
+    context: string,
   ): Promise<T> {
     try {
       return await asyncFn();
@@ -53,20 +53,26 @@ export class ApiErrorHandler {
    */
   private static extractMessageFromAxiosError(error: AxiosError): string {
     // レスポンスボディからメッセージを抽出
-    const responseData = error.response?.data as any;
-    
-    if (responseData?.message) {
+    const responseData = error.response?.data as Record<string, unknown>;
+
+    if (responseData?.message && typeof responseData.message === 'string') {
       return responseData.message;
     }
-    
+
     // バリデーションエラーの場合
-    if (error.response?.status === 422 && responseData?.errors) {
-      const firstError = Object.values(responseData.errors)[0];
+    if (
+      error.response?.status === 422 &&
+      responseData?.errors &&
+      typeof responseData.errors === 'object' &&
+      responseData.errors !== null
+    ) {
+      const errors = responseData.errors as Record<string, unknown>;
+      const firstError = Object.values(errors)[0];
       if (Array.isArray(firstError) && firstError.length > 0) {
         return firstError[0] as string;
       }
     }
-    
+
     // HTTPステータスコードに基づく標準メッセージ
     switch (error.response?.status) {
       case 400:

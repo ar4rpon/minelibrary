@@ -1,3 +1,4 @@
+import { BookShelfService } from '@/api/services';
 import { BaseDialog } from '@/components/common/dialog/BaseDialog';
 import { Button } from '@/components/common/ui/button';
 import {
@@ -6,7 +7,6 @@ import {
   DialogTitle,
 } from '@/components/common/ui/dialog';
 import { Input } from '@/components/common/ui/input';
-import { generateShareLink } from '@/Services/bookShelfService';
 import { DialogProps } from '@/types';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
@@ -30,7 +30,7 @@ export function ShareLinkDialog({
     setIsLoading(true);
     try {
       console.log('ダイアログから送信するbookShelfId:', bookShelfId);
-      const response = await generateShareLink(bookShelfId);
+      const response = await BookShelfService.generateShareLink(bookShelfId);
       console.log(response);
       if (response) {
         console.log('共有リンク生成成功:', response);

@@ -5,8 +5,6 @@ import { LabelHTMLAttributes } from 'react';
 export default function RakutenButton({
   url,
   className = '',
-  children,
-  ...props
 }: LabelHTMLAttributes<HTMLLabelElement> & { url: string }) {
   const openLink = () => {
     window.open(url, '_blank', 'noopener,noreferrer');

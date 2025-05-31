@@ -24,18 +24,18 @@ export function DefaultCard({
   name,
   description,
   isPublic,
-  image,
   owner,
   type = 'my',
 }: DefaultCardProps) {
   const { dialogs } = useBookShelfState();
 
   // タイプに応じたURLを生成
-  const detailUrl = type === 'my'
-    ? `/book-shelf/${bookShelfId}`
-    : owner
-      ? `/user/${owner.id}/book-shelf/${bookShelfId}`
-      : `/book-shelf/${bookShelfId}`;
+  const detailUrl =
+    type === 'my'
+      ? `/book-shelf/${bookShelfId}`
+      : owner
+        ? `/user/${owner.id}/book-shelf/${bookShelfId}`
+        : `/book-shelf/${bookShelfId}`;
 
   // 所有者かどうかを判定
   const isOwner = type === 'my';
@@ -49,7 +49,7 @@ export function DefaultCard({
       isPublic={isPublic}
     >
       <div className="flex flex-row gap-4">
-        <Image imageUrl={image || ''} name={name} variant="card" />
+        <Image variant="card" />
 
         <div className="flex flex-1 flex-col">
           <Header

@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { AppError, isAppError } from '@/lib/errors';
+import { isAppError } from '@/lib/errors';
+import { useCallback, useState } from 'react';
 
 /**
  * 非同期処理の状態を管理するインターフェース
@@ -25,23 +25,23 @@ export function useAsyncState<T>(initialData?: T) {
    * 非同期関数を実行し、状態を管理
    */
   const execute = useCallback(async (asyncFn: () => Promise<T>): Promise<T> => {
-    setState(prev => ({ ...prev, loading: true, error: null }));
-    
+    setState((prev) => ({ ...prev, loading: true, error: null }));
+
     try {
       const result = await asyncFn();
       setState({ data: result, loading: false, error: null });
       return result;
     } catch (error) {
-      const errorMessage = isAppError(error) 
-        ? error.message 
+      const errorMessage = isAppError(error)
+        ? error.message
         : '予期せぬエラーが発生しました';
-      
-      setState(prev => ({ 
-        ...prev, 
-        loading: false, 
-        error: errorMessage 
+
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: errorMessage,
       }));
-      
+
       throw error;
     }
   }, []);
@@ -57,14 +57,14 @@ export function useAsyncState<T>(initialData?: T) {
    * データのみを更新（ローディング状態を変更せずに）
    */
   const setData = useCallback((data: T | null) => {
-    setState(prev => ({ ...prev, data }));
+    setState((prev) => ({ ...prev, data }));
   }, []);
 
   /**
    * エラーのみをクリア
    */
   const clearError = useCallback(() => {
-    setState(prev => ({ ...prev, error: null }));
+    setState((prev) => ({ ...prev, error: null }));
   }, []);
 
   return {
@@ -83,43 +83,48 @@ export function useAsyncState<T>(initialData?: T) {
 /**
  * 複数の非同期状態を管理するフック
  */
-export function useMultipleAsyncStates<T extends Record<string, any>>() {
-  const [states, setStates] = useState<Record<keyof T, AsyncState<T[keyof T]>>>({} as any);
+export function useMultipleAsyncStates<T extends Record<string, unknown>>() {
+  const [states, setStates] = useState<Record<keyof T, AsyncState<T[keyof T]>>>(
+    {} as Record<keyof T, AsyncState<T[keyof T]>>,
+  );
 
-  const executeFor = useCallback(async <K extends keyof T>(
-    key: K,
-    asyncFn: () => Promise<T[K]>
-  ): Promise<T[K]> => {
-    setStates(prev => ({
-      ...prev,
-      [key]: { data: null, loading: true, error: null }
-    }));
-    
-    try {
-      const result = await asyncFn();
-      setStates(prev => ({
+  const executeFor = useCallback(
+    async <K extends keyof T>(
+      key: K,
+      asyncFn: () => Promise<T[K]>,
+    ): Promise<T[K]> => {
+      setStates((prev) => ({
         ...prev,
-        [key]: { data: result, loading: false, error: null }
+        [key]: { data: null, loading: true, error: null },
       }));
-      return result;
-    } catch (error) {
-      const errorMessage = isAppError(error) 
-        ? error.message 
-        : '予期せぬエラーが発生しました';
-      
-      setStates(prev => ({
-        ...prev,
-        [key]: { data: null, loading: false, error: errorMessage }
-      }));
-      
-      throw error;
-    }
-  }, []);
+
+      try {
+        const result = await asyncFn();
+        setStates((prev) => ({
+          ...prev,
+          [key]: { data: result, loading: false, error: null },
+        }));
+        return result;
+      } catch (error) {
+        const errorMessage = isAppError(error)
+          ? error.message
+          : '予期せぬエラーが発生しました';
+
+        setStates((prev) => ({
+          ...prev,
+          [key]: { data: null, loading: false, error: errorMessage },
+        }));
+
+        throw error;
+      }
+    },
+    [],
+  );
 
   const resetFor = useCallback(<K extends keyof T>(key: K) => {
-    setStates(prev => ({
+    setStates((prev) => ({
       ...prev,
-      [key]: { data: null, loading: false, error: null }
+      [key]: { data: null, loading: false, error: null },
     }));
   }, []);
 

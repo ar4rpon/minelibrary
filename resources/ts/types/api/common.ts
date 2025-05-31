@@ -1,7 +1,7 @@
 /**
  * API共通レスポンス型
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data: T;
   message?: string;
   status: number;
@@ -69,7 +69,7 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 export interface RequestConfig {
   method: HttpMethod;
   url: string;
-  data?: any;
-  params?: any;
+  data?: unknown;
+  params?: unknown;
   headers?: Record<string, string>;
 }

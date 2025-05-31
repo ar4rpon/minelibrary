@@ -1,15 +1,16 @@
+import { BookService } from '@/api/services';
 import { ReadStatusBadge } from '@/components/book/ReadStatusBadge';
 import { Button } from '@/components/common/ui/button';
 import { BookDetailDialog } from '@/features/book/components/dialogs/BookDetailDialog';
 import { UpdateReadStatusDialog } from '@/features/book/components/dialogs/UpdateReadStatusDialog';
-import { useBookCardState } from '@/features/book/hooks/useBookCardState';
 import { useBookMemo } from '@/features/book/hooks/useBookMemo';
 import { useBookShelf } from '@/features/book/hooks/useBookShelf';
 import { useFavoriteBook } from '@/features/book/hooks/useFavoriteBook';
 import { DeleteBookDialog } from '@/features/bookshelf/components/dialogs/DeleteBookDialog';
 import { CreateMemoDialog } from '@/features/memo/components/dialogs/CreateMemoDialog';
-import { BookData, BookService } from '@/Services/bookService';
+import { useBookCardState } from '@/hooks/domain';
 import { ReadStatus } from '@/types';
+import type { BookData } from '@/types/api';
 import { Book, BookOpen, Edit, Heart, Library } from 'lucide-react';
 import { BaseCard } from './BaseCard';
 import { Header } from './elements/Header';
@@ -57,13 +58,13 @@ export function BookShelfCard(props: BookShelfCardProps) {
   };
 
   const handleUpdateReadStatus = () => {
-    BookService.updateReadStatus(isbn, readStatusState.status);
+    BookService.updateReadStatus(isbn, readStatusState.current);
     dialogs.readStatus.close();
   };
 
   return (
     <BaseCard variant="book-shelf" {...props}>
-      <ReadStatusBadge status={readStatusState.status} />
+      <ReadStatusBadge status={readStatusState.current} />
 
       <Image
         imageUrl={image_url}
@@ -143,8 +144,8 @@ export function BookShelfCard(props: BookShelfCardProps) {
       <UpdateReadStatusDialog
         isOpen={dialogs.readStatus.isOpen}
         onClose={dialogs.readStatus.close}
-        readStatus={readStatusState.status}
-        onChangeValue={readStatusState.setStatus}
+        readStatus={readStatusState.current}
+        onChangeValue={readStatusState.set}
         onConfirm={handleUpdateReadStatus}
       />
 

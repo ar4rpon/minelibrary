@@ -13,7 +13,7 @@ export type PageProps<
   };
 };
 
-export type ReadStatus = 'want_read' | 'reading' | 'done_read';
+export type ReadStatus = 'want_read' | 'reading' | 'finished';
 
 export interface BookProps {
   isbn: string;

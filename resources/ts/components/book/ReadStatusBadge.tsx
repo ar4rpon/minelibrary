@@ -18,7 +18,7 @@ export function ReadStatusBadge({ status }: ReadStatusBadgeProps) {
       text: '読んでる',
       className: 'bg-blue-100 text-blue-700',
     },
-    done_read: {
+    finished: {
       icon: CheckCircle,
       text: '読んだ',
       className: 'bg-green-100 text-green-700',

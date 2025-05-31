@@ -1,37 +1,51 @@
-import { BookService } from '@/Services/bookService';
-import { useEffect, useState } from 'react';
+import { useAsyncState } from '@/api/hooks';
+import { BookService } from '@/api/services';
+import type { BookshelfListItem } from '@/types/api';
+import { useCallback, useEffect, useState } from 'react';
 
 /**
  * 本棚関連の状態と処理を管理するカスタムフック
  */
 export function useBookShelf() {
-  const [bookshelves, setBookshelves] = useState<
-    { id: number; book_shelf_name: string }[]
-  >([]);
+  const [bookshelves, setBookshelves] = useState<BookshelfListItem[]>([]);
+
+  const fetchState = useAsyncState<BookshelfListItem[]>();
+  const addState = useAsyncState<void>();
+  const createState = useAsyncState<unknown>();
+  const removeState = useAsyncState<boolean>();
 
   // 本棚リストの取得
-  const fetchBookshelves = () => {
-    BookService.fetchBookshelves()
-      .then((response) => setBookshelves(response.data))
-      .catch((error) => console.error('Failed to fetch bookshelves:', error));
-  };
+  const fetchBookshelves = useCallback(async () => {
+    try {
+      const result = await fetchState.execute(() =>
+        BookService.fetchBookshelves(),
+      );
+      setBookshelves(result);
+    } catch (error) {
+      console.error('Failed to fetch bookshelves:', error);
+    }
+  }, [fetchState]);
 
   useEffect(() => {
     fetchBookshelves();
-  }, []);
+  }, [fetchBookshelves]);
 
   // 本棚に本を追加
-  const addToBookshelf = (shelfId: number, isbn: string) => {
-    BookService.addToBookshelf(shelfId, isbn).catch((error) =>
-      console.error('Failed to add book to shelf:', error),
-    );
+  const addToBookshelf = async (shelfId: number, isbn: string) => {
+    try {
+      await addState.execute(() => BookService.addToBookshelf(shelfId, isbn));
+    } catch (error) {
+      console.error('Failed to add book to shelf:', error);
+    }
   };
 
   // 本棚を作成
   const createBookshelf = async (name: string, description: string) => {
     try {
-      await BookService.createBookshelf(name, description);
-      fetchBookshelves(); // 本棚リストを再取得
+      await createState.execute(() =>
+        BookService.createBookshelf(name, description),
+      );
+      await fetchBookshelves(); // 本棚リストを再取得
       return true;
     } catch (error) {
       console.error('Failed to create bookshelf:', error);
@@ -41,7 +55,9 @@ export function useBookShelf() {
 
   // 本棚から本を削除
   const removeFromBookshelf = async (shelfId: number, isbn: string) => {
-    return BookService.removeFromBookshelf(shelfId, isbn);
+    return removeState.execute(() =>
+      BookService.removeFromBookshelf(shelfId, isbn),
+    );
   };
 
   return {
@@ -49,5 +65,11 @@ export function useBookShelf() {
     addToBookshelf,
     createBookshelf,
     removeFromBookshelf,
+    isLoading: [fetchState, addState, createState, removeState].some(
+      (state) => state.loading,
+    ),
+    hasError: [fetchState, addState, createState, removeState].some(
+      (state) => state.hasError,
+    ),
   };
 }

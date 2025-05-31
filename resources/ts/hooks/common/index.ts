@@ -1,6 +1,6 @@
-export { 
-  useDialogState, 
-  useMultipleDialogs, 
+export {
   createDialogNames,
-  type DialogControls 
+  useDialogState,
+  useMultipleDialogs,
+  type DialogControls,
 } from './useDialogState';

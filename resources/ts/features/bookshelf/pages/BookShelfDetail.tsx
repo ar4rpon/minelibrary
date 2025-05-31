@@ -1,10 +1,8 @@
 import BookCard from '@/components/book/card';
 import BookShelf from '@/components/bookshelf';
 import DefaultLayout from '@/components/common/layout';
-import { ShareLinkDialog } from '@/features/bookshelf/components/dialogs/ShareLinkDialog';
 import { ReadStatus } from '@/types';
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
 
 interface BookShelfBook {
   isbn: string;
@@ -39,12 +37,6 @@ export default function BookShelfDetail({
   bookShelf,
   books,
 }: BookShelfDetailProps) {
-  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-
-  const handleShareClick = () => {
-    setIsShareDialogOpen(true);
-  };
-
   return (
     <DefaultLayout header="本棚詳細">
       <Head title={bookShelf.book_shelf_name} />

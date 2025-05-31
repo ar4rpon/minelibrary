@@ -1,9 +1,7 @@
 import { Separator } from '@/components/common/ui/separator';
 import { BookShelfDialogs } from '@/features/bookshelf/components/dialogs/BookShelfDialogs';
-import { ShareLinkDialog } from '@/features/bookshelf/components/dialogs/ShareLinkDialog';
 import { useBookShelfState } from '@/features/bookshelf/hooks/useBookShelfState';
 import { BookShelfBase } from '@/types/bookShelf';
-import { useState } from 'react';
 import { Header } from '../elements/Header';
 import { UserInfo } from '../elements/UserInfo';
 import { BaseCard } from './BaseCard';
@@ -50,8 +48,8 @@ export function DetailCard({
           name={name}
           description={description}
           variant="description"
-          onEdit={() => { }}
-          onDelete={() => { }}
+          onEdit={() => {}}
+          onDelete={() => {}}
           isShared={true}
         />
       )}
@@ -85,7 +83,6 @@ export function DetailCard({
               }
             }}
           />
-
         </>
       )}
     </BaseCard>
