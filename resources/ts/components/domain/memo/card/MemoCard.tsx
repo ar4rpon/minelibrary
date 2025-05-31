@@ -135,5 +135,3 @@ export function MemoCard({ id, contents, book }: MemoCardProps) {
     </BaseCard>
   );
 }
-
-export default MemoCard;

@@ -63,6 +63,3 @@ export { DefaultCard } from './DefaultCard';
 export { Header } from './elements/Header';
 export { Image } from './elements/Image';
 export { FavoriteCard } from './FavoriteCard';
-
-// デフォルトエクスポート（後方互換性のため）
-export default BookCard;

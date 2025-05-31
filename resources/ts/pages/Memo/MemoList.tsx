@@ -1,5 +1,5 @@
-import DefaultLayout from '@/components/common/layout';
-import MemoCard from '@/components/domain/memo/card/MemoCard';
+import { DefaultLayout } from '@/components/common/layout';
+import { MemoCard } from '@/components/domain/memo/card/MemoCard';
 import {
   Select,
   SelectContent,
