@@ -1,3 +1,4 @@
+import { BaseDialog } from '@/components/common/ui/base-dialog';
 import { Button } from '@/components/common/ui/button';
 import {
   DialogDescription,
@@ -7,7 +8,6 @@ import {
 import { Input } from '@/components/common/ui/input';
 import { Label } from '@/components/common/ui/label';
 import { Textarea } from '@/components/common/ui/textarea';
-import { BaseDialog } from '@/components/ui/base-dialog';
 import { DialogProps } from '@/types';
 import { useState } from 'react';
 
