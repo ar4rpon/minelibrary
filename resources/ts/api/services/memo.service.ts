@@ -1,6 +1,6 @@
 import { ApiErrorHandler } from '@/lib/errors';
 import type { MemoContent } from '@/types/domain/memo';
-import { axiosClient } from '../client';
+import { apiClient } from '../client';
 
 interface CreateMemoRequest {
   isbn: string;
@@ -24,7 +24,7 @@ export const MemoService = {
    */
   createMemo: (request: CreateMemoRequest): Promise<void> => {
     return ApiErrorHandler.executeWithErrorHandling(
-      () => axiosClient.post('/memo/create', request),
+      () => apiClient.post('/memo/create', request),
       'MemoService.createMemo',
     );
   },
@@ -34,7 +34,7 @@ export const MemoService = {
    */
   updateMemo: (memoId: number, request: UpdateMemoRequest): Promise<void> => {
     return ApiErrorHandler.executeWithErrorHandling(
-      () => axiosClient.put(`/memo/${memoId}`, request),
+      () => apiClient.put(`/memo/${memoId}`, request),
       'MemoService.updateMemo',
     );
   },
@@ -44,7 +44,7 @@ export const MemoService = {
    */
   deleteMemo: (memoId: number): Promise<void> => {
     return ApiErrorHandler.executeWithErrorHandling(
-      () => axiosClient.delete(`/memo/${memoId}`),
+      () => apiClient.delete(`/memo/${memoId}`),
       'MemoService.deleteMemo',
     );
   },
@@ -54,7 +54,7 @@ export const MemoService = {
    */
   getMemosByBook: (isbn: string): Promise<MemoContent[]> => {
     return ApiErrorHandler.executeWithErrorHandling(
-      () => axiosClient.get(`/memo/book/${isbn}`),
+      () => apiClient.get(`/memo/book/${isbn}`),
       'MemoService.getMemosByBook',
     );
   },
