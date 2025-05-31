@@ -11,10 +11,7 @@ interface BookGenreProps {
   onValueChange: (value: string) => void;
 }
 
-export function BookGenreSelect({
-  onValueChange,
-  value,
-}: BookGenreProps) {
+export function BookGenreSelect({ onValueChange, value }: BookGenreProps) {
   return (
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger className="w-full sm:w-[180px]">
