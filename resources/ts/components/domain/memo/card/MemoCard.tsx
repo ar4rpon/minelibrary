@@ -14,7 +14,6 @@ import { useMemoState } from '@/hooks/domain/useMemoState';
 import { BookProps } from '@/types/domain/book';
 import { MemoContent } from '@/types/domain/memo';
 import { MoreVertical, Pencil, Plus, Trash } from 'lucide-react';
-import { memo } from 'react';
 
 interface MemoCardProps {
   id: string;
@@ -26,7 +25,7 @@ interface MemoCardProps {
  * メモカードコンポーネント
  * 書籍情報とメモ一覧を表示する
  */
-const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
+export function MemoCard({ id, contents, book }: MemoCardProps) {
   const { dialogs, selectedMemo, actions } = useMemoState(id);
 
   return (
@@ -118,6 +117,6 @@ const MemoCard = memo(function MemoCard({ id, contents, book }: MemoCardProps) {
       />
     </BaseCard>
   );
-});
+}
 
 export default MemoCard;
