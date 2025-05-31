@@ -9,7 +9,7 @@
 export type ReadStatus = 'want_read' | 'reading' | 'finished';
 
 /**
- * Book ドメインエンティティ
+ * Book ドメインエンティティ（理想的な構造）
  */
 export interface Book {
   id?: number;
@@ -17,22 +17,22 @@ export interface Book {
   title: string;
   author: string;
   publisher: string;
-  published_date: string;
-  image: string;
+  publishedDate: string;
+  imageUrl: string;
   genre: string;
   description?: string;
-  page_count?: number;
-  read_status?: ReadStatus;
+  pageCount?: number;
+  readStatus?: ReadStatus;
   rating?: number;
-  created_at?: string;
-  updated_at?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 /**
- * Book Props (UI コンポーネント用) - API 構造に合わせて調整
+ * BookProps - UIコンポーネント用（APIのBookDataと同じ構造）
+ * @deprecated BookDataを直接使用することを推奨
  */
 export interface BookProps {
-  id?: number;
   isbn: string;
   title: string;
   author: string;
@@ -41,10 +41,6 @@ export interface BookProps {
   image_url: string;
   item_caption: string;
   item_price: number;
-  readStatus?: ReadStatus;
-  rating?: number;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 /**

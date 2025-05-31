@@ -4,7 +4,7 @@
  */
 
 /**
- * Memo Content エンティティ
+ * MemoContent エンティティ（APIの構造と同じ - snake_case）
  */
 export interface MemoContent {
   id: number;
@@ -16,7 +16,7 @@ export interface MemoContent {
 }
 
 /**
- * Memo ドメインエンティティ
+ * Memo ドメインエンティティ（理想的な構造 - camelCase）
  */
 export interface Memo {
   id: number;
@@ -25,10 +25,10 @@ export interface Memo {
   chapter?: number;
   page?: number;
   tags?: string[];
-  is_private: boolean;
-  created_at: string;
-  updated_at: string;
-  user_id: number;
+  isPrivate: boolean;
+  createdAt: string;
+  updatedAt: string;
+  userId: number;
 }
 
 /**
