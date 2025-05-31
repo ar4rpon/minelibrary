@@ -1,9 +1,9 @@
 import { BaseCard } from '@/components/common/BaseCard';
 import FavoriteIcon from '@/components/common/Icon/FavoriteIcon';
+import { BookDetailDialog } from '@/components/domain/book/dialogs/BookDetailDialog';
 import { Button } from '@/components/ui/button';
-import { BookDetailDialog } from '@/features/book/components/dialogs/BookDetailDialog';
-import { useFavoriteBook } from '@/features/book/hooks/useFavoriteBook';
 import { useBookCardState } from '@/hooks/domain';
+import { useFavoriteBook } from '@/hooks/domain/useFavoriteBook';
 import type { BookData } from '@/types/api';
 import { Header } from './elements/Header';
 import { Image } from './elements/Image';

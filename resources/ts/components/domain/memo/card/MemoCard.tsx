@@ -1,4 +1,7 @@
 import { BaseCard } from '@/components/common/BaseCard';
+import { CreateMemoDialog } from '@/components/domain/memo/dialogs/CreateMemoDialog';
+import { DeleteMemoDialog } from '@/components/domain/memo/dialogs/DeleteMemoDialog';
+import { EditMemoDialog } from '@/components/domain/memo/dialogs/EditMemoDialog';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -7,10 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
-import { CreateMemoDialog } from '@/features/memo/components/dialogs/CreateMemoDialog';
-import { DeleteMemoDialog } from '@/features/memo/components/dialogs/DeleteMemoDialog';
-import { EditMemoDialog } from '@/features/memo/components/dialogs/EditMemoDialog';
-import { useMemoState } from '@/features/memo/hooks/useMemoState';
+import { useMemoState } from '@/hooks/domain/useMemoState';
 import { BookProps, MemoContent } from '@/types';
 import { MoreVertical, Pencil, Plus, Trash } from 'lucide-react';
 import { memo } from 'react';

@@ -1,135 +1,75 @@
 import { useAsyncState } from '@/api/hooks';
-import { BookShelfService } from '@/api/services';
-import { useMultipleDialogs } from '@/hooks/common';
+import { BookService } from '@/api/services';
+import type { BookshelfListItem } from '@/types/api';
+import { useCallback, useEffect, useState } from 'react';
 
 /**
- * 本棚のベースダイアログ
+ * 本棚関連の状態と処理を管理するカスタムフック
  */
-const BASE_BOOKSHELF_DIALOGS = ['edit', 'delete', 'shareLink'] as const;
+export function useBookShelf() {
+  const [bookshelves, setBookshelves] = useState<BookshelfListItem[]>([]);
 
-/**
- * 本棚の拡張ダイアログ（addBook含む）
- */
-const EXTENDED_BOOKSHELF_DIALOGS = [
-  'edit',
-  'delete',
-  'shareLink',
-  'addBook',
-] as const;
+  const fetchState = useAsyncState<BookshelfListItem[]>();
+  const addState = useAsyncState<void>();
+  const createState = useAsyncState<unknown>();
+  const removeState = useAsyncState<boolean>();
 
-/**
- * 本棚に関する操作と状態を管理するフック
- */
-export function useBookShelf(includeAddBook = false) {
-  // 条件付きダイアログ管理
-  const dialogs = useMultipleDialogs(
-    includeAddBook ? EXTENDED_BOOKSHELF_DIALOGS : BASE_BOOKSHELF_DIALOGS,
-  );
-
-  // 非同期処理状態管理
-  const updateState = useAsyncState<boolean>();
-  const deleteState = useAsyncState<boolean>();
-  const addBooksState = useAsyncState<boolean>();
-  const shareState = useAsyncState<unknown>();
-
-  /**
-   * 本棚を更新
-   */
-  const updateBookShelf = async (
-    bookShelfId: number,
-    name: string,
-    description: string,
-    isPublic: boolean,
-  ) => {
-    const result = await updateState.execute(() =>
-      BookShelfService.updateBookShelf(
-        bookShelfId,
-        name,
-        description,
-        isPublic,
-      ),
-    );
-    if (result) {
-      dialogs.edit.close();
+  // 本棚リストの取得
+  const fetchBookshelves = useCallback(async () => {
+    try {
+      const result = await fetchState.execute(() =>
+        BookService.fetchBookshelves(),
+      );
+      setBookshelves(result);
+    } catch (error) {
+      console.error('Failed to fetch bookshelves:', error);
     }
-    return result;
-  };
+  }, [fetchState]);
 
-  /**
-   * 本棚を削除
-   */
-  const deleteBookShelf = async (bookShelfId: number) => {
-    const result = await deleteState.execute(() =>
-      BookShelfService.deleteBookShelf(bookShelfId),
-    );
-    if (result) {
-      dialogs.delete.close();
+  useEffect(() => {
+    fetchBookshelves();
+  }, [fetchBookshelves]);
+
+  // 本棚に本を追加
+  const addToBookshelf = async (shelfId: number, isbn: string) => {
+    try {
+      await addState.execute(() => BookService.addToBookshelf(shelfId, isbn));
+    } catch (error) {
+      console.error('Failed to add book to shelf:', error);
     }
-    return result;
   };
 
-  /**
-   * 本棚に本を追加
-   */
-  const addBooksToShelf = async (bookShelfId: number, isbns: string[]) => {
-    const result = await addBooksState.execute(() =>
-      BookShelfService.addBooksToShelf(bookShelfId, isbns),
-    );
-    if (result && 'addBook' in dialogs) {
-      (dialogs as Record<string, { close: () => void }>).addBook.close();
+  // 本棚を作成
+  const createBookshelf = async (name: string, description: string) => {
+    try {
+      await createState.execute(() =>
+        BookService.createBookshelf(name, description),
+      );
+      await fetchBookshelves(); // 本棚リストを再取得
+      return true;
+    } catch (error) {
+      console.error('Failed to create bookshelf:', error);
+      return false;
     }
-    return result;
   };
 
-  /**
-   * 共有リンクを生成
-   */
-  const generateShareLink = async (bookShelfId: number) => {
-    const result = await shareState.execute(() =>
-      BookShelfService.generateShareLink(bookShelfId),
+  // 本棚から本を削除
+  const removeFromBookshelf = async (shelfId: number, isbn: string) => {
+    return removeState.execute(() =>
+      BookService.removeFromBookshelf(shelfId, isbn),
     );
-    return result;
-  };
-
-  /**
-   * お気に入りの本を取得
-   */
-  const getFavoriteBooks = async () => {
-    return BookShelfService.getFavoriteBooks();
   };
 
   return {
-    // ダイアログ状態
-    dialogs,
-
-    // 非同期操作
-    actions: {
-      updateBookShelf,
-      deleteBookShelf,
-      addBooksToShelf,
-      generateShareLink,
-      getFavoriteBooks,
-    },
-
-    // ローディング・エラー状態
-    states: {
-      update: updateState,
-      delete: deleteState,
-      addBooks: addBooksState,
-      share: shareState,
-    },
-
-    // 便利なフラグ
-    isLoading: [updateState, deleteState, addBooksState, shareState].some(
+    bookshelves,
+    addToBookshelf,
+    createBookshelf,
+    removeFromBookshelf,
+    isLoading: [fetchState, addState, createState, removeState].some(
       (state) => state.loading,
     ),
-    hasError: [updateState, deleteState, addBooksState, shareState].some(
+    hasError: [fetchState, addState, createState, removeState].some(
       (state) => state.hasError,
     ),
   };
 }
-
-/**
- * 後方互換性のためのエイリアス（段階的に削除予定）
- */
-export const useBookShelfState = useBookShelf;
