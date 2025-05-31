@@ -8,6 +8,7 @@ import { Header } from '../elements/Header';
 import { Image } from '../elements/Image';
 
 interface DefaultCardProps extends BookShelfBase {
+  // 追加プロパティ
   image?: string;
   owner?: {
     id: number;
