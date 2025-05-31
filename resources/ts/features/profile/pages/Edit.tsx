@@ -1,5 +1,5 @@
 import DefaultLayout from '@/components/common/layout';
-import { Card } from '@/components/common/ui/card';
+import { Card } from '@/components/ui/card';
 import DeleteUserForm from '@/features/profile/components/DeleteUserForm';
 import UpdatePasswordForm from '@/features/profile/components/UpdatePasswordForm';
 import UpdateProfileInformationForm from '@/features/profile/components/UpdateProfileInformationForm';

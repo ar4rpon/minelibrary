@@ -6,7 +6,7 @@ import {
   PaginationLast,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/common/ui/pagination';
+} from '@/components/ui/pagination';
 
 interface PaginationProps {
   totalPages: number;

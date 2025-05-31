@@ -1,12 +1,12 @@
 import { BaseCard } from '@/components/common/BaseCard';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/common/ui/dropdown-menu';
-import { Separator } from '@/components/common/ui/separator';
+} from '@/components/ui/dropdown-menu';
+import { Separator } from '@/components/ui/separator';
 import { CreateMemoDialog } from '@/features/memo/components/dialogs/CreateMemoDialog';
 import { DeleteMemoDialog } from '@/features/memo/components/dialogs/DeleteMemoDialog';
 import { EditMemoDialog } from '@/features/memo/components/dialogs/EditMemoDialog';

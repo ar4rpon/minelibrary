@@ -1,12 +1,12 @@
 import DefaultLayout from '@/components/common/layout';
+import MemoCard from '@/components/domain/memo/card/MemoCard';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/common/ui/select';
-import MemoCard from '@/components/domain/memo/card/MemoCard';
+} from '@/components/ui/select';
 import { BookProps, MemoContent } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';

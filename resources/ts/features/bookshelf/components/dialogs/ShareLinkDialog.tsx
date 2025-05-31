@@ -1,12 +1,12 @@
 import { BookShelfService } from '@/api/services';
 import { BaseDialog } from '@/components/common/dialog/BaseDialog';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/common/ui/dialog';
-import { Input } from '@/components/common/ui/input';
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { DialogProps } from '@/types';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';

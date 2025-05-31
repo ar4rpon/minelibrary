@@ -1,6 +1,6 @@
 import { BaseCard } from '@/components/common/BaseCard';
 import FavoriteIcon from '@/components/common/Icon/FavoriteIcon';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import { BookDetailDialog } from '@/features/book/components/dialogs/BookDetailDialog';
 import { useFavoriteBook } from '@/features/book/hooks/useFavoriteBook';
 import { useBookCardState } from '@/hooks/domain';

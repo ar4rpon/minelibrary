@@ -1,5 +1,5 @@
 import { BaseCard } from '@/components/common/BaseCard';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import { BookShelfDialogs } from '@/features/bookshelf/components/dialogs/BookShelfDialogs';
 import { useBookShelfState } from '@/features/bookshelf/hooks/useBookShelfState';
 import { BookShelfBase } from '@/types/bookShelf';

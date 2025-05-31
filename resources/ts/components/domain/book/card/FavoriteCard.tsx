@@ -1,12 +1,12 @@
 import { BookService } from '@/api/services';
 import { BaseCard } from '@/components/common/BaseCard';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/common/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import { BookDetailDialog } from '@/features/book/components/dialogs/BookDetailDialog';
 import { UpdateReadStatusDialog } from '@/features/book/components/dialogs/UpdateReadStatusDialog';
 import { useBookMemo } from '@/features/book/hooks/useBookMemo';

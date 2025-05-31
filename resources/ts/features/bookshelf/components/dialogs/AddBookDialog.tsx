@@ -1,12 +1,12 @@
 import { BookShelfService } from '@/api/services';
 import { BaseDialog } from '@/components/common/dialog/BaseDialog';
-import { Button } from '@/components/common/ui/button';
-import { Checkbox } from '@/components/common/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/common/ui/dialog';
+} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -14,7 +14,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/common/ui/table';
+} from '@/components/ui/table';
 import { DialogProps, ReadStatus } from '@/types';
 import { useEffect, useState } from 'react';
 

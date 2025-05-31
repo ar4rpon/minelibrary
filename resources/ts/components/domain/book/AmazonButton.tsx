@@ -1,5 +1,5 @@
 import AmazonLogo from '@/components/common/Icon/Amazon';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import { LabelHTMLAttributes } from 'react';
 
 export function AmazonButton({

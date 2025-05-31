@@ -1,15 +1,11 @@
 import ApplicationLogo from '@/components/common/Icon/ApplicationLogo';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/common/ui/dropdown-menu';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@/components/common/ui/sheet';
+} from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Link, usePage } from '@inertiajs/react';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import {
@@ -29,7 +25,7 @@ import { lazy, memo, Suspense, useCallback, useState } from 'react';
  * アプリケーションのヘッダーナビゲーションを表示する
  */
 const DropdownMenu = lazy(() =>
-  import('@/components/common/ui/dropdown-menu').then((module) => ({
+  import('@/components/ui/dropdown-menu').then((module) => ({
     default: module.DropdownMenu,
   })),
 );

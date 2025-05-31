@@ -1,12 +1,12 @@
 import DefaultLayout from '@/components/common/layout';
+import BookCard from '@/components/domain/book/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/common/ui/select';
-import BookCard from '@/components/domain/book/card';
+} from '@/components/ui/select';
 import { ReadStatus } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';

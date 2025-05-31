@@ -1,13 +1,13 @@
 import { BaseDialog } from '@/components/common/dialog/BaseDialog';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/common/ui/dialog';
-import { Input } from '@/components/common/ui/input';
-import { Label } from '@/components/common/ui/label';
-import { Textarea } from '@/components/common/ui/textarea';
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { DialogProps } from '@/types';
 import { useState } from 'react';
 

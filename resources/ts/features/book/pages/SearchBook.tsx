@@ -1,16 +1,16 @@
 import CommonPagination from '@/components/common/CommonPagination';
 import DefaultLayout from '@/components/common/layout';
-import { Button } from '@/components/common/ui/button';
-import { Input } from '@/components/common/ui/input';
+import { BookGenreSelect } from '@/components/domain/book';
+import BookCard from '@/components/domain/book/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/common/ui/select';
-import { BookGenreSelect } from '@/components/domain/book';
-import BookCard from '@/components/domain/book/card';
+} from '@/components/ui/select';
 import type { BookData } from '@/types/api';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
