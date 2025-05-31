@@ -25,7 +25,7 @@ export const MemoService = {
   createMemo: (request: CreateMemoRequest): Promise<void> => {
     return ApiErrorHandler.executeWithErrorHandling(
       () => axiosClient.post('/memo/create', request),
-      'MemoService.createMemo'
+      'MemoService.createMemo',
     );
   },
 
@@ -35,7 +35,7 @@ export const MemoService = {
   updateMemo: (memoId: number, request: UpdateMemoRequest): Promise<void> => {
     return ApiErrorHandler.executeWithErrorHandling(
       () => axiosClient.put(`/memo/${memoId}`, request),
-      'MemoService.updateMemo'
+      'MemoService.updateMemo',
     );
   },
 
@@ -45,7 +45,7 @@ export const MemoService = {
   deleteMemo: (memoId: number): Promise<void> => {
     return ApiErrorHandler.executeWithErrorHandling(
       () => axiosClient.delete(`/memo/${memoId}`),
-      'MemoService.deleteMemo'
+      'MemoService.deleteMemo',
     );
   },
 
@@ -55,7 +55,7 @@ export const MemoService = {
   getMemosByBook: (isbn: string): Promise<MemoContent[]> => {
     return ApiErrorHandler.executeWithErrorHandling(
       () => axiosClient.get(`/memo/book/${isbn}`),
-      'MemoService.getMemosByBook'
+      'MemoService.getMemosByBook',
     );
   },
 };

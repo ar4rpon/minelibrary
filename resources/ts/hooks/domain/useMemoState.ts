@@ -52,15 +52,15 @@ export function useMemoState(isbn: string) {
     page?: number,
   ) => {
     if (!selectedMemo) return;
-    
+
     await editMemoState.execute(() =>
       MemoService.updateMemo(selectedMemo.id, {
         memo: updatedMemo,
         memo_chapter: chapter,
         memo_page: page,
-      })
+      }),
     );
-    
+
     if (!editMemoState.hasError) {
       router.reload();
       dialogs.edit.close();
@@ -70,11 +70,11 @@ export function useMemoState(isbn: string) {
   // メモを削除する
   const deleteMemo = async () => {
     if (!selectedMemo) return;
-    
+
     await deleteMemoState.execute(() =>
-      MemoService.deleteMemo(selectedMemo.id)
+      MemoService.deleteMemo(selectedMemo.id),
     );
-    
+
     if (!deleteMemoState.hasError) {
       router.reload();
       dialogs.delete.close();
@@ -89,9 +89,9 @@ export function useMemoState(isbn: string) {
         memo,
         memo_chapter: chapter,
         memo_page: page,
-      })
+      }),
     );
-    
+
     if (!createMemoState.hasError) {
       router.reload();
       dialogs.create.close();
@@ -123,7 +123,13 @@ export function useMemoState(isbn: string) {
       createMemo,
     },
     // 統一されたローディングとエラー状態
-    isLoading: editMemoState.loading || deleteMemoState.loading || createMemoState.loading,
-    hasError: editMemoState.hasError || deleteMemoState.hasError || createMemoState.hasError,
+    isLoading:
+      editMemoState.loading ||
+      deleteMemoState.loading ||
+      createMemoState.loading,
+    hasError:
+      editMemoState.hasError ||
+      deleteMemoState.hasError ||
+      createMemoState.hasError,
   };
 }

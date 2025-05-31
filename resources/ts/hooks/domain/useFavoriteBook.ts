@@ -29,7 +29,7 @@ export function useFavoriteBook(book: BookData) {
     setIsFavorite(!isFavorite);
 
     await favoriteState.execute(() => BookService.toggleFavorite(book));
-    
+
     // エラー時に状態を元に戻す
     if (favoriteState.hasError) {
       setIsFavorite(previousState);
