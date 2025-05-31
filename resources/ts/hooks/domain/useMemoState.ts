@@ -1,12 +1,19 @@
+// 1. React and external libraries
+import { useState } from 'react';
+import { router } from '@inertiajs/react';
+
+// 2. Internal API/services
 import { useAsyncState } from '@/api/hooks';
 import { MemoService } from '@/api/services';
+
+// 3. Hooks
 import {
   createDialogNames,
   useMultipleDialogs,
 } from '@/hooks/common/useDialogState';
-import { MemoContent } from '@/types/domain/memo';
-import { router } from '@inertiajs/react';
-import { useState } from 'react';
+
+// 4. Types
+import type { MemoContent } from '@/types/domain/memo';
 
 /**
  * Memo関連のダイアログ名定義

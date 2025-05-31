@@ -1,7 +1,10 @@
-import { BaseCard } from '@/components/common/BaseCard';
-import { CreateMemoDialog } from '@/components/domain/memo/dialogs/CreateMemoDialog';
-import { DeleteMemoDialog } from '@/components/domain/memo/dialogs/DeleteMemoDialog';
-import { EditMemoDialog } from '@/components/domain/memo/dialogs/EditMemoDialog';
+// 1. React and external libraries
+import { MoreVertical, Pencil, Plus, Trash } from 'lucide-react';
+
+// 2. Internal API/services
+// (none in this component)
+
+// 3. UI components
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,15 +13,29 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
+
+// 4. Common components
+import { BaseCard } from '@/components/common/BaseCard';
+
+// 5. Domain components
+import { CreateMemoDialog } from '@/components/domain/memo/dialogs/CreateMemoDialog';
+import { DeleteMemoDialog } from '@/components/domain/memo/dialogs/DeleteMemoDialog';
+import { EditMemoDialog } from '@/components/domain/memo/dialogs/EditMemoDialog';
+
+// 6. Hooks
 import { useMemoState } from '@/hooks/domain/useMemoState';
-import { BookProps } from '@/types/domain/book';
-import { MemoContent } from '@/types/domain/memo';
-import { MoreVertical, Pencil, Plus, Trash } from 'lucide-react';
+
+// 7. Types
+import type { BookData } from '@/types/api';
+import type { MemoContent } from '@/types/domain/memo';
+
+// 8. Local/relative imports
+// (none in this component)
 
 interface MemoCardProps {
   id: string;
   contents: MemoContent[];
-  book: BookProps;
+  book: BookData;
 }
 
 /**

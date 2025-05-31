@@ -1,10 +1,27 @@
+// 1. React and external libraries
+// (none in this component)
+
+// 2. Internal API/services
+// (none in this component)
+
+// 3. UI components
+import { Button } from '@/components/ui/button';
+
+// 4. Common components
 import { BaseCard } from '@/components/common/BaseCard';
 import FavoriteIcon from '@/components/common/Icon/FavoriteIcon';
+
+// 5. Domain components
 import { BookDetailDialog } from '@/components/domain/book/dialogs/BookDetailDialog';
-import { Button } from '@/components/ui/button';
+
+// 6. Hooks
 import { useBookCardState } from '@/hooks/domain';
 import { useFavoriteBook } from '@/hooks/domain/useFavoriteBook';
+
+// 7. Types
 import type { BookData } from '@/types/api';
+
+// 8. Local/relative imports
 import { Header } from './elements/Header';
 import { Image } from './elements/Image';
 

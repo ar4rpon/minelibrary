@@ -1,7 +1,12 @@
+// 1. React and external libraries
+import { useEffect, useState } from 'react';
+
+// 2. Internal API/services
 import { useAsyncState } from '@/api/hooks';
 import { BookService } from '@/api/services';
+
+// 3. Types
 import type { BookData } from '@/types/api';
-import { useEffect, useState } from 'react';
 
 /**
  * お気に入り関連の状態と処理を管理するカスタムフック
