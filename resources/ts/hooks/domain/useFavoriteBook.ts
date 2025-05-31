@@ -15,8 +15,11 @@ export function useFavoriteBook(book: BookData) {
   useEffect(() => {
     statusState
       .execute(() => BookService.getFavoriteStatus(book.isbn))
-      .then((response) => setIsFavorite(response.isFavorite))
-      .catch((error) => console.error('Failed to get favorite status:', error));
+      .then((response) => {
+        if (response && !statusState.hasError) {
+          setIsFavorite(response.isFavorite);
+        }
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book.isbn]);
 
@@ -25,11 +28,11 @@ export function useFavoriteBook(book: BookData) {
     const previousState = isFavorite;
     setIsFavorite(!isFavorite);
 
-    try {
-      await favoriteState.execute(() => BookService.toggleFavorite(book));
-    } catch (error) {
-      console.error('Failed to toggle favorite:', error);
-      setIsFavorite(previousState); // エラー時に状態を元に戻す
+    await favoriteState.execute(() => BookService.toggleFavorite(book));
+
+    // エラー時に状態を元に戻す
+    if (favoriteState.hasError) {
+      setIsFavorite(previousState);
     }
   };
 

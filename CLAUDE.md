@@ -185,10 +185,11 @@ resources/ts/
 1. Check for existing issues for the relevant task, create new one if none exists
 2. Create working branch
 3. Organize task list and commit per task
-4. When all tasks are complete, push and create pull request
+4. When all tasks are complete, push and create pull request　
 5. Merge to main branch and update local main branch
 6. Delete working branch
 7. If issues are complete, leave work report and close (skip this step if not all tasks within issues are complete)
+8. Add a report in Japanese when the work is completed to docs/yyyymmdd.md (create the file if it does not exist)
 
 ## Testing and Build
 

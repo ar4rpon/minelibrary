@@ -8,7 +8,9 @@ import type { BookData } from '@/types/api';
 import { Header } from './elements/Header';
 import { Image } from './elements/Image';
 
-interface DefaultCardProps extends BookData {}
+interface DefaultCardProps extends BookData {
+  // 拡張プロパティがある場合はここに追加
+}
 
 /**
  * デフォルトバリアントの書籍カードコンポーネント

@@ -14,7 +14,7 @@ interface BookCardProps extends BookData {
  * 書籍カードコンポーネントのエントリーポイント
  * variantに応じて適切なコンポーネントを返す
  */
-export default function BookCard(props: BookCardProps) {
+export function BookCard(props: BookCardProps) {
   const { variant = 'default' } = props;
 
   // お気に入りバリアント
@@ -63,3 +63,6 @@ export { DefaultCard } from './DefaultCard';
 export { Header } from './elements/Header';
 export { Image } from './elements/Image';
 export { FavoriteCard } from './FavoriteCard';
+
+// デフォルトエクスポート（後方互換性のため）
+export default BookCard;
