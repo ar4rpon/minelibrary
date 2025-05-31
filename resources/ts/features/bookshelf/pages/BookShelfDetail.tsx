@@ -1,6 +1,6 @@
 import BookCard from '@/components/book/card';
 import BookShelf from '@/components/bookshelf';
-import DefaultLayout from '@/components/common/layout';
+import DefaultLayout from '@/layouts/DefaultLayout';
 import { ReadStatus } from '@/types';
 import { Head } from '@inertiajs/react';
 

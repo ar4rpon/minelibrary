@@ -1,4 +1,4 @@
-import DefaultLayout from '@/components/common/layout';
+import DefaultLayout from '@/layouts/DefaultLayout';
 import { Button } from '@/components/common/ui/button';
 import { Card, CardContent } from '@/components/common/ui/card';
 import { Head } from '@inertiajs/react';

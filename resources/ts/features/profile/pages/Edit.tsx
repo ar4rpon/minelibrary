@@ -1,4 +1,4 @@
-import DefaultLayout from '@/components/common/layout';
+import DefaultLayout from '@/layouts/DefaultLayout';
 import { Card } from '@/components/common/ui/card';
 import DeleteUserForm from '@/features/profile/components/DeleteUserForm';
 import UpdatePasswordForm from '@/features/profile/components/UpdatePasswordForm';

@@ -1,7 +1,7 @@
 import { BookShelfService } from '@/api/services';
 import BookShelf from '@/components/bookshelf';
 import CommonPagination from '@/components/common/CommonPagination';
-import DefaultLayout from '@/components/common/layout';
+import DefaultLayout from '@/layouts/DefaultLayout';
 import { Button } from '@/components/common/ui/button';
 import { Input } from '@/components/common/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/common/ui/tabs';

@@ -1,5 +1,5 @@
 import InputError from '@/components/common/InputError';
-import DefaultLayout from '@/components/common/layout';
+import DefaultLayout from '@/layouts/DefaultLayout';
 import { Button } from '@/components/common/ui/button';
 import { Input } from '@/components/common/ui/input';
 import { Head, useForm } from '@inertiajs/react';

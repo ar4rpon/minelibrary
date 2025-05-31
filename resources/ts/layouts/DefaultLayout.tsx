@@ -1,12 +1,12 @@
-import { Footer } from '@/components/common/Footer';
-import { Navigation } from '@/components/common/Navigation';
+import { Footer } from '@/components/common/layout/Footer';
+import { Navigation } from '@/components/common/layout/Navigation';
 import { PropsWithChildren, ReactNode } from 'react';
 
 /**
  * デフォルトレイアウトコンポーネント
  * アプリケーションの基本的なレイアウト構造を提供する
  */
-export function DefaultLayout({
+export default function DefaultLayout({
   header,
   children,
 }: PropsWithChildren<{ header?: ReactNode }>) {

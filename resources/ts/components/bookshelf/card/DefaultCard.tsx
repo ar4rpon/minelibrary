@@ -5,7 +5,7 @@ import { BookShelfBase } from '@/types/bookShelf';
 import { Link } from '@inertiajs/react';
 import { Header } from '../elements/Header';
 import { Image } from '../elements/Image';
-import { BaseCard } from './BaseCard';
+import { BaseCard } from '@/components/common/BaseCard';
 
 interface DefaultCardProps extends BookShelfBase {
   image?: string;
@@ -41,13 +41,7 @@ export function DefaultCard({
   const isOwner = type === 'my';
 
   return (
-    <BaseCard
-      variant="card"
-      bookShelfId={bookShelfId}
-      name={name}
-      description={description}
-      isPublic={isPublic}
-    >
+    <BaseCard variant="bookshelf-card">
       <div className="flex flex-row gap-4">
         <Image variant="card" />
 

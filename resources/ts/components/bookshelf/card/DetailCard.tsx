@@ -4,7 +4,7 @@ import { useBookShelfState } from '@/features/bookshelf/hooks/useBookShelfState'
 import { BookShelfBase } from '@/types/bookShelf';
 import { Header } from '../elements/Header';
 import { UserInfo } from '../elements/UserInfo';
-import { BaseCard } from './BaseCard';
+import { BaseCard } from '@/components/common/BaseCard';
 
 interface DetailCardProps extends BookShelfBase {
   userName?: string;
@@ -26,13 +26,7 @@ export function DetailCard({
   const { dialogs } = useBookShelfState(true);
 
   return (
-    <BaseCard
-      variant="description"
-      bookShelfId={bookShelfId}
-      name={name}
-      description={description}
-      isPublic={isPublic}
-    >
+    <BaseCard variant="bookshelf-description">
       {!isShared ? (
         <Header
           name={name}

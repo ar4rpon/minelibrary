@@ -1,5 +1,5 @@
 import { ReadStatusBadge } from '@/components/book/ReadStatusBadge';
-import DefaultLayout from '@/components/common/layout';
+import DefaultLayout from '@/layouts/DefaultLayout';
 import {
   Card,
   CardContent,

@@ -12,7 +12,7 @@ import { useBookCardState } from '@/hooks/domain';
 import { ReadStatus } from '@/types';
 import type { BookData } from '@/types/api';
 import { Book, BookOpen, Edit, Heart, Library } from 'lucide-react';
-import { BaseCard } from './BaseCard';
+import { BaseCard } from '@/components/common/BaseCard';
 import { Header } from './elements/Header';
 import { Image } from './elements/Image';
 

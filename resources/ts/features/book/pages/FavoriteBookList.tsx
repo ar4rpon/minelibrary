@@ -1,5 +1,5 @@
 import BookCard from '@/components/book/card';
-import DefaultLayout from '@/components/common/layout';
+import DefaultLayout from '@/layouts/DefaultLayout';
 import {
   Select,
   SelectContent,

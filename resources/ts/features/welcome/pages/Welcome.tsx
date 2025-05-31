@@ -1,4 +1,4 @@
-import DefaultLayout from '@/components/common/layout';
+import DefaultLayout from '@/layouts/DefaultLayout';
 import { Button } from '@/components/common/ui/button';
 import { Head, Link } from '@inertiajs/react';
 import {

@@ -32,7 +32,7 @@ export default function BookShelf(props: BookShelfProps) {
 }
 
 // 各コンポーネントをエクスポート
-export { BaseCard } from './card/BaseCard';
+export { BaseCard } from '@/components/common/BaseCard';
 export { DefaultCard } from './card/DefaultCard';
 export { DetailCard } from './card/DetailCard';
 export { Header } from './elements/Header';

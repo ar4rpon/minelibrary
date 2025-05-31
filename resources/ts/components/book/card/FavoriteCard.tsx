@@ -18,7 +18,7 @@ import { useBookCardState } from '@/hooks/domain';
 import { ReadStatus } from '@/types';
 import type { BookData } from '@/types/api';
 import { Book, BookOpen, Edit, Heart, Library, Plus } from 'lucide-react';
-import { BaseCard } from './BaseCard';
+import { BaseCard } from '@/components/common/BaseCard';
 import { Header } from './elements/Header';
 import { Image } from './elements/Image';
 
@@ -70,7 +70,7 @@ export function FavoriteCard(props: FavoriteCardProps) {
   };
 
   return (
-    <BaseCard variant="favorite" {...props}>
+    <BaseCard variant="book-favorite" {...props}>
       <ReadStatusBadge status={readStatusState.current} />
 
       <Image imageUrl={image_url} title={title} variant="favorite" />
