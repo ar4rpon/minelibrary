@@ -1,10 +1,11 @@
+import { useAsyncState } from '@/api/hooks';
+import { MemoService } from '@/api/services';
 import {
   createDialogNames,
   useMultipleDialogs,
 } from '@/hooks/common/useDialogState';
 import { MemoContent } from '@/types/domain/memo';
 import { router } from '@inertiajs/react';
-import axios from 'axios';
 import { useState } from 'react';
 
 /**
@@ -21,6 +22,11 @@ export function useMemoState(isbn: string) {
 
   // 統一されたダイアログ管理フックを使用
   const dialogs = useMultipleDialogs(MEMO_DIALOG_NAMES);
+
+  // 統一されたエラーハンドリング
+  const editMemoState = useAsyncState<void>();
+  const deleteMemoState = useAsyncState<void>();
+  const createMemoState = useAsyncState<void>();
 
   // メモの編集ダイアログを開く
   const openEditDialog = (content: MemoContent) => {
@@ -46,45 +52,50 @@ export function useMemoState(isbn: string) {
     page?: number,
   ) => {
     if (!selectedMemo) return;
-    try {
-      await axios.put(`/memo/${selectedMemo.id}`, {
+    
+    await editMemoState.execute(() =>
+      MemoService.updateMemo(selectedMemo.id, {
         memo: updatedMemo,
         memo_chapter: chapter,
         memo_page: page,
-      });
+      })
+    );
+    
+    if (!editMemoState.hasError) {
       router.reload();
-    } catch (error) {
-      console.error('Failed to edit memo:', error);
+      dialogs.edit.close();
     }
-    dialogs.edit.close();
   };
 
   // メモを削除する
   const deleteMemo = async () => {
     if (!selectedMemo) return;
-    try {
-      await axios.delete(`/memo/${selectedMemo.id}`);
+    
+    await deleteMemoState.execute(() =>
+      MemoService.deleteMemo(selectedMemo.id)
+    );
+    
+    if (!deleteMemoState.hasError) {
       router.reload();
-    } catch (error) {
-      console.error('Failed to delete memo:', error);
+      dialogs.delete.close();
     }
-    dialogs.delete.close();
   };
 
   // メモを作成する
   const createMemo = async (memo: string, chapter?: number, page?: number) => {
-    try {
-      await axios.post('/memo/create', {
+    await createMemoState.execute(() =>
+      MemoService.createMemo({
         isbn,
         memo,
         memo_chapter: chapter,
         memo_page: page,
-      });
+      })
+    );
+    
+    if (!createMemoState.hasError) {
       router.reload();
-    } catch (error) {
-      console.error('Failed to create memo:', error);
+      dialogs.create.close();
     }
-    dialogs.create.close();
   };
 
   return {
@@ -111,5 +122,8 @@ export function useMemoState(isbn: string) {
       deleteMemo,
       createMemo,
     },
+    // 統一されたローディングとエラー状態
+    isLoading: editMemoState.loading || deleteMemoState.loading || createMemoState.loading,
+    hasError: editMemoState.hasError || deleteMemoState.hasError || createMemoState.hasError,
   };
 }
