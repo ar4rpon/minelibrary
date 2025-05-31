@@ -49,7 +49,7 @@ export function DefaultCard({
         <div className="flex flex-1 flex-col">
           <Header
             name={name}
-            description={description}
+            description={description || ''}
             variant="card"
             onEdit={dialogs.edit.open}
             onDelete={dialogs.delete.open}
@@ -66,7 +66,7 @@ export function DefaultCard({
         <BookShelfDialogs
           bookShelfId={bookShelfId}
           initialName={name}
-          initialDescription={description}
+          initialDescription={description || ''}
           initialIsPublic={isPublic}
           dialogStates={{
             edit: dialogs.edit.isOpen,

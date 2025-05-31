@@ -1,6 +1,6 @@
 // 1. React and external libraries
-import { useState } from 'react';
 import { router } from '@inertiajs/react';
+import { useState } from 'react';
 
 // 2. Internal API/services
 import { useAsyncState } from '@/api/hooks';

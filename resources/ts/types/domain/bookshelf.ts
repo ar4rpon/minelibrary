@@ -4,16 +4,15 @@
  */
 
 /**
- * BookShelf ベースエンティティ（APIのBookShelfDataと同じ構造）
+ * BookShelf ベースエンティティ（既存コンポーネントとの互換性を保持）
  */
 export interface BookShelfBase {
-  id: number;
-  book_shelf_name: string;
+  bookShelfId: number;
+  name: string;
   description?: string;
-  is_public: boolean;
-  user_id: number;
-  created_at?: string;
-  updated_at?: string;
+  isPublic: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 /**

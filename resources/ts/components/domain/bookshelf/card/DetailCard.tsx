@@ -30,7 +30,7 @@ export function DetailCard({
       {!isShared ? (
         <Header
           name={name}
-          description={description}
+          description={description || ''}
           variant="description"
           onEdit={dialogs.edit.open}
           onDelete={dialogs.delete.open}
@@ -40,7 +40,7 @@ export function DetailCard({
       ) : (
         <Header
           name={name}
-          description={description}
+          description={description || ''}
           variant="description"
           onEdit={() => {}}
           onDelete={() => {}}
@@ -57,7 +57,7 @@ export function DetailCard({
           <BookShelfDialogs
             bookShelfId={bookShelfId}
             initialName={name}
-            initialDescription={description}
+            initialDescription={description || ''}
             initialIsPublic={isPublic}
             dialogStates={{
               edit: dialogs.edit.isOpen,

@@ -40,7 +40,7 @@ export default function UserBookShelfList({ user, bookshelves = [] }: Props) {
   const filteredBookShelves = bookshelves.filter(
     (bookShelf) =>
       bookShelf.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      bookShelf.description.toLowerCase().includes(searchQuery.toLowerCase()),
+      (bookShelf.description || '').toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   // ページネーション
