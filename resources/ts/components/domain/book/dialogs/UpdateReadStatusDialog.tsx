@@ -13,7 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { DialogProps, ReadStatus } from '@/types';
+import { ReadStatus } from '@/types/domain/book';
+import { DialogProps } from '@/types/ui/dialog';
 
 interface ReadStatusProps {
   readStatus: ReadStatus;

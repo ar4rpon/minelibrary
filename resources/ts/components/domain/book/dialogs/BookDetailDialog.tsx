@@ -5,7 +5,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { BookProps, DialogProps } from '@/types';
+import { BookProps } from '@/types/domain/book';
+import { DialogProps } from '@/types/ui/dialog';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 

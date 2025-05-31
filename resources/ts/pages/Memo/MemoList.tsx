@@ -7,7 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { BookProps, MemoContent } from '@/types';
+import { BookProps } from '@/types/domain/book';
+import { MemoContent } from '@/types/domain/memo';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 

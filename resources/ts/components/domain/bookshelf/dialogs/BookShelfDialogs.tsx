@@ -1,5 +1,5 @@
 import { BookShelfService } from '@/api/services';
-import { BookShelfDialogStates } from '@/types/bookShelf';
+import { BookShelfDialogStates } from '@/types/ui/dialog';
 import { AddBookDialog } from './AddBookDialog';
 import { DeleteBookShelfDialog } from './DeleteBookShelfDialog';
 import { EditBookShelfDialog } from './EditBookShelfDialog';

@@ -1,5 +1,5 @@
-import { ReadStatus } from '@/types';
 import type { BookData } from '@/types/api';
+import { ReadStatus } from '@/types/domain/book';
 import { BookShelfCard } from './BookShelfCard';
 import { DefaultCard } from './DefaultCard';
 import { FavoriteCard } from './FavoriteCard';

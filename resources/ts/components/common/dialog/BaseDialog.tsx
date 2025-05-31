@@ -1,5 +1,5 @@
 import { Dialog } from '@/components/ui/dialog';
-import { DialogProps } from '@/types';
+import { DialogProps } from '@/types/ui/dialog';
 import { lazy, Suspense } from 'react';
 
 const DialogContent = lazy(() =>

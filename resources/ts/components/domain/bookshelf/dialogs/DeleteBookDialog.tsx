@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { DialogProps } from '@/types';
+import { DialogProps } from '@/types/ui/dialog';
 
 interface DeleteBookDialogProps extends DialogProps {
   onDeleteBookConfirm: () => Promise<void>;

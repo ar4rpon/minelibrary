@@ -1,7 +1,8 @@
 import DefaultLayout from '@/components/common/layout';
 import { ReadStatusBadge } from '@/components/domain/book';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PageProps, ReadStatus } from '@/types';
+import { PageProps } from '@/types';
+import { ReadStatus } from '@/types/domain/book';
 import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';
 import { BookOpen, Bookmark, Heart, User } from 'lucide-react';

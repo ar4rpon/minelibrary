@@ -11,7 +11,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { useMemoState } from '@/hooks/domain/useMemoState';
-import { BookProps, MemoContent } from '@/types';
+import { BookProps } from '@/types/domain/book';
+import { MemoContent } from '@/types/domain/memo';
 import { MoreVertical, Pencil, Plus, Trash } from 'lucide-react';
 import { memo } from 'react';
 

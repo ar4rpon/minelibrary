@@ -47,3 +47,11 @@ export interface PasswordUpdateData {
   password: string;
   password_confirmation: string;
 }
+
+/**
+ * ユーザー情報（表示用）
+ */
+export interface UserInfo {
+  userName: string;
+  userImage: string;
+}

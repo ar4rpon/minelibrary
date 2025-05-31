@@ -1,4 +1,4 @@
-import { UserInfo as UserInfoType } from '@/types/bookShelf';
+import { UserInfo as UserInfoType } from '@/types/domain/user';
 
 // デフォルト値
 const DEFAULT_USER_NAME = 'ユーザー名';

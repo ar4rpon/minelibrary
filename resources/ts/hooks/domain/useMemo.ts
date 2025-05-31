@@ -2,7 +2,7 @@ import { apiClient } from '@/api/client';
 import { useAsyncState } from '@/api/hooks';
 import { useMultipleDialogs } from '@/hooks/common';
 import { ApiErrorHandler } from '@/lib/errors';
-import type { MemoContent } from '@/types';
+import type { MemoContent } from '@/types/domain/memo';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
 
