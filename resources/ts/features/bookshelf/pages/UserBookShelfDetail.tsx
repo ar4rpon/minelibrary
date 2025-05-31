@@ -1,6 +1,6 @@
 import DefaultLayout from '@/components/common/layout';
-import { Button } from '@/components/common/ui/button';
-import { Card, CardContent } from '@/components/common/ui/card';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import { BookOpen, Heart, User } from 'lucide-react';

@@ -1,9 +1,9 @@
-import { Dialog } from '@/components/common/ui/dialog';
+import { Dialog } from '@/components/ui/dialog';
 import { DialogProps } from '@/types';
 import { lazy, Suspense } from 'react';
 
 const DialogContent = lazy(() =>
-  import('@/components/common/ui/dialog').then((module) => ({
+  import('@/components/ui/dialog').then((module) => ({
     default: module.DialogContent,
   })),
 );

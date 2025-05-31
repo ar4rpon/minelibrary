@@ -1,5 +1,5 @@
 import RakutenLogo from '@/components/common/Icon/Rakuten';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import { LabelHTMLAttributes } from 'react';
 
 export function RakutenButton({

@@ -1,10 +1,10 @@
 import { BaseDialog } from '@/components/common/dialog/BaseDialog';
+import { AmazonButton, RakutenButton } from '@/components/domain/book';
 import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/common/ui/dialog';
-import { AmazonButton, RakutenButton } from '@/components/domain/book';
+} from '@/components/ui/dialog';
 import { BookProps, DialogProps } from '@/types';
 import axios from 'axios';
 import { useEffect, useState } from 'react';

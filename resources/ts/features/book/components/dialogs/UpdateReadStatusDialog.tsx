@@ -1,10 +1,10 @@
 import { BaseDialog } from '@/components/common/dialog/BaseDialog';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/common/ui/dialog';
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -12,7 +12,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/common/ui/select';
+} from '@/components/ui/select';
 import { DialogProps, ReadStatus } from '@/types';
 
 interface ReadStatusProps {

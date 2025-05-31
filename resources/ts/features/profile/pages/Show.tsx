@@ -1,11 +1,6 @@
 import DefaultLayout from '@/components/common/layout';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/common/ui/card';
 import { ReadStatusBadge } from '@/components/domain/book';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageProps, ReadStatus } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';

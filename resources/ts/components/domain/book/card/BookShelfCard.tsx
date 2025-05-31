@@ -1,6 +1,6 @@
 import { BookService } from '@/api/services';
 import { BaseCard } from '@/components/common/BaseCard';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import { BookDetailDialog } from '@/features/book/components/dialogs/BookDetailDialog';
 import { UpdateReadStatusDialog } from '@/features/book/components/dialogs/UpdateReadStatusDialog';
 import { useBookMemo } from '@/features/book/hooks/useBookMemo';

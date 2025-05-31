@@ -1,11 +1,11 @@
 import { BaseDialog } from '@/components/common/dialog/BaseDialog';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/common/ui/dialog';
+} from '@/components/ui/dialog';
 import { DialogProps } from '@/types';
 
 interface DeleteMemoDialogProps extends DialogProps {
