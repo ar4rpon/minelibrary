@@ -23,9 +23,7 @@ export class BookService {
   ): Promise<FavoriteStatusResponse> {
     return ApiErrorHandler.executeWithErrorHandling(
       () =>
-        apiClient.get<{ isFavorite: boolean }>('/api/books/favorite-status', {
-          isbn,
-        }),
+        apiClient.get<{ isFavorite: boolean }>(`/api/books/favorite-status?isbn=${isbn}`),
       'BookService.getFavoriteStatus',
     );
   }

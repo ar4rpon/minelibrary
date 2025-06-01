@@ -54,7 +54,7 @@ export default function Login({
         </div>
 
         <div className="mt-4">
-          <Label htmlFor="email">Password</Label>
+          <Label htmlFor="password">Password</Label>
 
           <Input
             id="password"
