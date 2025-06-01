@@ -12,6 +12,7 @@ class ApiClient {
     this.instance = axios.create({
       baseURL: '/',
       timeout: 10000,
+      withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
@@ -45,7 +46,6 @@ class ApiClient {
       (response) => response,
       (error: AxiosError) => {
         ApiErrorHandler.handle(error, 'API Request');
-        return Promise.reject(error);
       },
     );
   }
