@@ -1,0 +1,164 @@
+name: Pull Request Check
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  backend-lint-and-test:
+    name: Backend Lint & Test
+    runs-on: ubuntu-latest
+    
+    services:
+      sqlite:
+        image: alpine:latest
+        options: >-
+          --health-cmd "echo 'SQLite is ready'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          coverage: xdebug
+          
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+        
+      - name: Install PHP dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        
+      - name: Generate key
+        run: php artisan key:generate
+        
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+        
+      - name: Create Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+          
+      - name: Run migrations
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan migrate --force
+        
+      - name: Laravel Pint (Code Style) 
+        run: ./vendor/bin/pint --test
+        continue-on-error: true
+        
+      - name: PHPStan Static Analysis
+        run: ./vendor/bin/phpstan analyse --memory-limit=2G
+        continue-on-error: true
+        
+      - name: Run Backend Tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
+        run: php artisan test --coverage --min=80
+        
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  frontend-lint-and-build:
+    name: Frontend Lint & Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: ESLint check
+        run: npm run lint
+        
+      - name: TypeScript check
+        run: npx tsc --noEmit
+        
+      - name: Build frontend
+        run: npm run build
+        
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: public/build/
+          retention-days: 1
+
+  security-check:
+    name: Security Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          
+      - name: Install PHP dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        
+      - name: Security check
+        run: composer audit
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install Node dependencies
+        run: npm ci
+        
+      - name: Node.js security audit
+        run: npm audit --audit-level high
+
+  all-checks:
+    name: All Checks Complete
+    runs-on: ubuntu-latest
+    needs: [backend-lint-and-test, frontend-lint-and-build, security-check]
+    if: always()
+    
+    steps:
+      - name: Check all jobs status
+        run: |
+          if [[ "${{ needs.backend-lint-and-test.result }}" == "success" && 
+                "${{ needs.frontend-lint-and-build.result }}" == "success" && 
+                "${{ needs.security-check.result }}" == "success" ]]; then
+            echo "✅ All checks passed!"
+            exit 0
+          else
+            echo "❌ Some checks failed:"
+            echo "Backend: ${{ needs.backend-lint-and-test.result }}"
+            echo "Frontend: ${{ needs.frontend-lint-and-build.result }}"
+            echo "Security: ${{ needs.security-check.result }}"
+            exit 1
+          fi

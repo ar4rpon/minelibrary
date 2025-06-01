@@ -1,0 +1,28 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+        - config/
+        - database/
+        - routes/
+
+    # Level of rule strictness (0-9)
+    level: 1
+
+    ignoreErrors:
+        # Ignore common Laravel patterns
+        - '#Unsafe usage of new static#'
+        - '#Static call to instance method#'
+        - '#Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable::#'
+        
+    excludePaths:
+        - database/migrations/*
+        - vendor/*
+        - bootstrap/cache/*
+        - storage/*
+        - tests/*
+    
+    # Laravel specific configurations
+    reportUnmatchedIgnoredErrors: false
