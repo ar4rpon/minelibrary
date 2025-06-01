@@ -90,8 +90,11 @@ class ProfileController extends Controller
         
         $this->profileService->deleteAccount($user);
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // セッションが存在する場合のみ無効化処理を行う
+        if ($request->hasSession()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
 
         return Redirect::to('/');
     }

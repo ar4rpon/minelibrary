@@ -37,7 +37,7 @@ test('メモを作成できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->postJson('/memo/create', array_merge(['_token' => Session::token()], $memoData))
+        ->postJson('/api/memo/create', array_merge(['_token' => Session::token()], $memoData))
         ->assertStatus(201)
         ->assertJson([
             'memo' => [
@@ -66,7 +66,7 @@ test('章とページ情報なしでメモを作成できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->postJson('/memo/create', array_merge(['_token' => Session::token()], $memoData))
+        ->postJson('/api/memo/create', array_merge(['_token' => Session::token()], $memoData))
         ->assertStatus(201);
 
     $this->assertDatabaseHas('memos', [
@@ -95,7 +95,7 @@ test('自分のメモを更新できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->putJson("/memo/{$memo->id}", array_merge(['_token' => Session::token()], $updateData))
+        ->putJson("/api/memo/{$memo->id}", array_merge(['_token' => Session::token()], $updateData))
         ->assertStatus(200)
         ->assertJson([
             'memo' => [
@@ -122,7 +122,7 @@ test('他人のメモは更新できない', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->putJson("/memo/{$memo->id}", [
+        ->putJson("/api/memo/{$memo->id}", [
             '_token' => Session::token(),
             'memo' => '不正な更新',
         ])
@@ -138,7 +138,7 @@ test('自分のメモを削除できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->deleteJson("/memo/{$memo->id}", [
+        ->deleteJson("/api/memo/{$memo->id}", [
             '_token' => Session::token(),
         ])
         ->assertStatus(200)
@@ -162,7 +162,7 @@ test('他人のメモは削除できない', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->deleteJson("/memo/{$memo->id}", [
+        ->deleteJson("/api/memo/{$memo->id}", [
             '_token' => Session::token(),
         ])
         ->assertStatus(403);
@@ -256,7 +256,7 @@ test('メモ更新時に内容のバリデーションが機能する', function
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->putJson("/memo/{$memo->id}", [
+        ->putJson("/api/memo/{$memo->id}", [
             '_token' => Session::token(),
             'memo' => '',
         ])

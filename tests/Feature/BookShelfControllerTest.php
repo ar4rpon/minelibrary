@@ -34,7 +34,7 @@ test('ユーザーは新しい本棚を作成できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->post('/book-shelf/create', array_merge($bookShelfData, ['_token' => Session::token()]))
+        ->post('/api/book-shelf/create', array_merge($bookShelfData, ['_token' => Session::token()]))
         ->assertStatus(201)
         ->assertJson([
             'book_shelf_name' => 'テスト本棚',
@@ -60,7 +60,7 @@ test('ユーザーは自分の本棚を更新できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->put("/book-shelf/update/{$bookShelf->id}", array_merge($updateData, ['_token' => Session::token()]))
+        ->put("/api/book-shelf/update/{$bookShelf->id}", array_merge($updateData, ['_token' => Session::token()]))
         ->assertStatus(200);
 
     $this->assertDatabaseHas('book_shelves', [
@@ -78,7 +78,7 @@ test('ユーザーは他人の本棚を更新できない', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->put("/book-shelf/update/{$bookShelf->id}", [
+        ->put("/api/book-shelf/update/{$bookShelf->id}", [
             'book_shelf_name' => '不正な更新',
             'description' => '不正な説明',
             'is_public' => false,
@@ -93,7 +93,7 @@ test('ユーザーは自分の本棚を削除できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->delete("/book-shelf/delete/{$bookShelf->id}", ['_token' => Session::token()])
+        ->delete("/api/book-shelf/delete/{$bookShelf->id}", ['_token' => Session::token()])
         ->assertStatus(200);
 
     $this->assertDatabaseMissing('book_shelves', [
@@ -108,7 +108,7 @@ test('本棚に本を追加できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->post('/book-shelf/add/books', [
+        ->post('/api/book-shelf/add/books', [
             'book_shelf_id' => $bookShelf->id,
             'isbns' => $books->pluck('isbn')->toArray(),
             '_token' => Session::token(),
@@ -131,7 +131,7 @@ test('本棚から本を削除できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->post("/book-shelf/{$book->isbn}", [
+        ->post("/api/book-shelf/{$book->isbn}", [
             'book_shelf_id' => $bookShelf->id,
             'isbn' => $book->isbn,
             '_token' => Session::token(),

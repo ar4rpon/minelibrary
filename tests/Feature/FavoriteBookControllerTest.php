@@ -31,7 +31,7 @@ test('本をお気に入りに追加できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->postJson('/books/toggle-favorite', [
+        ->postJson('/api/books/toggle-favorite', [
             '_token' => Session::token(),
             'isbn' => $book->isbn,
             'title' => $book->title,
@@ -63,7 +63,7 @@ test('お気に入りの本を削除できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->postJson('/books/toggle-favorite', [
+        ->postJson('/api/books/toggle-favorite', [
             '_token' => Session::token(),
             'isbn' => $book->isbn,
             'title' => $book->title,
@@ -95,14 +95,14 @@ test('お気に入りの状態を取得できる', function () {
         ->create();
 
     $this->actingAs($this->user)
-        ->getJson('/books/favorite-status?isbn=' . $book1->isbn)
+        ->getJson('/api/books/favorite-status?isbn=' . $book1->isbn)
         ->assertStatus(200)
         ->assertJson([
             'isFavorite' => true,
         ]);
 
     $this->actingAs($this->user)
-        ->getJson('/books/favorite-status?isbn=' . $book2->isbn)
+        ->getJson('/api/books/favorite-status?isbn=' . $book2->isbn)
         ->assertStatus(200)
         ->assertJson([
             'isFavorite' => false,
@@ -120,7 +120,7 @@ test('読書状態を更新できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->postJson('/books/update-status', [
+        ->postJson('/api/books/update-status', [
             '_token' => Session::token(),
             'isbn' => $book->isbn,
             'readStatus' => 'reading',
@@ -143,7 +143,7 @@ test('存在しない本の読書状態を更新しようとするとエラー',
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->postJson('/books/update-status', [
+        ->postJson('/api/books/update-status', [
             '_token' => Session::token(),
             'isbn' => $book->isbn,
             'readStatus' => 'reading',
@@ -194,7 +194,7 @@ test('本棚用のお気に入り本一覧を取得できる', function () {
     }
 
     $this->actingAs($this->user)
-        ->get('/book-shelf/get/favorite-books')
+        ->get('/api/book-shelf/get/favorite-books')
         ->assertStatus(200)
         ->assertJsonCount(3);
 });

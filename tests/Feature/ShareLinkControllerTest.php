@@ -20,7 +20,7 @@ test('認証済みユーザーは自分の本棚の共有リンクを生成で�
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->postJson('/book-shelf/generate-share-link', [
+        ->postJson('/api/book-shelf/generate-share-link', [
             '_token' => Session::token(),
             'book_shelf_id' => $this->bookShelf->id,
         ])
@@ -42,7 +42,7 @@ test('他人の本棚の共有リンクは生成できない', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->postJson('/book-shelf/generate-share-link', [
+        ->postJson('/api/book-shelf/generate-share-link', [
             '_token' => Session::token(),
             'book_shelf_id' => $otherBookShelf->id,
         ])
@@ -52,7 +52,7 @@ test('他人の本棚の共有リンクは生成できない', function () {
 test('認証されていないユーザーは共有リンクを生成できない', function () {
     Session::start();
     $this->withSession(['_token' => Session::token()])
-        ->postJson('/book-shelf/generate-share-link', [
+        ->postJson('/api/book-shelf/generate-share-link', [
             '_token' => Session::token(),
             'book_shelf_id' => $this->bookShelf->id,
         ])
@@ -139,7 +139,7 @@ test('共有リンク生成時にユニークなトークンが生成される',
     Session::start();
     $response1 = $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->postJson('/book-shelf/generate-share-link', [
+        ->postJson('/api/book-shelf/generate-share-link', [
             '_token' => Session::token(),
             'book_shelf_id' => $this->bookShelf->id,
         ]);
@@ -147,7 +147,7 @@ test('共有リンク生成時にユニークなトークンが生成される',
     $bookShelf2 = BookShelf::factory()->create(['user_id' => $this->user->id]);
     $response2 = $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->postJson('/book-shelf/generate-share-link', [
+        ->postJson('/api/book-shelf/generate-share-link', [
             '_token' => Session::token(),
             'book_shelf_id' => $bookShelf2->id,
         ]);

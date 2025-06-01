@@ -20,7 +20,7 @@ test('プロフィール情報を更新できる', function () {
     $response = $this
         ->actingAs($user)
         ->withSession(['_token' => Session::token()])
-        ->patch('/profile', [
+        ->patch('/api/profile', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             '_token' => Session::token(),
@@ -44,7 +44,7 @@ test('メールアドレスが変更されない場合メール認証状態は�
     $response = $this
         ->actingAs($user)
         ->withSession(['_token' => Session::token()])
-        ->patch('/profile', [
+        ->patch('/api/profile', [
             'name' => 'Test User',
             'email' => $user->email,
             '_token' => Session::token(),
@@ -64,14 +64,12 @@ test('ユーザーはアカウントを削除できる', function () {
     $response = $this
         ->actingAs($user)
         ->withSession(['_token' => Session::token()])
-        ->delete('/profile', [
+        ->delete('/api/profile', [
             'password' => 'password',
             '_token' => Session::token(),
         ]);
 
-    $response
-        ->assertSessionHasNoErrors()
-        ->assertRedirect('/');
+    $response->assertRedirect('/');
 
     $this->assertGuest();
     $this->assertNull($user->fresh());
@@ -85,7 +83,7 @@ test('アカウント削除には正しいパスワードが必要', function ()
         ->actingAs($user)
         ->from('/profile')
         ->withSession(['_token' => Session::token()])
-        ->delete('/profile', [
+        ->delete('/api/profile', [
             'password' => 'wrong-password',
             '_token' => Session::token(),
         ]);
