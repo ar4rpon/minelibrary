@@ -56,7 +56,7 @@ export function useMemo(isbn: string) {
     const result = await createState.execute(async () => {
       await ApiErrorHandler.executeWithErrorHandling(
         () =>
-          apiClient.post('/memo/create', {
+          apiClient.post('/api/memo/create', {
             isbn,
             memo,
             memo_chapter: chapter,
@@ -87,7 +87,7 @@ export function useMemo(isbn: string) {
     const result = await editState.execute(async () => {
       await ApiErrorHandler.executeWithErrorHandling(
         () =>
-          apiClient.put(`/memo/${selectedMemo.id}`, {
+          apiClient.put(`/api/memo/${selectedMemo.id}`, {
             memo: updatedMemo,
             memo_chapter: chapter,
             memo_page: page,
@@ -112,7 +112,7 @@ export function useMemo(isbn: string) {
 
     const result = await deleteState.execute(async () => {
       await ApiErrorHandler.executeWithErrorHandling(
-        () => apiClient.delete(`/memo/${selectedMemo.id}`),
+        () => apiClient.delete(`/api/memo/${selectedMemo.id}`),
         'useMemo.deleteMemo',
       );
       router.reload();

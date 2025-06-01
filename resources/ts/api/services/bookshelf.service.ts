@@ -24,7 +24,7 @@ export class BookShelfService {
     try {
       await ApiErrorHandler.executeWithErrorHandling(
         () =>
-          apiClient.put(`/book-shelf/update/${bookShelfId}`, {
+          apiClient.put(`/api/book-shelf/update/${bookShelfId}`, {
             book_shelf_name: name,
             description,
             is_public: isPublic,
@@ -45,7 +45,7 @@ export class BookShelfService {
   static async deleteBookShelf(bookShelfId: number): Promise<boolean> {
     try {
       await ApiErrorHandler.executeWithErrorHandling(
-        () => apiClient.delete(`/book-shelf/delete/${bookShelfId}`),
+        () => apiClient.delete(`/api/book-shelf/delete/${bookShelfId}`),
         'BookShelfService.deleteBookShelf',
       );
 
@@ -66,7 +66,7 @@ export class BookShelfService {
     try {
       await ApiErrorHandler.executeWithErrorHandling(
         () =>
-          apiClient.post('/book-shelf/add/books', {
+          apiClient.post('/api/book-shelf/add/books', {
             book_shelf_id: bookShelfId,
             isbns,
           }),
@@ -97,7 +97,7 @@ export class BookShelfService {
                 sales_date: string;
               };
             }>
-          >('/book-shelf/get/favorite-books'),
+          >('/api/book-shelf/get/favorite-books'),
         'BookShelfService.getFavoriteBooks',
       );
 
@@ -119,7 +119,7 @@ export class BookShelfService {
   static async getAllBookShelves(): Promise<BookShelfListResponse> {
     try {
       return await ApiErrorHandler.executeWithErrorHandling(
-        () => apiClient.get<BookShelfListResponse>('/book-shelf/get/mylist'),
+        () => apiClient.get<BookShelfListResponse>('/api/book-shelf/get/mylist'),
         'BookShelfService.getAllBookShelves',
       );
     } catch (error) {
@@ -136,7 +136,7 @@ export class BookShelfService {
     try {
       const response = await ApiErrorHandler.executeWithErrorHandling(
         () =>
-          apiClient.post<ShareLinkResponse>('/book-shelf/generate-share-link', {
+          apiClient.post<ShareLinkResponse>('/api/book-shelf/generate-share-link', {
             book_shelf_id: bookShelfId,
           }),
         'BookShelfService.generateShareLink',

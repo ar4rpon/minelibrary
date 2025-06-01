@@ -23,7 +23,7 @@ export class BookService {
   ): Promise<FavoriteStatusResponse> {
     return ApiErrorHandler.executeWithErrorHandling(
       () =>
-        apiClient.get<{ isFavorite: boolean }>('/books/favorite-status', {
+        apiClient.get<{ isFavorite: boolean }>('/api/books/favorite-status', {
           isbn,
         }),
       'BookService.getFavoriteStatus',
@@ -35,7 +35,7 @@ export class BookService {
    */
   static async toggleFavorite(bookData: BookData): Promise<void> {
     return ApiErrorHandler.executeWithErrorHandling(
-      () => apiClient.post('/books/toggle-favorite', bookData),
+      () => apiClient.post('/api/books/toggle-favorite', bookData),
       'BookService.toggleFavorite',
     );
   }
@@ -48,7 +48,7 @@ export class BookService {
     readStatus: ReadStatus,
   ): Promise<void> {
     return ApiErrorHandler.executeWithErrorHandling(
-      () => apiClient.post('/books/update-status', { isbn, readStatus }),
+      () => apiClient.post('/api/books/update-status', { isbn, readStatus }),
       'BookService.updateReadStatus',
     );
   }
@@ -60,7 +60,7 @@ export class BookService {
     return ApiErrorHandler.executeWithErrorHandling(
       () =>
         apiClient.get<Array<{ id: number; book_shelf_name: string }>>(
-          '/book-shelf/get/mylist',
+          '/api/book-shelf/get/mylist',
         ),
       'BookService.fetchBookshelves',
     );
@@ -72,7 +72,7 @@ export class BookService {
   static async addToBookshelf(shelfId: number, isbn: string): Promise<void> {
     return ApiErrorHandler.executeWithErrorHandling(
       () =>
-        apiClient.post('/book-shelf/add/books', {
+        apiClient.post('/api/book-shelf/add/books', {
           book_shelf_id: shelfId,
           isbns: [isbn],
         }),
@@ -89,7 +89,7 @@ export class BookService {
   ): Promise<CreateBookShelfResponse> {
     return ApiErrorHandler.executeWithErrorHandling(
       () =>
-        apiClient.post('/book-shelf/create', {
+        apiClient.post('/api/book-shelf/create', {
           book_shelf_name: name,
           description,
         }),
@@ -107,7 +107,7 @@ export class BookService {
     try {
       await ApiErrorHandler.executeWithErrorHandling(
         () =>
-          apiClient.post('/book-shelf/remove-book', {
+          apiClient.post('/api/book-shelf/remove-book', {
             book_shelf_id: shelfId,
             isbn,
           }),
@@ -128,7 +128,7 @@ export class BookService {
   static async createMemo(data: CreateMemoData): Promise<boolean> {
     try {
       await ApiErrorHandler.executeWithErrorHandling(
-        () => apiClient.post('/memo/create', data),
+        () => apiClient.post('/api/memo/create', data),
         'BookService.createMemo',
       );
 
