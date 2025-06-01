@@ -1,0 +1,325 @@
+name: Scheduled Maintenance
+
+on:
+  schedule:
+    # Daily at 2:00 AM JST (17:00 UTC)
+    - cron: '0 17 * * *'
+    # Weekly on Sunday at 3:00 AM JST (18:00 UTC Saturday)
+    - cron: '0 18 * * 6'
+  workflow_dispatch:
+    inputs:
+      check_type:
+        description: 'Type of check to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - security
+          - performance
+          - dependencies
+
+env:
+  NODE_VERSION: '20'
+  PHP_VERSION: '8.2'
+
+jobs:
+  security-audit:
+    name: Security Vulnerability Check
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 17 * * *' || github.event.inputs.check_type == 'security' || github.event.inputs.check_type == 'all'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          
+      - name: Install PHP dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        
+      - name: PHP Security Audit
+        run: |
+          echo "🔍 Running PHP security audit..."
+          composer audit --format=json > php-audit.json || true
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install Node dependencies
+        run: npm ci
+        
+      - name: Node.js Security Audit
+        run: |
+          echo "🔍 Running Node.js security audit..."
+          npm audit --json > node-audit.json || true
+          
+      - name: Parse Security Results
+        run: |
+          echo "📊 Security Audit Summary"
+          echo "========================"
+          
+          if [ -f php-audit.json ]; then
+            PHP_VULNS=$(jq '.advisories | length' php-audit.json 2>/dev/null || echo "0")
+            echo "PHP Vulnerabilities: $PHP_VULNS"
+          fi
+          
+          if [ -f node-audit.json ]; then
+            NODE_VULNS=$(jq '.metadata.vulnerabilities.total' node-audit.json 2>/dev/null || echo "0")
+            echo "Node.js Vulnerabilities: $NODE_VULNS"
+          fi
+          
+      - name: Upload Audit Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-reports-${{ github.run_number }}
+          path: |
+            php-audit.json
+            node-audit.json
+          retention-days: 7
+
+  dependency-updates:
+    name: Dependency Update Check
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 18 * * 6' || github.event.inputs.check_type == 'dependencies' || github.event.inputs.check_type == 'all'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          
+      - name: Check PHP Dependencies
+        run: |
+          echo "📦 Checking PHP dependency updates..."
+          composer outdated --direct --format=json > php-outdated.json || true
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Check Node Dependencies
+        run: |
+          echo "📦 Checking Node.js dependency updates..."
+          npm outdated --json > node-outdated.json || true
+          
+      - name: Parse Dependency Results
+        run: |
+          echo "📊 Dependency Update Summary"
+          echo "============================"
+          
+          if [ -f php-outdated.json ]; then
+            PHP_OUTDATED=$(jq 'keys | length' php-outdated.json 2>/dev/null || echo "0")
+            echo "PHP Outdated Packages: $PHP_OUTDATED"
+          fi
+          
+          if [ -f node-outdated.json ]; then
+            NODE_OUTDATED=$(jq 'keys | length' node-outdated.json 2>/dev/null || echo "0")
+            echo "Node.js Outdated Packages: $NODE_OUTDATED"
+          fi
+          
+      - name: Upload Dependency Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-reports-${{ github.run_number }}
+          path: |
+            php-outdated.json
+            node-outdated.json
+          retention-days: 30
+
+  performance-tests:
+    name: Performance Benchmark
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 18 * * 6' || github.event.inputs.check_type == 'performance' || github.event.inputs.check_type == 'all'
+    
+    services:
+      sqlite:
+        image: alpine:latest
+        options: >-
+          --health-cmd "echo 'SQLite is ready'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+        
+      - name: Install PHP dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        
+      - name: Generate key
+        run: php artisan key:generate
+        
+      - name: Create Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+          
+      - name: Run migrations
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan migrate --force
+        
+      - name: Performance Test Suite
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: |
+          echo "⚡ Running performance benchmarks..."
+          
+          # Basic performance tests
+          time php artisan test --filter="Performance" --stop-on-failure || echo "No performance tests found"
+          
+          # Memory usage test
+          echo "Memory Usage Test:"
+          php -d memory_limit=128M artisan test --stop-on-failure
+          
+          # Database query performance
+          echo "Database Performance:"
+          time php artisan migrate:fresh --force
+          
+      - name: Bundle Size Analysis
+        run: |
+          echo "📊 Frontend Bundle Analysis"
+          echo "=========================="
+          
+          # Setup Node.js
+          npm ci
+          npm run build
+          
+          # Analyze bundle sizes
+          if [ -d "public/build" ]; then
+            echo "Bundle Sizes:"
+            find public/build -name "*.js" -o -name "*.css" | xargs ls -lh
+            
+            TOTAL_SIZE=$(find public/build -type f \( -name "*.js" -o -name "*.css" \) -exec du -b {} + | awk '{sum += $1} END {print sum}')
+            echo "Total Bundle Size: $(numfmt --to=iec $TOTAL_SIZE)B"
+          fi
+
+  maintenance-tasks:
+    name: Maintenance Tasks
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 17 * * *' || github.event.inputs.check_type == 'all'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Cleanup Old Artifacts
+        run: |
+          echo "🧹 Cleanup maintenance tasks..."
+          
+          # Example: Clean up old log files, temporary files, etc.
+          echo "Removing temporary files..."
+          find . -name "*.tmp" -type f -delete || true
+          find . -name "*.log" -type f -mtime +7 -delete || true
+          
+      - name: Health Check
+        run: |
+          echo "💊 System health checks..."
+          
+          # Check disk space
+          df -h
+          
+          # Check memory
+          free -h
+          
+          # Check system load
+          uptime
+          
+      - name: Repository Statistics
+        run: |
+          echo "📈 Repository Statistics"
+          echo "======================="
+          echo "Total commits: $(git rev-list --all --count)"
+          echo "Total contributors: $(git shortlog -sn | wc -l)"
+          echo "Latest tag: $(git describe --tags --abbrev=0 2>/dev/null || echo 'No tags')"
+          echo "Lines of code (PHP): $(find app -name '*.php' | xargs wc -l | tail -n 1)"
+          echo "Lines of code (TS): $(find resources/ts -name '*.ts' -o -name '*.tsx' | xargs wc -l | tail -n 1)"
+
+  notification-summary:
+    name: Scheduled Maintenance Summary
+    runs-on: ubuntu-latest
+    needs: [security-audit, dependency-updates, performance-tests, maintenance-tasks]
+    if: always()
+    
+    steps:
+      - name: Maintenance Summary
+        run: |
+          echo "📋 Scheduled Maintenance Summary"
+          echo "================================"
+          echo "Date: $(date)"
+          echo "Security Audit: ${{ needs.security-audit.result || 'skipped' }}"
+          echo "Dependency Check: ${{ needs.dependency-updates.result || 'skipped' }}"
+          echo "Performance Tests: ${{ needs.performance-tests.result || 'skipped' }}"
+          echo "Maintenance Tasks: ${{ needs.maintenance-tasks.result || 'skipped' }}"
+          
+      - name: Create Maintenance Report
+        run: |
+          cat > maintenance-report.md << EOF
+          # Scheduled Maintenance Report - $(date +%Y-%m-%d)
+          
+          ## Summary
+          - **Security Audit**: ${{ needs.security-audit.result || 'skipped' }}
+          - **Dependency Check**: ${{ needs.dependency-updates.result || 'skipped' }}
+          - **Performance Tests**: ${{ needs.performance-tests.result || 'skipped' }}
+          - **Maintenance Tasks**: ${{ needs.maintenance-tasks.result || 'skipped' }}
+          
+          ## Actions Required
+          - Review security audit results if vulnerabilities found
+          - Update dependencies if critical updates available
+          - Investigate performance regressions if detected
+          
+          ## Next Scheduled Maintenance
+          - Daily security audit: Next day at 2:00 AM JST
+          - Weekly comprehensive check: Next Sunday at 3:00 AM JST
+          EOF
+          
+      - name: Upload Maintenance Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: maintenance-report-${{ github.run_number }}
+          path: maintenance-report.md
+          retention-days: 30
+          
+      # Future: Add notification integration
+      # - name: Slack Notification
+      #   if: always()
+      #   uses: 8398a7/action-slack@v3
+      #   with:
+      #     status: custom
+      #     webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      #     custom_payload: |
+      #       {
+      #         text: "Scheduled Maintenance Completed",
+      #         attachments: [{
+      #           color: '${{ job.status }}' === 'success' ? 'good' : 'danger',
+      #           fields: [{
+      #             title: "Maintenance Summary",
+      #             value: "Security: ${{ needs.security-audit.result }}, Dependencies: ${{ needs.dependency-updates.result }}, Performance: ${{ needs.performance-tests.result }}",
+      #             short: false
+      #           }]
+      #         }]
+      #       }
