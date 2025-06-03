@@ -14,12 +14,12 @@ class BookService
      */
     public function getOrCreateBook(array $bookData): Book
     {
-        $existingBook = (new Book())->getBookInfo($bookData['isbn']);
+        $existingBook = Book::find($bookData['isbn']);
 
         if ($existingBook) {
             return $existingBook;
         }
 
-        return (new Book())->addBook($bookData);
+        return Book::create($bookData);
     }
 }

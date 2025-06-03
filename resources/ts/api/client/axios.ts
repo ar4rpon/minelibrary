@@ -26,12 +26,22 @@ class ApiClient {
     // リクエストインターセプター
     this.instance.interceptors.request.use(
       (config) => {
-        // CSRFトークンの設定
+        // CSRFトークンの設定（Web routesで使用）
         const token = document
           .querySelector('meta[name="csrf-token"]')
           ?.getAttribute('content');
         if (token) {
           config.headers['X-CSRF-TOKEN'] = token;
+        }
+
+        // デバッグ用ログ（開発環境のみ）
+        if (process.env.NODE_ENV === 'development') {
+          console.debug('API Request:', {
+            url: config.url,
+            method: config.method,
+            headers: config.headers,
+            withCredentials: config.withCredentials,
+          });
         }
 
         return config;
@@ -43,8 +53,25 @@ class ApiClient {
 
     // レスポンスインターセプター
     this.instance.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        if (process.env.NODE_ENV === 'development') {
+          console.debug('API Response:', {
+            url: response.config.url,
+            status: response.status,
+            data: response.data,
+          });
+        }
+        return response;
+      },
       (error: AxiosError) => {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('API Error:', {
+            url: error.config?.url,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            data: error.response?.data,
+          });
+        }
         ApiErrorHandler.handle(error, 'API Request');
       },
     );

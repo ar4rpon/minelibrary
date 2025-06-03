@@ -6,7 +6,7 @@
 /**
  * 読書ステータス
  */
-export type ReadStatus = 'want_read' | 'reading' | 'finished';
+export type ReadStatus = 'want_read' | 'reading' | 'done_read';
 
 /**
  * Book ドメインエンティティ（理想的な構造）

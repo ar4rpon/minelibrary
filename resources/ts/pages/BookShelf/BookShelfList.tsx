@@ -9,7 +9,6 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDialogStateWithLoading } from '@/hooks/common/useDialogState';
 import type { BookShelfData } from '@/types/api';
 import { Head, router } from '@inertiajs/react';
-import axios from 'axios';
 import { BookOpen, Heart, Plus, Search, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -62,6 +61,7 @@ export default function BookShelfList({
 
     try {
       const data = await BookShelfService.getAllBookShelves();
+
       if (data.my && data.favorite) {
         // BookShelfDataをBookShelf型に変換
         const convertedMy: BookShelf[] = data.my.map((item) => ({
@@ -107,7 +107,7 @@ export default function BookShelfList({
   // 検索フィルター
   const filteredBookShelves = displayBookShelves.filter(
     (bookShelf) =>
-      bookShelf.book_shelf_name
+      (bookShelf.book_shelf_name || '')
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
       (bookShelf.description || '')
@@ -147,11 +147,11 @@ export default function BookShelfList({
     createDialog.setLoading(true);
 
     try {
-      const response = await axios.post(`/book-shelf/create`, {
-        book_shelf_name: bookShelfName,
-        description: description,
-      });
-      console.log('本棚作成成功:', response.data);
+      const response = await BookShelfService.createBookShelf(
+        bookShelfName,
+        description,
+      );
+      console.log('本棚作成成功:', response);
 
       // 成功したらページをリロード
       router.reload();
@@ -163,7 +163,22 @@ export default function BookShelfList({
       createDialog.close();
     } catch (error) {
       console.error('本棚作成エラー:', error);
-      alert('本棚の作成に失敗しました。もう一度お試しください。');
+
+      // 詳細なエラー情報をコンソールに出力
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { status?: number; data?: unknown; headers?: unknown } };
+        console.error('Response status:', axiosError.response?.status);
+        console.error('Response data:', axiosError.response?.data);
+        console.error('Response headers:', axiosError.response?.headers);
+      }
+
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : '本棚の作成に失敗しました。もう一度お試しください。';
+      alert(
+        `エラー: ${errorMessage}\n\n詳細はブラウザのコンソールを確認してください。`,
+      );
     } finally {
       createDialog.setLoading(false);
     }
@@ -269,28 +284,36 @@ export default function BookShelfList({
         </div>
       ) : paginatedBookShelves.length > 0 ? (
         <div className="grid grid-cols-1 gap-x-8 gap-y-6">
-          {paginatedBookShelves.map((bookShelf) => (
-            <div
-              key={bookShelf.id}
-              className="transition-all duration-200 hover:translate-x-1"
-            >
-              {activeTab === 'favorite' && bookShelf.owner ? (
-                <div className="mb-2 flex items-center text-sm text-gray-600">
-                  <User className="mr-1 h-4 w-4" />
-                  <span>{bookShelf.owner.name}さんの本棚</span>
-                </div>
-              ) : null}
-              <BookShelfDefaultCard
-                bookShelfId={bookShelf.id}
-                name={bookShelf.book_shelf_name}
-                description={bookShelf.description || ''}
-                isPublic={bookShelf.is_public}
-                image={bookShelf.image}
-                owner={bookShelf.owner}
-                type={activeTab}
-              />
-            </div>
-          ))}
+          {paginatedBookShelves.map((bookShelf) => {
+            // 安全性チェック：必要なプロパティが存在するかを確認
+            if (!bookShelf.id || !bookShelf.book_shelf_name) {
+              console.warn('Invalid bookShelf data:', bookShelf);
+              return null;
+            }
+
+            return (
+              <div
+                key={bookShelf.id}
+                className="transition-all duration-200 hover:translate-x-1"
+              >
+                {activeTab === 'favorite' && bookShelf.owner ? (
+                  <div className="mb-2 flex items-center text-sm text-gray-600">
+                    <User className="mr-1 h-4 w-4" />
+                    <span>{bookShelf.owner.name}さんの本棚</span>
+                  </div>
+                ) : null}
+                <BookShelfDefaultCard
+                  bookShelfId={bookShelf.id}
+                  name={bookShelf.book_shelf_name}
+                  description={bookShelf.description || ''}
+                  isPublic={bookShelf.is_public}
+                  image={bookShelf.image}
+                  owner={bookShelf.owner}
+                  type={activeTab}
+                />
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div className="mt-12 flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 p-12 text-center">

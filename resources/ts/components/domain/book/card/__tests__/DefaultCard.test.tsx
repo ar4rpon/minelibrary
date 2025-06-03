@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { DefaultCard } from '../DefaultCard';
 import type { BookData } from '@/types/api';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { DefaultCard } from '../DefaultCard';
 
 // モック
 vi.mock('@inertiajs/react', () => ({
@@ -22,7 +22,13 @@ vi.mock('@/components/common/BaseCard', () => ({
 
 // FavoriteIconをモック
 vi.mock('@/components/common/Icon/FavoriteIcon', () => ({
-  default: ({ isFavorite, onClick }: { isFavorite: boolean; onClick: () => void }) => (
+  default: ({
+    isFavorite,
+    onClick,
+  }: {
+    isFavorite: boolean;
+    onClick: () => void;
+  }) => (
     <button
       data-testid="favorite-icon"
       onClick={onClick}
@@ -35,7 +41,7 @@ vi.mock('@/components/common/Icon/FavoriteIcon', () => ({
 
 // BookDetailDialogをモック
 vi.mock('@/components/domain/book/dialogs/BookDetailDialog', () => ({
-  BookDetailDialog: ({ isOpen, onClose, title }: any) => 
+  BookDetailDialog: ({ isOpen, onClose, title }: any) =>
     isOpen ? (
       <div data-testid="book-detail-dialog">
         <h2>{title}</h2>
@@ -106,7 +112,9 @@ describe('DefaultCard', () => {
     expect(screen.getByText(mockBook.author)).toBeInTheDocument();
 
     // 詳細ボタンが表示される
-    expect(screen.getByRole('button', { name: '詳細を見る' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: '詳細を見る' }),
+    ).toBeInTheDocument();
 
     // お気に入りアイコンが表示される
     expect(screen.getByTestId('favorite-icon')).toBeInTheDocument();
@@ -125,7 +133,7 @@ describe('DefaultCard', () => {
     // ダイアログが表示される
     const dialog = screen.getByTestId('book-detail-dialog');
     expect(dialog).toBeInTheDocument();
-    
+
     // ダイアログ内にタイトルが表示される
     expect(dialog).toHaveTextContent(mockBook.title);
   });
@@ -146,7 +154,9 @@ describe('DefaultCard', () => {
 
     // ダイアログが閉じられる
     await waitFor(() => {
-      expect(screen.queryByTestId('book-detail-dialog')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('book-detail-dialog'),
+      ).not.toBeInTheDocument();
     });
   });
 

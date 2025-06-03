@@ -62,15 +62,26 @@ class BookShelfController extends Controller
 
     public function store(BookShelfStoreRequest $request)
     {
-        $user = $this->getAuthUser();
+        try {
+            $user = $this->getAuthUser();
 
-        $bookShelf = $this->bookShelfService->createBookShelf([
-            'user_id' => $user->id,
-            'book_shelf_name' => $request->book_shelf_name,
-            'description' => $request->description,
-            'is_public' => true
-        ]);
-        return $bookShelf;
+            $bookShelf = $this->bookShelfService->createBookShelf([
+                'user_id' => $user->id,
+                'book_shelf_name' => $request->book_shelf_name,
+                'description' => $request->description,
+                'is_public' => true
+            ]);
+            
+            return response()->json($bookShelf, 201);
+        } catch (\Exception $e) {
+            Log::error('Book shelf creation failed', [
+                'error' => $e->getMessage(),
+                'user_id' => $user->id ?? null,
+                'request_data' => $request->all()
+            ]);
+            
+            return response()->json(['error' => 'Book shelf creation failed'], 500);
+        }
     }
 
     public function update(BookShelfUpdateRequest $request, $id)
@@ -86,9 +97,17 @@ class BookShelfController extends Controller
     public function getMyAll()
     {
         $user = $this->getAuthUser();
-        $bookshelves = $this->bookShelfService->getAllUserBookShelves($user->id);
+        $myBookShelves = $this->bookShelfService->getAllUserBookShelves($user->id);
+        
+        // お気に入り本棚も取得（現時点では空配列）
+        $favoriteBookShelves = collect();
+        
+        $response = [
+            'my' => $myBookShelves,
+            'favorite' => $favoriteBookShelves
+        ];
 
-        return $this->successResponse($bookshelves);
+        return response()->json($response, 200);
     }
 
     public function addBooks(BookShelfBookRequest $request)
@@ -108,7 +127,7 @@ class BookShelfController extends Controller
         
         $books = $this->formatBooksWithFavoriteStatus($books, $favoriteStatuses);
 
-        return $this->successResponse($books);
+        return response()->json($books, 200);
     }
 
     public function destroy($id)
@@ -116,7 +135,7 @@ class BookShelfController extends Controller
         $user = $this->getAuthUser();
         $this->bookShelfService->deleteBookShelf($id, $user->id);
 
-        return $this->deletedResponse('Book shelf deleted successfully');
+        return response()->json(['message' => 'Book shelf deleted successfully'], 200);
     }
 
     public function removeBook(BookShelfRemoveBookRequest $request)

@@ -1,5 +1,5 @@
 import { useAsyncState } from '@/api/hooks';
-import { BookService } from '@/api/services';
+import { BookService, BookShelfService, MemoService } from '@/api/services';
 import { useMultipleDialogs } from '@/hooks/common';
 import type { BookData } from '@/types/api';
 import type { ReadStatus } from '@/types/domain/book';
@@ -66,7 +66,7 @@ export function useBook(initialReadStatus?: ReadStatus) {
    */
   const createBookshelf = async (name: string, description: string) => {
     return bookshelfState.execute(() =>
-      BookService.createBookshelf(name, description),
+      BookShelfService.createBookShelf(name, description),
     );
   };
 
@@ -79,18 +79,21 @@ export function useBook(initialReadStatus?: ReadStatus) {
     chapter?: number,
     page?: number,
   ) => {
-    const result = await memoState.execute(() =>
-      BookService.createMemo({
-        isbn,
-        memo,
-        memo_chapter: chapter,
-        memo_page: page,
-      }),
-    );
-    if (result) {
+    try {
+      await memoState.execute(() =>
+        MemoService.createMemo({
+          isbn,
+          memo,
+          memo_chapter: chapter,
+          memo_page: page,
+        }),
+      );
       dialogs.createMemo.close();
+      return true;
+    } catch (error) {
+      console.error('Failed to create memo:', error);
+      return false;
     }
-    return result;
   };
 
   return {

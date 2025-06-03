@@ -1,5 +1,5 @@
 import { useAsyncState } from '@/api/hooks';
-import { BookService } from '@/api/services';
+import { MemoService } from '@/api/services';
 
 /**
  * メモ関連の状態と処理を管理するカスタムフック
@@ -14,14 +14,20 @@ export function useBookMemo() {
     chapter?: number,
     page?: number,
   ) => {
-    return memoState.execute(() =>
-      BookService.createMemo({
-        isbn,
-        memo,
-        memo_chapter: chapter,
-        memo_page: page,
-      }),
-    );
+    try {
+      await memoState.execute(() =>
+        MemoService.createMemo({
+          isbn,
+          memo,
+          memo_chapter: chapter,
+          memo_page: page,
+        }),
+      );
+      return true;
+    } catch (error) {
+      console.error('Failed to create memo:', error);
+      return false;
+    }
   };
 
   return {

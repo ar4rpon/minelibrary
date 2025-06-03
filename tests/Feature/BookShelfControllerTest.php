@@ -131,7 +131,7 @@ test('本棚から本を削除できる', function () {
     Session::start();
     $this->actingAs($this->user)
         ->withSession(['_token' => Session::token()])
-        ->post("/api/book-shelf/{$book->isbn}", [
+        ->post("/api/book-shelf/remove-book", [
             'book_shelf_id' => $bookShelf->id,
             'isbn' => $book->isbn,
             '_token' => Session::token(),

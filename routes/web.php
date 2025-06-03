@@ -50,6 +50,9 @@ Route::middleware('auth')->group(function () {
     // プロフィール関連ページ
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    
+    // 本棚作成API (Webルートとして追加)
+    Route::post('/book-shelf/create', [BookShelfController::class, 'store'])->name('book-shelf.create');
 
     // 他のユーザーのプロフィール・本棚表示
     Route::get('/user/{userId}/profile', [ProfileController::class, 'showUser'])->name('user.profile');

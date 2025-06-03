@@ -33,10 +33,19 @@ export function useFavoriteBook(book: BookData) {
     const previousState = isFavorite;
     setIsFavorite(!isFavorite);
 
-    await favoriteState.execute(() => BookService.toggleFavorite(book));
+    try {
+      await favoriteState.execute(() => BookService.toggleFavorite(book));
 
-    // エラー時に状態を元に戻す
-    if (favoriteState.hasError) {
+      // 成功時は状態を維持
+      if (!favoriteState.hasError) {
+        // 必要に応じてお気に入り状態を再取得
+        await statusState.execute(() =>
+          BookService.getFavoriteStatus(book.isbn),
+        );
+      }
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+      // エラー時に状態を元に戻す
       setIsFavorite(previousState);
     }
   };

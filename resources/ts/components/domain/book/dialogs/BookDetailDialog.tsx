@@ -1,3 +1,4 @@
+import { apiClient } from '@/api/client';
 import { AmazonButton, RakutenButton } from '@/components/domain/book';
 import { BaseDialog } from '@/components/ui/base-dialog';
 import {
@@ -7,7 +8,6 @@ import {
 } from '@/components/ui/dialog';
 import { BookProps } from '@/types/domain/book';
 import { DialogProps } from '@/types/ui/dialog';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 interface Memo {
@@ -40,13 +40,18 @@ export function BookDetailDialog({
 
   useEffect(() => {
     if (isOpen && isbn) {
-      axios
-        .get(`/book/${isbn}/memos`)
+      console.log('Fetching memos for ISBN:', isbn);
+      apiClient
+        .get<{ memos: Memo[] }>(`/api/memo/book/${isbn}`)
         .then((response) => {
-          setMemos(response.data);
+          console.log('Memos response:', response);
+          // API レスポンスが { memos: [] } 形式の場合
+          const memosData = response.memos || response;
+          setMemos(Array.isArray(memosData) ? memosData : []);
         })
         .catch((error) => {
           console.error('Failed to fetch memos:', error);
+          setMemos([]);
         });
     }
   }, [isOpen, isbn]);

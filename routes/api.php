@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['web', 'auth'])->group(function () {
     
     // 書籍関連API
     Route::prefix('books')->group(function () {
@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/create', [MemoController::class, 'store'])->name('api.memo.store');
         Route::put('/{memo_id}', [MemoController::class, 'update'])->name('api.memo.update');
         Route::delete('/{memo_id}', [MemoController::class, 'destroy'])->name('api.memo.destroy');
+        Route::get('/book/{isbn}', [MemoController::class, 'getBookMemos'])->name('api.memo.book');
     });
 
     // 本棚関連API
@@ -51,7 +52,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/update/{id}', [BookShelfController::class, 'update'])->name('api.book-shelf.update.book');
         Route::delete('/delete/{id}', [BookShelfController::class, 'destroy'])->name('api.book-shelf.destroy');
         Route::post('/generate-share-link', [ShareLinkController::class, 'generateShareLink'])->name('api.book-shelf.generate-share-link');
-        Route::post('/{isbn}', [BookShelfController::class, 'removeBook'])->name('api.book-shelf.remove.book');
+        Route::post('/remove-book', [BookShelfController::class, 'removeBook'])->name('api.book-shelf.remove.book');
     });
 
     // プロフィール関連API

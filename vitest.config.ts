@@ -10,6 +10,11 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./resources/ts/test/setup.ts'],
     css: true,
+    exclude: [
+      '**/node_modules/**',
+      '**/tests/e2e/**', // E2Eテストを除外
+      '**/playwright/**',
+    ],
     coverage: {
       reporter: ['text', 'json', 'html'],
       exclude: [

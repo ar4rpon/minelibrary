@@ -47,6 +47,16 @@ export function FavoriteCard(props: FavoriteCardProps) {
   const { bookshelves, addToBookshelf, createBookshelf } = useBookShelf();
   const { createMemo } = useBookMemo();
 
+  const handleAddToBookshelf = async (shelfId: number, isbn: string) => {
+    try {
+      await addToBookshelf(shelfId, isbn);
+      // 成功時は特に何もしない（静的なフィードバックは今回は省略）
+    } catch (error) {
+      console.error('Failed to add book to shelf:', error);
+      // エラー時の処理（今回は簡単なログのみ）
+    }
+  };
+
   const handleCreateMemo = async (
     memo: string,
     chapter?: number,
@@ -60,8 +70,13 @@ export function FavoriteCard(props: FavoriteCardProps) {
     bookShelfName: string,
     description: string,
   ) => {
-    await createBookshelf(bookShelfName, description);
-    dialogs.createBookShelf.close();
+    try {
+      await createBookshelf(bookShelfName, description);
+      dialogs.createBookShelf.close();
+    } catch (error) {
+      console.error('Failed to create bookshelf:', error);
+      // エラー時はダイアログを閉じない（ユーザーが再試行できるように）
+    }
   };
 
   const handleUpdateReadStatus = () => {
@@ -140,18 +155,24 @@ export function FavoriteCard(props: FavoriteCardProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              {bookshelves.map((shelf) => (
-                <DropdownMenuItem
-                  key={shelf.id}
-                  className="flex items-center truncate"
-                  onClick={() => addToBookshelf(shelf.id, isbn)}
-                >
-                  <Library className="mr-2 h-4 w-4" />
-                  {shelf.book_shelf_name.length > 12
-                    ? shelf.book_shelf_name.slice(0, 12) + '...'
-                    : shelf.book_shelf_name}
+              {Array.isArray(bookshelves) && bookshelves.length > 0 ? (
+                bookshelves.map((shelf) => (
+                  <DropdownMenuItem
+                    key={shelf.id}
+                    className="flex items-center truncate"
+                    onClick={() => handleAddToBookshelf(shelf.id, isbn)}
+                  >
+                    <Library className="mr-2 h-4 w-4" />
+                    {shelf.book_shelf_name && shelf.book_shelf_name.length > 12
+                      ? shelf.book_shelf_name.slice(0, 12) + '...'
+                      : shelf.book_shelf_name || '無名の本棚'}
+                  </DropdownMenuItem>
+                ))
+              ) : (
+                <DropdownMenuItem disabled>
+                  本棚がありません
                 </DropdownMenuItem>
-              ))}
+              )}
               <DropdownMenuItem
                 className="flex items-center"
                 onClick={dialogs.createBookShelf.open}

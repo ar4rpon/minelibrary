@@ -97,7 +97,7 @@ class BookShelfService
      */
     public function createBookShelf(array $data): BookShelf
     {
-        return (new BookShelf())->add($data);
+        return BookShelf::add($data);
     }
 
     /**

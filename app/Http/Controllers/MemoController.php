@@ -8,11 +8,12 @@ use App\Http\Requests\MemoStoreRequest;
 use App\Http\Requests\MemoUpdateRequest;
 use App\Services\MemoService;
 use App\Http\Traits\HandlesUserAuth;
+use App\Http\Traits\HandlesApiResponses;
 use Inertia\Inertia;
 
 class MemoController extends Controller
 {
-    use HandlesUserAuth;
+    use HandlesUserAuth, HandlesApiResponses;
     protected $bookController;
     private MemoService $memoService;
 
@@ -45,7 +46,7 @@ class MemoController extends Controller
             $request->memo_page
         );
 
-        return $this->createdResponse(['memo' => $memo]);
+        return response()->json(['memo' => $memo], 201);
     }
 
     public function update(MemoUpdateRequest $request, $memo_id)
@@ -60,10 +61,10 @@ class MemoController extends Controller
         );
 
         if (!$memo) {
-            return $this->errorResponse('Memo not found', 403);
+            return response()->json(['error' => 'Memo not found'], 403);
         }
         
-        return $this->successResponse(['memo' => $memo]);
+        return response()->json(['memo' => $memo], 200);
     }
 
     public function destroy($memo_id)
@@ -72,10 +73,10 @@ class MemoController extends Controller
         $deleted = $this->memoService->deleteMemo($memo_id, $user->id);
 
         if (!$deleted) {
-            return $this->errorResponse('Memo not found', 403);
+            return response()->json(['error' => 'Memo not found'], 403);
         }
 
-        return $this->successResponse(['success' => true, 'message' => 'メモを削除しました']);
+        return response()->json(['success' => true, 'message' => 'メモを削除しました'], 200);
     }
 
     public function getBookMemos($isbn)
@@ -83,6 +84,6 @@ class MemoController extends Controller
         $currentUserId = $this->getAuthUser() ? $this->getAuthUser()->id : null;
         $memos = $this->memoService->getBookMemos($isbn, $currentUserId);
 
-        return $this->successResponse(['memos' => $memos]);
+        return response()->json(['memos' => $memos], 200);
     }
 }

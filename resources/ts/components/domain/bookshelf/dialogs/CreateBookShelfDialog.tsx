@@ -57,11 +57,12 @@ export function CreateBookShelfDialog({
       <DialogDescription asChild>
         <div className="mt-4 flex w-full flex-col">
           <div className="grid items-center gap-1.5 text-left">
-            <Label className="mb-1" htmlFor="bookshelfname">
+            <Label className="mb-1" htmlFor="book_shelf_name">
               本棚名 <span className="text-red-500">*</span>
             </Label>
             <Input
-              id="BookShelfName"
+              id="book_shelf_name"
+              name="book_shelf_name"
               placeholder="本棚の名前"
               value={bookShelfName}
               onChange={(e) => setBookShelfName(e.target.value)}
@@ -70,11 +71,12 @@ export function CreateBookShelfDialog({
             />
           </div>
           <div className="mt-4 grid items-center gap-1.5 text-left">
-            <Label className="mb-1" htmlFor="bookshelfdescription">
+            <Label className="mb-1" htmlFor="book_shelf_description">
               本棚の説明
             </Label>
             <Textarea
-              id="Description"
+              id="book_shelf_description"
+              name="book_shelf_description"
               placeholder="本棚の概要や説明など"
               value={bookShelfDescription}
               onChange={(e) => setBookShelfDescription(e.target.value)}
@@ -87,6 +89,7 @@ export function CreateBookShelfDialog({
               className="mr-4"
               onClick={handleConfirm}
               disabled={isLoading || !bookShelfName.trim()}
+              data-testid="create-bookshelf-button"
             >
               {isLoading ? (
                 <>

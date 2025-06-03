@@ -1,6 +1,6 @@
-import { expect, afterEach, beforeAll, afterAll, vi } from 'vitest';
-import { cleanup } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
+import { cleanup } from '@testing-library/react';
+import { afterAll, afterEach, beforeAll, expect, vi } from 'vitest';
 import { server } from './mocks/server';
 
 // MSWサーバーの設定
@@ -34,7 +34,7 @@ global.IntersectionObserver = class IntersectionObserver {
 // Window.matchMediaのモック
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -45,3 +45,6 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 });
+
+// HTMLFormElement.prototype.requestSubmit のモック
+HTMLFormElement.prototype.requestSubmit = vi.fn();

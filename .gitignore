@@ -21,3 +21,11 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Testing
+/coverage/
+/.nyc_output
+/tests/reports/*
+!/tests/reports/.gitkeep
+/test-results/
+/playwright-report/

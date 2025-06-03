@@ -1,5 +1,5 @@
 import { useAsyncState } from '@/api/hooks';
-import { BookService } from '@/api/services';
+import { BookService, BookShelfService } from '@/api/services';
 import type { BookshelfListItem } from '@/types/api';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -23,19 +23,22 @@ export function useBookShelf() {
       setBookshelves(result);
     } catch (error) {
       console.error('Failed to fetch bookshelves:', error);
+      setBookshelves([]); // エラー時は空配列を設定
     }
-  }, [fetchState]);
+  }, [fetchState.execute]); // executeメソッドのみを依存配列に含める
 
   useEffect(() => {
     fetchBookshelves();
-  }, [fetchBookshelves]);
+  }, []); // 空の依存配列で初回のみ実行
 
   // 本棚に本を追加
   const addToBookshelf = async (shelfId: number, isbn: string) => {
     try {
       await addState.execute(() => BookService.addToBookshelf(shelfId, isbn));
+      // 成功時は何もしない（UIからの成功フィードバックは上位コンポーネントで処理）
     } catch (error) {
       console.error('Failed to add book to shelf:', error);
+      throw error; // エラーを再スローして上位コンポーネントで処理できるようにする
     }
   };
 
@@ -43,13 +46,13 @@ export function useBookShelf() {
   const createBookshelf = async (name: string, description: string) => {
     try {
       await createState.execute(() =>
-        BookService.createBookshelf(name, description),
+        BookShelfService.createBookShelf(name, description),
       );
       await fetchBookshelves(); // 本棚リストを再取得
       return true;
     } catch (error) {
       console.error('Failed to create bookshelf:', error);
-      return false;
+      throw error; // エラーを再スローして上位コンポーネントで処理できるようにする
     }
   };
 

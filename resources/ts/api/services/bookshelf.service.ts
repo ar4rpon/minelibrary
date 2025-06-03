@@ -2,6 +2,7 @@ import { apiClient } from '@/api/client';
 import { ApiErrorHandler } from '@/lib/errors';
 import type {
   BookShelfListResponse,
+  CreateBookShelfResponse,
   FavoriteBook,
   ShareLinkResponse,
 } from '@/types/api';
@@ -12,6 +13,23 @@ import { router } from '@inertiajs/react';
  * 本棚に関連する全てのAPI操作を統一的に管理
  */
 export class BookShelfService {
+  /**
+   * 本棚を作成
+   */
+  static async createBookShelf(
+    name: string,
+    description: string,
+  ): Promise<CreateBookShelfResponse> {
+    return ApiErrorHandler.executeWithErrorHandling(
+      () =>
+        apiClient.post('/api/book-shelf/create', {
+          book_shelf_name: name,
+          description,
+        }),
+      'BookShelfService.createBookShelf',
+    );
+  }
+
   /**
    * 本棚を更新
    */
@@ -119,7 +137,8 @@ export class BookShelfService {
   static async getAllBookShelves(): Promise<BookShelfListResponse> {
     try {
       return await ApiErrorHandler.executeWithErrorHandling(
-        () => apiClient.get<BookShelfListResponse>('/api/book-shelf/get/mylist'),
+        () =>
+          apiClient.get<BookShelfListResponse>('/api/book-shelf/get/mylist'),
         'BookShelfService.getAllBookShelves',
       );
     } catch (error) {
@@ -136,9 +155,12 @@ export class BookShelfService {
     try {
       const response = await ApiErrorHandler.executeWithErrorHandling(
         () =>
-          apiClient.post<ShareLinkResponse>('/api/book-shelf/generate-share-link', {
-            book_shelf_id: bookShelfId,
-          }),
+          apiClient.post<ShareLinkResponse>(
+            '/api/book-shelf/generate-share-link',
+            {
+              book_shelf_id: bookShelfId,
+            },
+          ),
         'BookShelfService.generateShareLink',
       );
 

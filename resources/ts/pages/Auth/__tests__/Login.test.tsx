@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Login from '../Login';
 
 // モック関数
@@ -43,8 +43,18 @@ vi.mock('@/components/common/layout', () => ({
 
 // InputErrorをモック
 vi.mock('@/components/common/InputError', () => ({
-  default: ({ message, className }: { message?: string; className?: string }) =>
-    message ? <div className={className} data-testid="input-error">{message}</div> : null,
+  default: ({
+    message,
+    className,
+  }: {
+    message?: string;
+    className?: string;
+  }) =>
+    message ? (
+      <div className={className} data-testid="input-error">
+        {message}
+      </div>
+    ) : null,
 }));
 
 describe('Login', () => {
@@ -66,8 +76,12 @@ describe('Login', () => {
     // フォーム要素
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
-    expect(screen.getByRole('checkbox', { name: /remember me/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'ログイン' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('checkbox', { name: /remember me/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'ログイン' }),
+    ).toBeInTheDocument();
 
     // パスワードリセットリンク
     expect(screen.getByText('Forgot your password?')).toBeInTheDocument();
@@ -90,7 +104,11 @@ describe('Login', () => {
   it('フォーム入力値が正しく処理される', async () => {
     const { useForm } = await import('@inertiajs/react');
     vi.mocked(useForm).mockReturnValue({
-      data: { email: 'test@example.com', password: 'password123', remember: true },
+      data: {
+        email: 'test@example.com',
+        password: 'password123',
+        remember: true,
+      },
       setData: mockSetData,
       post: mockPost,
       processing: false,
@@ -102,7 +120,9 @@ describe('Login', () => {
 
     const emailInput = screen.getByLabelText('Email');
     const passwordInput = screen.getByLabelText('Password');
-    const rememberCheckbox = screen.getByRole('checkbox', { name: /remember me/i });
+    const rememberCheckbox = screen.getByRole('checkbox', {
+      name: /remember me/i,
+    });
 
     // 入力値の確認
     expect(emailInput).toHaveValue('test@example.com');
@@ -126,8 +146,12 @@ describe('Login', () => {
 
     render(<Login canResetPassword={true} />);
 
-    expect(screen.getByText('The email field is required.')).toBeInTheDocument();
-    expect(screen.getByText('The password field is required.')).toBeInTheDocument();
+    expect(
+      screen.getByText('The email field is required.'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('The password field is required.'),
+    ).toBeInTheDocument();
   });
 
   it('処理中の場合ボタンが無効化される', async () => {
@@ -150,7 +174,11 @@ describe('Login', () => {
   it('フォーム送信時に正しいデータでpost関数が呼ばれる', async () => {
     const { useForm } = await import('@inertiajs/react');
     vi.mocked(useForm).mockReturnValue({
-      data: { email: 'test@example.com', password: 'password123', remember: false },
+      data: {
+        email: 'test@example.com',
+        password: 'password123',
+        remember: false,
+      },
       setData: mockSetData,
       post: mockPost,
       processing: false,
@@ -160,8 +188,10 @@ describe('Login', () => {
 
     render(<Login canResetPassword={true} />);
 
-    const form = screen.getByRole('button', { name: 'ログイン' }).closest('form');
-    
+    const form = screen
+      .getByRole('button', { name: 'ログイン' })
+      .closest('form');
+
     if (form) {
       fireEvent.submit(form);
     }
@@ -189,10 +219,10 @@ describe('Login', () => {
 
     // メールアドレス入力
     await user.type(emailInput, 'test@example.com');
-    
+
     // パスワード入力
     await user.type(passwordInput, 'password123');
-    
+
     // setDataが適切に呼ばれることを確認（文字数分呼ばれる）
     expect(mockSetData).toHaveBeenCalled();
     expect(mockSetData).toHaveBeenCalledWith('email', expect.any(String));
@@ -212,7 +242,9 @@ describe('Login', () => {
 
     render(<Login canResetPassword={true} />);
 
-    const rememberCheckbox = screen.getByRole('checkbox', { name: /remember me/i });
+    const rememberCheckbox = screen.getByRole('checkbox', {
+      name: /remember me/i,
+    });
     await user.click(rememberCheckbox);
 
     expect(mockSetData).toHaveBeenCalledWith('remember', true);
@@ -227,7 +259,11 @@ describe('Login', () => {
 
     const { useForm } = await import('@inertiajs/react');
     vi.mocked(useForm).mockReturnValue({
-      data: { email: 'test@example.com', password: 'password123', remember: false },
+      data: {
+        email: 'test@example.com',
+        password: 'password123',
+        remember: false,
+      },
       setData: mockSetData,
       post: mockPost,
       processing: false,
@@ -237,8 +273,10 @@ describe('Login', () => {
 
     render(<Login canResetPassword={true} />);
 
-    const form = screen.getByRole('button', { name: 'ログイン' }).closest('form');
-    
+    const form = screen
+      .getByRole('button', { name: 'ログイン' })
+      .closest('form');
+
     if (form) {
       fireEvent.submit(form);
     }
@@ -272,6 +310,9 @@ describe('Login', () => {
     const passwordInputElement = document.getElementById('password');
     expect(passwordInputElement).toHaveAttribute('type', 'password');
     expect(passwordInputElement).toHaveAttribute('name', 'password');
-    expect(passwordInputElement).toHaveAttribute('autoComplete', 'current-password');
+    expect(passwordInputElement).toHaveAttribute(
+      'autoComplete',
+      'current-password',
+    );
   });
 });

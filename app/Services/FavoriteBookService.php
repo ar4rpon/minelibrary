@@ -31,10 +31,16 @@ class FavoriteBookService
             $query->orderBy('created_at', 'asc');
         }
 
-        return $query->get()->map(function ($favorite) {
+        $favoriteBooks = $query->get();
+
+        $result = $favoriteBooks->map(function ($favorite) {
+            if (!$favorite->book) {
+                return null;
+            }
+
             return [
                 'isbn' => $favorite->isbn,
-                'read_status' => $favorite->read_status,
+                'read_status' => $favorite->read_status->value, // enumの値を文字列として返す
                 'created_at' => $favorite->created_at,
                 'book' => [
                     'title' => $favorite->book->title,
@@ -46,7 +52,9 @@ class FavoriteBookService
                     'item_price' => $favorite->book->item_price,
                 ],
             ];
-        });
+        })->filter(); // nullを除去
+
+        return $result;
     }
 
     /**
@@ -81,9 +89,9 @@ class FavoriteBookService
     public function toggleFavorite(array $bookData, int $userId): bool
     {
         // 本が存在しない場合は新規登録
-        $existingBook = (new Book())->getBookInfo($bookData['isbn']);
+        $existingBook = Book::find($bookData['isbn']);
         if (!$existingBook) {
-            $book = (new Book())->addBook($bookData);
+            $book = Book::create($bookData);
         } else {
             $book = $existingBook;
         }
